@@ -1,14 +1,11 @@
-const express = require('express');
-const app = express();
-const path = require('path');
+import app from "#app";
+import db from "#db/client";
 
+// turns on node server
+const PORT = process.env.PORT ?? 3000;
 
-app.use('/dist', express.static('dist'));
-app.use('/assets', express.static('assets'));
-app.get('/', (req, res)=> res.sendFile(path.join(__dirname, 'index.html')));
+await db.connect();
 
-const port = process.env.PORT || 3000;
-
-app.listen(port, ()=> {
-  console.log(`listening on port ${port}`);
+app.listen(PORT, () => {
+  console.log(`Listening on port ${PORT}...`);
 });
