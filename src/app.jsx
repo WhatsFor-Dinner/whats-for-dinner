@@ -1,12 +1,24 @@
-import React, { useState } from "react";
+import "./index.css";
 import { Routes, Route } from "react-router";
+import Home from "./pages/Home.jsx";
+import { Navbar } from "./layout/Navbar.jsx";
 
-import ProfilePage from "./profilePage/ProfilePage.jsx";
+import ProfilePage from "./pages/ProfilePage.jsx";
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/profilepage" element={<ProfilePage />} />
-    </Routes>
+    <>
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/profilepage" element={<ProfilePage />} />
+        <Route path="/login" element={<div>Login Page - Coming Soon</div>} />
+        <Route
+          path="/register"
+          element={<div>Register Page - Coming Soon</div>}
+        />
+        <Route path="*" element={<div>404 - Page Not Found</div>} />
+      </Routes>
+    </>
   );
 }
