@@ -1,0 +1,9 @@
+body {
+  margin: 0;
+  background-color: antiquewhite;
+}
+
+nav button {
+  background-color: goldenrod;
+  color: whitesmoke;
+}
