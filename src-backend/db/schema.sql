@@ -37,7 +37,7 @@ CREATE TABLE recipes (
 CREATE TABLE ingredients (
   id SERIAL PRIMARY KEY,
   name TEXT UNIQUE NOT NULL,
-  is_allergen BOOLEAN DEFAULT FALSE
+  image TEXT
 );
 
 CREATE TABLE recipe_ingredients (
@@ -76,3 +76,5 @@ CREATE TABLE favorites (
   recipe_id INTEGER NOT NULL REFERENCES recipes(id) ON DELETE CASCADE,
   UNIQUE (user_id, recipe_id)  -- one favorite per user/recipe
 );
+
+
