@@ -3,8 +3,14 @@ import App from "./App.jsx";
 import "./index.css";
 import { BrowserRouter } from "react-router";
 
+// 👇 import your AuthProvider
+import { AuthProvider } from "./Auth/Auth.jsx";
+
 createRoot(document.getElementById("root")).render(
   <BrowserRouter>
-    <App />
+    {/* 👇 Wrap only your part */}
+    <AuthProvider>
+      <App />
+    </AuthProvider>
   </BrowserRouter>
 );

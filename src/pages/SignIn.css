@@ -1,0 +1,134 @@
+:root {
+    --bg: #f6fbf7;
+    --card: #ffffff;
+    --accent: #2e9b66;
+    --muted: #6b6b6b;
+    --error: #e05b5b;
+    --radius: 14px;
+    --shadow: 0 6px 18px rgba(18, 40, 28, 0.08);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  }
+  
+  .signin-shell {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, #f8fdf8 0%, #f0f9f2 100%);
+    padding: 24px;
+  }
+  
+  .signin-card {
+    background: var(--card);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    padding: 30px;
+    width: 100%;
+    max-width: 420px;
+    border: 1px solid rgba(46, 155, 102, 0.06);
+  }
+  
+  .brand {
+    color: #0f3d2a;
+    font-size: 22px;
+    margin-bottom: 6px;
+  }
+  
+  .subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 22px;
+  }
+  
+  .field {
+    margin-bottom: 16px;
+  }
+  
+  .label-text {
+    display: block;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  
+  .input {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(15,61,42,0.06);
+    background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(250,255,249,0.95));
+    font-size: 15px;
+    outline: none;
+    transition: all 0.2s ease;
+  }
+  
+  .input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 6px 16px rgba(46, 155, 102, 0.1);
+  }
+  
+  .error-text {
+    color: var(--error);
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+  
+  .server-msg {
+    margin-top: 10px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-size: 14px;
+  }
+  .server-msg.ok {
+    background: #effaf0;
+    color: #125c33;
+    border: 1px solid rgba(18, 92, 51, 0.06);
+  }
+  .server-msg.err {
+    background: #fff6f6;
+    color: var(--error);
+    border: 1px solid rgba(224,91,91,0.06);
+  }
+  
+  .actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .btn {
+    border: none;
+    padding: 10px 16px;
+    border-radius: 999px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    text-decoration: none;
+  }
+  
+  .btn.primary {
+    background: linear-gradient(180deg, var(--accent), #238e59);
+    color: white;
+    box-shadow: 0 8px 24px rgba(46, 155, 102, 0.16);
+  }
+  
+  .btn.subtle {
+    background: transparent;
+    color: #0f3d2a;
+    border: 1px solid rgba(15,61,42,0.06);
+  }
+  
+  .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(46, 155, 102, 0.1);
+  }
+  
+  @media (max-width: 480px) {
+    .signin-card {
+      padding: 20px;
+      border-radius: 14px;
+    }
+  }
+  
