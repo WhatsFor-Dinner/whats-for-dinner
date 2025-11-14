@@ -5,7 +5,7 @@ export function Navbar() {
     <>
       <nav>
         <NavLink to="/">
-          <image>LOGO PLACE HOLDER</image>
+          <img alt="LOGO PLACE HOLDER" />
         </NavLink>
         <NavLink to="/">
           <button>Home</button>{" "}
