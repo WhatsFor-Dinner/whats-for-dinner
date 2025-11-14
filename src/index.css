@@ -3,7 +3,150 @@ body {
   background-color: antiquewhite;
 }
 
+/* PROFILE PAGE */
+
+/* Navigation/header area on the profile page */
+.profile-navigation {
+  width: 100%;
+  padding: 12px 16px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fffaf0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
 nav button {
+  margin-top: 10px;
   background-color: goldenrod;
   color: whitesmoke;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Layout for the recipe area */
+.recipeCard {
+  display: block;
+  width: 640px;
+  max-width: 100%;
+  margin: 16px;
+  padding: 16px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.create-recipe {
+  box-sizing: border-box;
+  margin: 20px auto;
+  padding: 24px;
+  max-width: 800px;
+  background-color: blanchedalmond;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.create-recipe h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 24px;
+  text-align: center;
+}
+
+.create-recipe form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.create-recipe label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: 500;
+  color: #444;
+  font-size: 14px;
+}
+
+.create-recipe input[type="text"] {
+  padding: 10px 12px;
+  border: 1px solid #daa520;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: #fff;
+  transition: border-color 0.2s;
+}
+
+.create-recipe input[type="text"]:focus {
+  outline: none;
+  border-color: goldenrod;
+  box-shadow: 0 0 0 3px rgba(218, 165, 32, 0.1);
+}
+
+.create-recipe ol {
+  margin: 8px 0;
+  padding-left: 20px;
+}
+
+.create-recipe span {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background-color: #fff;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #666;
+}
+
+.my-recipe-card {
+  box-sizing: border-box;
+  margin: 8px;
+  padding: 12px;
+  background-color: #fffaf0;
+  color: black;
+  width: 300px;
+  min-height: 200px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+}
+
+.my-table {
+  box-sizing: border-box;
+  margin: 8px;
+  padding: 12px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+  min-height: 120px;
+}
+
+.form-button{
+   
+    width: 100px;
+    height: 50px;
+    border-radius: 10%;
+    margin-right: 20px;
+
+
+}
+.health-info{
+  width: 100%;
+  background-color: white;
+  margin: 5px;
+  padding: 5px;
+}
+
+.recipe-photo{
+  width: 250px;
+  height: 300px;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
