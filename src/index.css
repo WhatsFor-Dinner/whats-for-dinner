@@ -126,27 +126,60 @@ nav button {
   min-height: 120px;
 }
 
-.form-button{
-   
-    width: 100px;
-    height: 50px;
-    border-radius: 10%;
-    margin-right: 20px;
-
-
+.form-button {
+  width: 100px;
+  height: 50px;
+  border-radius: 10%;
+  margin-right: 20px;
 }
-.health-info{
+.health-info {
   width: 100%;
   background-color: white;
   margin: 5px;
   padding: 5px;
 }
 
-.recipe-photo{
+.recipe-photo {
   width: 250px;
   height: 300px;
   background-color: white;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+/* My recipes */
+
+.my-recipes-containter {
+  width: 400px;
+  height: 400px;
+  background-color: #ffffff;
+}
+
+.active-tabs {
+  background-color: white;
+  border-bottom: 1px solid black;
+}
+
+.active-tabs::before {
+  content: "";
+  display: block;
+  position: absolute;
+
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.content {
+  display: none;
+}
+
+.active-content {
+  display: block;
+}
+
+.my-recipe-tabs button.active-tabs {
+  background-color: goldenrod;
+  color: white;
 }

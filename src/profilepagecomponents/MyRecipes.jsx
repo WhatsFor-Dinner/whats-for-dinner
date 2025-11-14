@@ -1,26 +1,55 @@
+import { useState } from "react";
+
 /* 
+
+
 I want to have personally made recipes, saved recipies and favorite recipies. 
 */
 
-const MyRecipes = () => {
+function MyRecipes() {
+  const [toggle, setToggle] = useState(1);
+  function updateToggle(id) {
+    setToggle(id);
+  }
 
   return (
-    <div className="my-recipe-card">
-      <h2>My Recipes</h2>
-      <p>My recipes component - Coming soon!</p>
+    <section className="my-recipes-containter">
+      <div className="my-recipe-tabs">
+        <button
+          className={toggle === 1 ? "tabs active-tabs" : "tabs"}
+          onClick={() => updateToggle(1)}
+        >
+          My Recipes
+        </button>
 
-      <tabs className="my-recipe-tabs">
-        <tab>My Recipes</tab>
-         <tab>Favorite Recipes</tab>
-      </tabs>
-    </div>
+        <button
+          className={toggle === 2 ? "tabs active-tabs" : "tabs"}
+          onClick={() => updateToggle(2)}
+        >
+          Favorite Recipes
+        </button>
+      </div>
+
+    <div className="content-tabs">
+      <p className={toggle === 1 ? "content active-content" : "content"}>
+       
+        This will display my created recipes and saved recipes.
+      </p>
+      <p className={toggle === 2 ? "content active-content" : "content"}>
+       
+        This will display favorited recipes.
+      </p>
+      </div>
+    </section>
   );
-};
+}
 
 export default MyRecipes;
 
- {/* TODO: Add tabs for My Recipes and My Favorite Recipes 
+{
+  /* TODO: Add tabs for My Recipes and My Favorite Recipes 
   
   
   
-  */}
+  */
+}
