@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import "./RegisterPages.css";
 
 export default function RegisterPage({ onRegister }) {
@@ -19,21 +18,29 @@ export default function RegisterPage({ onRegister }) {
 
   function handleChange(e) {
     const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
-    setErrors(prev => ({ ...prev, [name]: null }));
+    setForm((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: null }));
     setServerMsg(null);
   }
 
   function validate() {
     const errs = {};
-    if (!form.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) errs.email = "Please enter a valid email.";
-    if (form.password.length < 8) errs.password = "Password must be at least 8 characters.";
-    if (form.password !== form.confirmPassword) errs.confirmPassword = "Passwords do not match.";
-    if (!["male", "female", "other"].includes(form.gender)) errs.gender = "Please pick a gender option.";
-    if (!form.age || Number(form.age) < 13 || Number(form.age) > 120) errs.age = "Enter a valid age (13–120).";
-    if (!form.height || Number(form.height) <= 0) errs.height = "Enter a valid height.";
-    if (!form.weight || Number(form.weight) <= 0) errs.weight = "Enter a valid weight.";
-    if (!["mesomorph", "endomorph", "ectomorph"].includes(form.bodyType)) errs.bodyType = "Please choose a body type.";
+    if (!form.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/))
+      errs.email = "Please enter a valid email.";
+    if (form.password.length < 8)
+      errs.password = "Password must be at least 8 characters.";
+    if (form.password !== form.confirmPassword)
+      errs.confirmPassword = "Passwords do not match.";
+    if (!["male", "female", "other"].includes(form.gender))
+      errs.gender = "Please pick a gender option.";
+    if (!form.age || Number(form.age) < 13 || Number(form.age) > 120)
+      errs.age = "Enter a valid age (13–120).";
+    if (!form.height || Number(form.height) <= 0)
+      errs.height = "Enter a valid height.";
+    if (!form.weight || Number(form.weight) <= 0)
+      errs.weight = "Enter a valid weight.";
+    if (!["mesomorph", "endomorph", "ectomorph"].includes(form.bodyType))
+      errs.bodyType = "Please choose a body type.";
     return errs;
   }
 
@@ -74,9 +81,14 @@ export default function RegisterPage({ onRegister }) {
         });
         if (!res.ok) {
           const body = await res.json().catch(() => ({}));
-          throw new Error(body.message || `Request failed with status ${res.status}`);
+          throw new Error(
+            body.message || `Request failed with status ${res.status}`
+          );
         }
-        setServerMsg({ type: "success", text: "Account created — check your email for verification (if required)." });
+        setServerMsg({
+          type: "success",
+          text: "Account created — check your email for verification (if required).",
+        });
         setForm({
           email: "",
           password: "",
@@ -89,7 +101,10 @@ export default function RegisterPage({ onRegister }) {
         });
       }
     } catch (err) {
-      setServerMsg({ type: "error", text: err.message || "Registration failed." });
+      setServerMsg({
+        type: "error",
+        text: err.message || "Registration failed.",
+      });
     } finally {
       setSubmitting(false);
     }
@@ -140,7 +155,9 @@ export default function RegisterPage({ onRegister }) {
               aria-invalid={!!errors.password}
               className={errors.password ? "input error" : "input"}
             />
-            {errors.password && <div className="error-text">{errors.password}</div>}
+            {errors.password && (
+              <div className="error-text">{errors.password}</div>
+            )}
           </div>
 
           <div>
@@ -155,7 +172,9 @@ export default function RegisterPage({ onRegister }) {
               aria-invalid={!!errors.confirmPassword}
               className={errors.confirmPassword ? "input error" : "input"}
             />
-            {errors.confirmPassword && <div className="error-text">{errors.confirmPassword}</div>}
+            {errors.confirmPassword && (
+              <div className="error-text">{errors.confirmPassword}</div>
+            )}
           </div>
         </label>
 
@@ -167,15 +186,33 @@ export default function RegisterPage({ onRegister }) {
         <fieldset className="field gender-field">
           <legend className="label-text">Gender</legend>
           <label className="radio">
-            <input type="radio" name="gender" value="male" onChange={handleChange} checked={form.gender === "male"} />
+            <input
+              type="radio"
+              name="gender"
+              value="male"
+              onChange={handleChange}
+              checked={form.gender === "male"}
+            />
             Male
           </label>
           <label className="radio">
-            <input type="radio" name="gender" value="female" onChange={handleChange} checked={form.gender === "female"} />
+            <input
+              type="radio"
+              name="gender"
+              value="female"
+              onChange={handleChange}
+              checked={form.gender === "female"}
+            />
             Female
           </label>
           <label className="radio">
-            <input type="radio" name="gender" value="other" onChange={handleChange} checked={form.gender === "other"} />
+            <input
+              type="radio"
+              name="gender"
+              value="other"
+              onChange={handleChange}
+              checked={form.gender === "other"}
+            />
             Other
           </label>
           {errors.gender && <div className="error-text">{errors.gender}</div>}
@@ -184,36 +221,72 @@ export default function RegisterPage({ onRegister }) {
         <label className="field three-up">
           <div>
             <span className="label-text">Age</span>
-            <input name="age" type="number" min="13" max="120" placeholder="e.g., 28" value={form.age} onChange={handleChange} className={errors.age ? "input error" : "input"} />
+            <input
+              name="age"
+              type="number"
+              min="13"
+              max="120"
+              placeholder="e.g., 28"
+              value={form.age}
+              onChange={handleChange}
+              className={errors.age ? "input error" : "input"}
+            />
             {errors.age && <div className="error-text">{errors.age}</div>}
           </div>
 
           <div>
             <span className="label-text">Height (cm)</span>
-            <input name="height" type="number" min="30" placeholder="e.g., 180" value={form.height} onChange={handleChange} className={errors.height ? "input error" : "input"} />
+            <input
+              name="height"
+              type="number"
+              min="30"
+              placeholder="e.g., 180"
+              value={form.height}
+              onChange={handleChange}
+              className={errors.height ? "input error" : "input"}
+            />
             {errors.height && <div className="error-text">{errors.height}</div>}
           </div>
 
           <div>
             <span className="label-text">Weight (kg)</span>
-            <input name="weight" type="number" min="10" placeholder="e.g., 80" value={form.weight} onChange={handleChange} className={errors.weight ? "input error" : "input"} />
+            <input
+              name="weight"
+              type="number"
+              min="10"
+              placeholder="e.g., 80"
+              value={form.weight}
+              onChange={handleChange}
+              className={errors.weight ? "input error" : "input"}
+            />
             {errors.weight && <div className="error-text">{errors.weight}</div>}
           </div>
         </label>
 
         <label className="field">
           <span className="label-text">Body type</span>
-          <select name="bodyType" value={form.bodyType} onChange={handleChange} className={errors.bodyType ? "input error" : "input"}>
+          <select
+            name="bodyType"
+            value={form.bodyType}
+            onChange={handleChange}
+            className={errors.bodyType ? "input error" : "input"}
+          >
             <option value="">Choose body type</option>
             <option value="ectomorph">Ectomorph</option>
             <option value="mesomorph">Mesomorph</option>
             <option value="endomorph">Endomorph</option>
           </select>
-          {errors.bodyType && <div className="error-text">{errors.bodyType}</div>}
+          {errors.bodyType && (
+            <div className="error-text">{errors.bodyType}</div>
+          )}
         </label>
 
         {serverMsg && (
-          <div className={`server-msg ${serverMsg.type === "error" ? "err" : "ok"}`}>
+          <div
+            className={`server-msg ${
+              serverMsg.type === "error" ? "err" : "ok"
+            }`}
+          >
             {serverMsg.text}
           </div>
         )}
@@ -245,12 +318,11 @@ export default function RegisterPage({ onRegister }) {
         </div>
 
         <p className="signin-link">
-  Already have an account?{" "}
-  <a href="/login" className="signin-link-text">
-    Sign in
-  </a>
-</p>
-
+          Already have an account?{" "}
+          <a href="/login" className="signin-link-text">
+            Sign in
+          </a>
+        </p>
       </form>
     </div>
   );
