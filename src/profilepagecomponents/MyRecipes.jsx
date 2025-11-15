@@ -11,7 +11,6 @@ function MyRecipes() {
   function updateToggle(id) {
     setToggle(id);
   }
-  
 
   return (
     <section className="my-recipes-containter">

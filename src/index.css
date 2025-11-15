@@ -313,3 +313,16 @@ Profile Navigaton  */
   color: white;
   border-color: goldenrod;
 }
+
+.favorite-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+}
+
+

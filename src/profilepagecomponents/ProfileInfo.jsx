@@ -1,4 +1,5 @@
 import { NavLink } from "react-router";
+import FavoriteButton from "./Favorite";
 
 function ProfileInfo() {
   return (
@@ -17,7 +18,9 @@ function ProfileInfo() {
           <button>Create Recipes</button>
           <button>My Table</button>
         </nav>
+        <FavoriteButton/>
       </aside>
+     
     </>
   );
 }

@@ -45,7 +45,7 @@ if (!recipe) return <p> Loading Recipes...</p>;
     return (
         <section>
             <h2>{recipe.name}</h2>
-        <p> </p>
+        <p>{recipe.cuisine} </p>
          <p> </p>
           <p> </p>
            <p> </p>
@@ -56,7 +56,8 @@ if (!recipe) return <p> Loading Recipes...</p>;
                
                {token && <button onClick={tryUpdate}>Update Recipe</button>}
                {token && <button onClick={tryDelete}>Delete Recipe</button>}
-
+               {/* {token && <button>Favorite heart</button>} */}
+               {/* {token && <button>Rating</button>} */}
        </section>
    
    );
