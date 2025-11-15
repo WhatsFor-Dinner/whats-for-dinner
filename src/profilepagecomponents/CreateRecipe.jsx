@@ -61,12 +61,14 @@ function CreateRecipe() {
 
           <label>
             Cook Time: {/* Cook Time: I want time in mins */}
-            <input type="text" name="recipe name" />
+            <input type="text" name="cook time" />
           </label>
 
-          <label>
+          <label className="ingredient-add">
             Ingredients: {/*  type, add, press enter to add  */}
-            <input type="text" name="recipe name" />
+            <input type="text" name=" ingredients" />
+            <button className="ingredient-add"> + </button>
+
           </label>
 
           <label>
@@ -74,7 +76,8 @@ function CreateRecipe() {
             {/*  need to revisit */}
             Prep Instrutions:
             <ol>
-
+              <li>Next step</li>
+              <button>next </button>
             </ol>
           </label>
           <label>
