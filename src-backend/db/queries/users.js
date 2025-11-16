@@ -18,7 +18,7 @@ export async function createUser(username, password) {
 
 export async function getUserLoginInfo(username, password) {
   const sql = `
-  SELECT * FROM USERS WHERE username = $1
+  SELECT * FROM users WHERE username = $1
   `;
   const {
     rows: [user],
