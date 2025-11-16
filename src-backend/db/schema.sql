@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS recipe_ingredients CASCADE;
 DROP TABLE IF EXISTS equipment CASCADE;
 DROP TABLE IF EXISTS recipe_equipment CASCADE;
 DROP TABLE IF EXISTS drink_pairings CASCADE;
-DROP TABLE IF EXISTS favorite_recipies CASCADE;
+DROP TABLE IF EXISTS liked_recipes CASCADE;
 
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
@@ -24,7 +24,6 @@ CREATE TABLE recipes (
   number_of_servings INTEGER NOT NULL, --Not null because we need to know how much the recipe yeilds
   prep_time_minutes INTEGER,
   cook_time_minutes INTEGER,
-  allergen_info TEXT NOT NULL,  --Not null because allerrgy info is needed but can input none if no alergies
   calories INTEGER,
   notes TEXT,
   instructions TEXT NOT NULL, -- Not null because instructions required
@@ -34,7 +33,6 @@ CREATE TABLE recipes (
 CREATE TABLE ingredients (
   id SERIAL PRIMARY KEY,
   name TEXT UNIQUE NOT NULL,
-  image TEXT
 );
 
 CREATE TABLE recipe_ingredients (
@@ -45,11 +43,11 @@ CREATE TABLE recipe_ingredients (
   unit VARCHAR(20) -- e.g. 'grams', 'cups'
 );
 
-CREATE TABLE favorite_recipies (
+CREATE TABLE liked_recipes (
   id SERIAL PRIMARY KEY,
   user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   recipe_id INTEGER NOT NULL REFERENCES recipes(id) ON DELETE CASCADE,
-  UNIQUE (user_id, recipe_id)  -- one favorite per user/recipe
+  UNIQUE (user_id, recipe_id)  -- one liked recipe per user/recipe
 );
 
 
