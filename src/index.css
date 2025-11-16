@@ -325,4 +325,40 @@ Profile Navigaton  */
   font-size: 30px;
 }
 
+/* star rating  */
+.star-rating-container {
+  display: flex;
+  gap: 4px;
+}
 
+.star-wrapper {
+  position: relative;
+  display: inline-block;
+
+  font-size: 30px;
+  cursor: pointer;
+}
+
+.star-empty {
+  color: gainsboro;
+  filter: grayscale(100%);
+}
+
+.star-filled {
+  color: goldenrod;
+  border: none;
+}
+
+.star-half-filled {
+  position: relative;
+  display: inline-block;
+  color: goldenrod;
+}
+
+.star-half-filled::before {
+  content: "★";
+  position: absolute;
+  left: 0;
+  color: gainsboro;
+  z-index: -1;
+}

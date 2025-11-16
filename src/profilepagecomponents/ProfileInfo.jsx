@@ -1,6 +1,6 @@
 import { NavLink } from "react-router";
 import FavoriteButton from "./Favorite";
-
+import StarRating from "../profilepagecomponents/StarRating";
 function ProfileInfo() {
   return (
     <>
@@ -19,6 +19,7 @@ function ProfileInfo() {
           <button>My Table</button>
         </nav>
         <FavoriteButton/>
+        <StarRating/>
       </aside>
      
     </>
