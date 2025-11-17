@@ -3,11 +3,7 @@ import db from "#db/client";
 // POST: Creates a new recipe along with its ingredients
 // This function uses a transaction to ensure both recipe and ingredients are added together. If one fails, both are rolled back meaning no partial data is saved. This is essential for data integrity since we don't want recipes without their ingredients or vice versa. BEGIN starts the transaction, COMMIT saves changes, and ROLLBACK undoes changes if there's an error. Try and catch blocks are used to handle any errors that may occur during the process. if the errors occurs, the ROLLBACK is executed in the catch block to maintain database consistency.
 
-export async function createRecipeWithIngredients(
-  userId,
-  recipeData,
-  ingredients
-) {
+export async function createRecipe(userId, recipeData, ingredients) {
   await db.query("BEGIN");
 
   try {
@@ -29,7 +25,7 @@ export async function createRecipeWithIngredients(
         picture_url
       )
       VALUES
-        ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+        ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
       RETURNING *;
     `;
     // Values array for recipe insertion which matches the above SQL placeholders
@@ -88,11 +84,12 @@ export async function createRecipeWithIngredients(
 }
 
 // GET: Pulls a single recipe with its ingredients
-export async function getRecipeWithIngredients(id) {
+export async function getRecipeCard(id) {
   const sql = `
     SELECT
       recipes.id,
       recipes.user_id,
+      users.username,
       recipes.recipe_name,
       recipes.description,
       recipes.cuisine_type,
@@ -105,45 +102,46 @@ export async function getRecipeWithIngredients(id) {
       recipes.notes,
       recipes.instructions,
       recipes.picture_url,
- --Aggregate ingredients into a JSON array
-      COALESCE(
-        -- If there are ingredients, build the JSON array
-        json_agg(
-        -- Build a JSON object for each ingredient
-          json_build_object(
-            'id',       ingredients.id,
-            'name',     ingredients.name,
-            'quantity', recipe_ingredients.quantity,
-            'unit',     recipe_ingredients.unit
-          )
-          ORDER BY ingredients.name
-        ) FILTER (WHERE ingredients.id IS NOT NULL),
-        '[]'
-      ) AS ingredients
+      COALESCE(liked_counts.like_count, 0) AS like_count,
+      COALESCE(ingredients_group.ingredients, '[]') AS ingredients
 
     FROM recipes
-    LEFT JOIN recipe_ingredients
-      ON recipe_ingredients.recipe_id = recipes.id
-    LEFT JOIN ingredients
-      ON ingredients.id = recipe_ingredients.ingredient_id
 
-    WHERE recipes.id = $1
+    -- get creator username
+    JOIN users
+      ON users.id = recipes.user_id
 
-    GROUP BY
-      recipes.id,
-      recipes.user_id,
-      recipes.recipe_name,
-      recipes.description,
-      recipes.cuisine_type,
-      recipes.difficulty,
-      recipes.chef_rating,
-      recipes.number_of_servings,
-      recipes.prep_time_minutes,
-      recipes.cook_time_minutes,
-      recipes.calories,
-      recipes.notes,
-      recipes.instructions,
-      recipes.picture_url;
+    -- INGREDIENTS SUBQUERY (returns a JSON array)
+    LEFT JOIN (
+      SELECT
+        recipe_ingredients.recipe_id,
+        json_agg(
+          json_build_object(
+            'ingredientId', recipe_ingredients.ingredient_id,
+            'name',         ingredients.name,
+            'quantity',     recipe_ingredients.quantity,
+            'unit',         recipe_ingredients.unit
+          )
+          ORDER BY ingredients.name
+        ) AS ingredients
+      FROM recipe_ingredients
+      JOIN ingredients
+        ON ingredients.id = recipe_ingredients.ingredient_id
+      GROUP BY recipe_ingredients.recipe_id
+    ) AS ingredients_group
+      ON ingredients_group.recipe_id = recipes.id
+
+    -- LIKES SUBQUERY
+    LEFT JOIN (
+      SELECT
+        liked_recipes.recipe_id,
+        COUNT(*) AS like_count
+      FROM liked_recipes
+      GROUP BY liked_recipes.recipe_id
+    ) AS liked_counts
+      ON liked_counts.recipe_id = recipes.id
+
+    WHERE recipes.id = $1;
   `;
 
   const {
@@ -171,6 +169,7 @@ export async function deleteRecipe(id, user_id) {
   DELETE FROM recipes
   WHERE id = $1
   AND user_id = $2
+  RETURNING *;
   `;
   const { rows } = await db.query(sql, [id, user_id]);
   return rows[0];
@@ -180,6 +179,7 @@ export async function deleteRecipe(id, user_id) {
 export async function getTopLikedRecipes() {
   const sql = `
     SELECT
+      recipes.id,
       recipes.recipe_name,
       recipes.description,
       recipes.picture_url,
@@ -191,6 +191,7 @@ export async function getTopLikedRecipes() {
     LEFT JOIN liked_recipes
       ON liked_recipes.recipe_id = recipes.id
     GROUP BY
+      recipes.id,
       recipes.recipe_name,
       recipes.description,
       recipes.picture_url,
