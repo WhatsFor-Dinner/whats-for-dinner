@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS recipe_ingredients CASCADE;
 DROP TABLE IF EXISTS equipment CASCADE;
 DROP TABLE IF EXISTS recipe_equipment CASCADE;
 DROP TABLE IF EXISTS drink_pairings CASCADE;
-DROP TABLE IF EXISTS favorites CASCADE;
+DROP TABLE IF EXISTS favorite_recipies CASCADE;
 
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
@@ -37,7 +37,7 @@ CREATE TABLE recipes (
 CREATE TABLE ingredients (
   id SERIAL PRIMARY KEY,
   name TEXT UNIQUE NOT NULL,
-  is_allergen BOOLEAN DEFAULT FALSE
+  image TEXT
 );
 
 CREATE TABLE recipe_ingredients (
@@ -70,9 +70,11 @@ CREATE TABLE drink_pairings (
   notes TEXT
 );
 
-CREATE TABLE favorites (
+CREATE TABLE favorite_recipies (
   id SERIAL PRIMARY KEY,
   user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   recipe_id INTEGER NOT NULL REFERENCES recipes(id) ON DELETE CASCADE,
   UNIQUE (user_id, recipe_id)  -- one favorite per user/recipe
 );
+
+

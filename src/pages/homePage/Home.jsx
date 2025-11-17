@@ -1,46 +1,55 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import './home.css';
+import topRecipesData from '../../data/topRecipes.json';
 
-const Home = () => {
+const Home = ({ searchTerm = '', onSearchChange = () => {} }) => {
   const [topRecipes, setTopRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+  const [filteredRecipes, setFilteredRecipes] = useState([]);
 
+  // Use local data (no backend). Simulate a short load for UX.
   useEffect(() => {
-    fetchTopRecipes();
+    const t = setTimeout(() => {
+      setTopRecipes(topRecipesData.recipes || []);
+      setFilteredRecipes(topRecipesData.recipes || []);
+      setLoading(false);
+    }, 150);
+    return () => clearTimeout(t);
   }, []);
 
-  const fetchTopRecipes = async () => {
-    try {
-      const response = await fetch('/api/top-recipes');
-      if (!response.ok) {
-        throw new Error('Failed to fetch top recipes');
-      }
-      const data = await response.json();
-      setTopRecipes(data.recipes);
-    } catch (error) {
-      console.error('Error fetching top recipes:', error);
-    } finally {
-      setLoading(false);
+  // Filter recipes based on search term (from navbar)
+  useEffect(() => {
+    if (searchTerm.trim() === '') {
+      setFilteredRecipes(topRecipes);
+    } else {
+      const filtered = topRecipes.filter((recipe) =>
+        recipe.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredRecipes(filtered);
     }
-  }; 
+  }, [searchTerm, topRecipes]);
 
   return (
     <div className="home">
       <h1>Welcome to What's for Dinner?</h1>
-      <h2>About Us</h2>
-      <p>Welcome to What's For Dinner, do you ever wonder what to cook? look no further! This application will show you our top recipes to cook. 
-        you can also search for recipes based on your appetite.
-      </p>
+      <div className="about">
+        <h2>About Us</h2>
+        <p>
+          Welcome to What's For Dinner, do you ever wonder what to cook? look no
+          further! This application will show you our top recipes to cook. you
+          can also search for recipes based on your appetite.
+        </p>
+      </div>
       {loading ? (
         <p>Loading top recipes...</p>
-      ) : (
+      ) : filteredRecipes.length > 0 ? (
         <ul>
-          {topRecipes.map((recipe) => (
+          {filteredRecipes.map((recipe) => (
             <li key={recipe.id}>{recipe.name}</li>
           ))}
         </ul>
+      ) : (
+        <p className="no-results">No recipes found matching '{searchTerm}'</p>
       )}
     </div>
   );
