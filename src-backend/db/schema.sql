@@ -1,16 +1,13 @@
 DROP TABLE IF EXISTS users CASCADE;
-DROP TABLE IF EXISTS recipies CASCADE;
+DROP TABLE IF EXISTS recipes CASCADE;
 DROP TABLE IF EXISTS ingredients CASCADE;
 DROP TABLE IF EXISTS recipe_ingredients CASCADE;
-DROP TABLE IF EXISTS equipment CASCADE;
-DROP TABLE IF EXISTS recipe_equipment CASCADE;
-DROP TABLE IF EXISTS drink_pairings CASCADE;
 DROP TABLE IF EXISTS liked_recipes CASCADE;
 
 CREATE TABLE users (
   id SERIAL PRIMARY KEY,
   username TEXT UNIQUE NOT NULL,
-  password TEXT UNIQUE NOT NULL,
+  password TEXT NOT NULL
 );
 
 CREATE TABLE recipes (
@@ -27,12 +24,12 @@ CREATE TABLE recipes (
   calories INTEGER,
   notes TEXT,
   instructions TEXT NOT NULL, -- Not null because instructions required
-  picture_url TEXT, -- store image URL or local path
+  picture_url TEXT -- store image URL or local path
 );
 
 CREATE TABLE ingredients (
   id SERIAL PRIMARY KEY,
-  name TEXT UNIQUE NOT NULL,
+  name TEXT UNIQUE NOT NULL
 );
 
 CREATE TABLE recipe_ingredients (
