@@ -2,14 +2,14 @@ import express from "express";
 const router = express.Router();
 export default router;
 
-import { createUser, getUserLoginInfo } from "#db/queries/users";
-import requireBody from "#middleware/requireBody";
-import { createToken } from "#utils/jwt";
+import { createUser, getUserLoginInfo } from "../db/queries/users.js";
+import requireBody from "../middleware/requireBody.js";
+import { createToken } from "../utils/jwt.js";
 
 router
   .route("/register")
   // sends 400 using the imported requireBody function if request body is missing username or password
-  .post(requireBody(["username", "password"]), async (req, res) => {
+  .post(requireBody(["username", "password"]), async (req, res, next) => {
     try {
       // destructure user and pass from the request body so I can use it in the createUser function
       // Side note: Use req.body if I need to destructure multipule parameters from the request body, but I can use req.param.foo if I only need to destructure a specific parameter. Destructuring must use curly brackets for valid pass through
@@ -28,7 +28,7 @@ router
 router
   .route("/login")
   // sends 400 using the imported requireBody function if request body is missing username or password
-  .post(requireBody(["username", "password"]), async (req, res) => {
+  .post(requireBody(["username", "password"]), async (req, res, next) => {
     try {
       const { username, password } = req.body;
 

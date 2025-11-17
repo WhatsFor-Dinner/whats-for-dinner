@@ -5,7 +5,7 @@ export default router;
 import {
   searchIngredientsByName,
   insertIngredient,
-} from "#db/queries/ingredients.js";
+} from "../db/queries/ingredients.js";
 
 // GET: Search ingredients by name, first in DB then in Spoonacular if not found. If found in Spoonacular, save to DB.
 router.get("/ingredients/search", async (req, res, next) => {
@@ -52,7 +52,8 @@ router.get("/ingredients/search", async (req, res, next) => {
     for (const item of apiData) {
       const name = item.name;
       const added = await insertIngredient(name);
-      saved.push(added);
+      // Check if "added" is defined before pushing so we don't push undefined values to the saved array which can happen if the ingredient already exists in the DB
+      if (added) saved.push(added);
     }
 
     return res.send(saved); // raw response to frontend
