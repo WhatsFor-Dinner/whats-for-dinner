@@ -2,23 +2,23 @@ import express from "express";
 const router = express.Router();
 export default router;
 
-import { searchRecipes } from "#src-backend/db/queries/recipies";
-import requireUser from "#middleware/requireUser.js";
-import { toggleLiked } from "#db/queries/favoriteRecipies.js";
-import { requireBody } from "#middleware/requireBody.js";
-import { createRecipe } from "#db/queries/recipies.js";
-import { getRecipeCard } from "#db/queries/recipies.js";
+import { searchRecipes, createRecipe, getRecipeCard, deleteRecipe } from "../db/queries/recipes.js";
+import { toggleLiked } from "../db/queries/likedRecipies.js";
+import requireUser from "../middleware/requireUser.js";
+import requireBody from "../middleware/requireBody.js";
 
-router.route("/recipes").get(async (req, res, next) => {
+router.route("/").get(async (req, res, next) => {
   try {
-    const results = await searchRecipes(req.query);
+    const searchTerm = (req.query.query || "").trim();
+    const results = await searchRecipes(searchTerm);
     res.send(results);
   } catch (error) {
     next(error);
   }
 });
 
-router.route("/recipes/:id").get(async (req, res, next) => {
+router.route("/:id")
+.get(async (req, res, next) => {
   try {
     const recipeId = req.params.id;
 
@@ -34,10 +34,28 @@ router.route("/recipes/:id").get(async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+})
+.delete(requireUser,  async (req, res, next) => {
+  try {
+    const recipeId = Number(req.params.id);
+    const userId = req.user.id; 
+
+    if (Number.isNaN(recipeId)) {
+      return res.status(400).send("Recipe ID must be a number.");
+    }
+
+    const deleted = await deleteRecipe(recipeId, userId);
+    if (!deleted) {
+      return res.status(404).send("Recipe not found or you do not have permission to delete it.");
+    }
+    res.status(204).send();
+  } catch (error) {
+    next(error);
+  }
 });
 
 // POST: Toggle like/unlike for a recipe but a user must be logged in
-router.route("/recipes/:id/like").post(requireUser, async (req, res, next) => {
+router.route("/:id/like").post(requireUser, async (req, res, next) => {
   try {
     const recipeId = req.params.id;
     const userId = req.user.id;
@@ -63,8 +81,16 @@ router.route("/recipes/:id/like").post(requireUser, async (req, res, next) => {
 
 // POST: Create a new recipe with ingredients, user must be logged in
 router
-  .route("/recipes/create")
-  .post(requireUser, requireBody, async (req, res, next) => {
+  .route("/create")
+  .post(requireUser, requireBody([
+    "recipe_name",
+    "description",
+    "difficulty",
+    "number_of_servings",
+    "prep_time_minutes",
+    "cook_time_minutes",
+    "instructions",
+  ]), async (req, res, next) => {
     try {
       const userId = req.user.id;
       const { ingredients = [], ...recipeData } = req.body;
