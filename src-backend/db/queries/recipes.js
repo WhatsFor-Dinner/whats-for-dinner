@@ -1,4 +1,4 @@
-import db from "#db/client";
+import db from "../client.js";
 
 // POST: Creates a new recipe along with its ingredients
 // This function uses a transaction to ensure both recipe and ingredients are added together. If one fails, both are rolled back meaning no partial data is saved. This is essential for data integrity since we don't want recipes without their ingredients or vice versa. BEGIN starts the transaction, COMMIT saves changes, and ROLLBACK undoes changes if there's an error. Try and catch blocks are used to handle any errors that may occur during the process. if the errors occurs, the ROLLBACK is executed in the catch block to maintain database consistency.

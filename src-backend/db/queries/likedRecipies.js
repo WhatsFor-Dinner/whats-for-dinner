@@ -2,7 +2,7 @@
 // Remove a liked recipe from the users liked list
 // get all liked user recipies
 
-import db from "../db/client.js";
+import db from "../client.js";
 
 export async function toggleLiked(userId, recipeId) {
   const { rows: existing } = await db.query(

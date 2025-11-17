@@ -1,4 +1,4 @@
-import db from "../db/client.js";
+import db from "../client.js";
 
 // This function will search the ingredient and update results as the user is typing
 export async function searchIngredientsByName(input) {
@@ -16,6 +16,8 @@ export async function searchIngredientsByName(input) {
 }
 
 // This will add the ingredient to the DB from the spoonacular API if it does not already exist
+// This function uses ON CONFLICT DO NOTHING and returns rows[0]. If the ingredient already exists, it will return undefined, and you’ll push that into saved.
+// The API route has a check to only push defined values into the saved array. -> see src-backend/api/ingredientsAPI.js
 export async function insertIngredient(name) {
   const sql = `
     INSERT INTO ingredients (name)
