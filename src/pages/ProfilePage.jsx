@@ -1,15 +1,18 @@
+import CreateRecipe from "../profilepagecomponents/CreateRecipe.jsx";
+import MyRecipes from "../profilepagecomponents/MyRecipes.jsx";
+import MyTable from "../profilepagecomponents/MyTable.jsx";
+import ProfileInfo from "../profilepagecomponents/ProfileInfo.jsx";
+import StarRating from "../profilepagecomponents/StarRating";
 export default function ProfilePage() {
   return (
     <>
-      <section className="profileNavigation">
-        <nav>
-          <picture>Profile Picture</picture>
-          <button>My Recipes</button>
-
-          <button>Create Recipes</button>
-          <button>My Table</button>
-        </nav>
-      </section>
+      <ProfileInfo />
+      <div className="profile-content">
+        <MyRecipes />
+        <CreateRecipe />
+        
+        <MyTable />
+      </div>
     </>
   );
 }

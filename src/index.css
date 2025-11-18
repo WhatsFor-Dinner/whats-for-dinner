@@ -3,7 +3,362 @@ body {
   background-color: antiquewhite;
 }
 
+/* PROFILE PAGE */
+
+/* Navigation/header area on the profile page */
+.profile-navigation {
+  width: 100%;
+  padding: 12px 16px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fffaf0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
 nav button {
+  margin-top: 10px;
   background-color: goldenrod;
   color: whitesmoke;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Layout for the recipe area */
+.recipeCard {
+  display: block;
+  width: 640px;
+  max-width: 100%;
+  margin: 16px;
+  padding: 16px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+.create-recipe {
+  box-sizing: border-box;
+  margin: 20px;
+  padding: 24px;
+  max-width: 800px;
+  background-color: blanchedalmond;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.create-recipe h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 24px;
+  text-align: center;
+}
+
+.create-recipe form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.create-recipe label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-weight: 500;
+  color: #444;
+  font-size: 14px;
+}
+
+.create-recipe input[type="text"] {
+  padding: 10px 12px;
+  border: 1px solid #daa520;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: #fff;
+  transition: border-color 0.2s;
+}
+
+.create-recipe input[type="text"]:focus {
+  outline: none;
+  border-color: goldenrod;
+  box-shadow: 0 0 0 3px rgba(218, 165, 32, 0.1);
+}
+
+.ingredient-add button {
+  width: 50px;
+  height: 25px;
+}
+.create-recipe ol {
+  margin: 8px 0;
+  padding-left: 20px;
+}
+
+.create-recipe span {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background-color: #fff;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #666;
+}
+
+.my-recipe-card {
+  box-sizing: border-box;
+  margin: 8px;
+  padding: 12px;
+  background-color: #fffaf0;
+  color: black;
+  width: 300px;
+  min-height: 200px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+}
+
+.my-table {
+  box-sizing: border-box;
+  margin: 20px auto;
+  padding: 12px;
+  max-width: 800px;
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+  min-height: 120px;
+}
+
+.profile-content {
+  margin-left: 250px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.form-button {
+  width: 100px;
+  height: 50px;
+  border-radius: 10%;
+  margin-right: 20px;
+}
+.health-info {
+  width: 100%;
+  background-color: white;
+  margin: 5px;
+  padding: 5px;
+}
+
+.recipe-photo {
+  width: 250px;
+  height: 300px;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 10px;
+}
+
+.recipe-photo input[type="file"] {
+  width: 100%;
+  text-align: center;
+}
+
+.recipe-photo input[type="file"]::file-selector-button {
+  display: block;
+  margin: 0 auto 10px auto;
+  cursor: pointer;
+}
+
+.recipe-photo input[type="file"]::after {
+  content: attr(value);
+  display: block;
+  text-align: center;
+}
+
+/* My recipes */
+
+.my-recipes-containter {
+  display: grid;
+  grid-template-columns: 1ft 1ft;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 800px;
+  height: 400px;
+  margin: 20px auto;
+  background-color: #ffffff;
+}
+
+.active-tabs {
+  background-color: white;
+  border-bottom: 1px solid black;
+}
+
+.active-tabs::before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.content {
+  display: none;
+}
+
+.active-content {
+  display: block;
+}
+
+.my-recipe-tabs button.active-tabs {
+  background-color: goldenrod;
+  color: white;
+}
+
+/* 
+Profile Navigaton  */
+
+.profile_container {
+  display: flex;
+  width: 400px;
+  height: 800px;
+  flex-direction: column;
+}
+.profile-picture {
+  width: 200px;
+  height: 400px;
+}
+
+/* Profile Sidebar */
+.profile-sidebar {
+  position: fixed;
+  left: 0;
+  top: 200px;
+  width: 250px;
+  height: 500px;
+  background-color: #f5f5f5;
+  border-right: 2px solid #daa520;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  box-sizing: border-box;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+}
+
+.profile-header {
+  text-align: center;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 20px;
+}
+
+.profile-header h2 {
+  margin: 0 0 15px 0;
+  color: #333;
+  font-size: 20px;
+}
+
+.profile-photo-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 15px;
+  width: 200px;
+  height: 200px;
+  background-color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 13px;
+  color: #666;
+  border: 2px dashed #daa520;
+  transition: all 0.3s ease;
+}
+
+.profile-photo-upload:hover {
+  background-color: #fffaf0;
+  border-color: goldenrod;
+}
+
+.profile-photo-upload input[type="file"] {
+  display: none;
+}
+
+.sidebar-navigation {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sidebar-navigation button {
+  padding: 12px 16px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  color: #333;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: left;
+}
+
+.sidebar-navigation button:hover {
+  background-color: goldenrod;
+  color: white;
+  border-color: goldenrod;
+}
+
+.favorite-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+}
+
+/* star rating  */
+.star-rating-container {
+  display: flex;
+  gap: 4px;
+}
+
+.star-wrapper {
+  position: relative;
+  display: inline-block;
+
+  font-size: 30px;
+  cursor: pointer;
+}
+
+.star-empty {
+  color: gainsboro;
+  filter: grayscale(100%);
+}
+
+.star-filled {
+  color: goldenrod;
+  border: none;
+}
+
+.star-half-filled {
+  position: relative;
+  display: inline-block;
+  color: goldenrod;
+}
+
+.star-half-filled::before {
+  content: "★";
+  position: absolute;
+  left: 0;
+  color: gainsboro;
+  z-index: -1;
 }

@@ -1,9 +1,9 @@
-import db from "../db/client.js";
+import db from "../client.js";
 
 // This function will search the ingredient and update results as the user is typing
 export async function searchIngredientsByName(input) {
   const sql = `
-    SELECT id, name, image
+    SELECT id, name
     FROM ingredients
     WHERE name ILIKE $1
     ORDER BY name
@@ -15,16 +15,17 @@ export async function searchIngredientsByName(input) {
   return rows;
 }
 
-// This will add the ingredient to the DB from the
-export async function insertIngredient(name, image) {
+// This will add the ingredient to the DB from the spoonacular API if it does not already exist
+// This function uses ON CONFLICT DO NOTHING and returns rows[0]. If the ingredient already exists, it will return undefined, and you’ll push that into saved.
+// The API route has a check to only push defined values into the saved array. -> see src-backend/api/ingredientsAPI.js
+export async function insertIngredient(name) {
   const sql = `
-    INSERT INTO ingredients (name, image)
-     VALUES ($1, $2)
-     ON CONFLICT (name) DO UPDATE
-        SET image = EXCLUDED.image
-     RETURNING id, name, image;
+    INSERT INTO ingredients (name)
+     VALUES ($1)
+     ON CONFLICT (name) DO NOTHING
+     RETURNING id, name;
     `;
-  const { rows: ingredient } = await db.query(sql, [id, name, image]);
+  const { rows } = await db.query(sql, [name]);
 
-  return ingredient;
+  return rows[0];
 }
