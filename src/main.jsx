@@ -3,14 +3,15 @@ import App from "./app.jsx";
 import "./index.css";
 import { BrowserRouter } from "react-router";
 
-// 👇 import your AuthProvider
-import { AuthProvider } from "./Auth/Auth.jsx";
+const rootEl = document.getElementById('root');
+if (!rootEl) throw new Error("Could not find #root element to mount React");
 
-createRoot(document.getElementById("root")).render(
-  <BrowserRouter>
-    {/* 👇 Wrap only your part */}
-    <AuthProvider>
+const root = createRoot(rootEl);
+
+root.render(
+  <React.StrictMode>
+    <BrowserRouter>
       <App />
-    </AuthProvider>
-  </BrowserRouter>
+    </BrowserRouter>
+  </React.StrictMode>
 );

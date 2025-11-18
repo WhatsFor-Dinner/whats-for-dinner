@@ -1,0 +1,9 @@
+{
+  "recipes": [
+    { "id": 1, "name": "Spaghetti Bolognese" },
+    { "id": 2, "name": "Tacos al Pastor" },
+    { "id": 3, "name": "Chicken Stir Fry" },
+    { "id": 4, "name": "Vegetable Curry" },
+    { "id": 5, "name": "Beef Stew" }
+  ]
+}

@@ -1,17 +1,20 @@
 import "./index.css";
-import { Routes, Route } from "react-router";
-import Home from "./pages/Home.jsx";
+import { useState } from "react";
+import { Routes, Route } from "react-router-dom";
+import Home from "./pages/homePage/Home.jsx";
 import { Navbar } from "./layout/Navbar.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import SignIn from "./pages/sign_in.jsx";
 import RegisterPage from "./pages/register_page";
 
 export default function App() {
+  const [searchTerm, setSearchTerm] = useState('');
+
   return (
     <>
-      <Navbar />
+      <Navbar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home searchTerm={searchTerm} onSearchChange={setSearchTerm} />} />
         <Route path="/profilepage" element={<ProfilePage />} />
         <Route path="/login" element={<SignIn />} />
 
