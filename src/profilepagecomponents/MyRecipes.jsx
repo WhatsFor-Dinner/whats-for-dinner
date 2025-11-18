@@ -30,15 +30,13 @@ function MyRecipes() {
         </button>
       </div>
 
-    <div className="content-tabs">
-      <p className={toggle === 1 ? "content active-content" : "content"}>
-       
-        This will display my created recipes and saved recipes.
-      </p>
-      <p className={toggle === 2 ? "content active-content" : "content"}>
-       
-        This will display favorited recipes.
-      </p>
+      <div className="content-tabs">
+        <p className={toggle === 1 ? "content active-content" : "content"}>
+          This will display my created recipes and saved recipes.
+        </p>
+        <p className={toggle === 2 ? "content active-content" : "content"}>
+          This will display favorited recipes.
+        </p>
       </div>
     </section>
   );

@@ -1,6 +1,4 @@
-import { response } from "express";
-
-const API = notSureYet;
+const API = "/api";
 
 export async function getRecipes() {
   try {
@@ -8,7 +6,7 @@ export async function getRecipes() {
     const result = await response.json();
     return result;
   } catch (error) {
-    console.error(e);
+    console.error(error);
     return [];
   }
 }
@@ -31,8 +29,8 @@ export async function createRecipe(token, recipe) {
   const response = await fetch(API + "/recipes", {
     method: "POST",
     headers: {
-      "Context type": "application/json",
-      Authorization: "Bearer" + token,
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token,
     },
     body: JSON.stringify(recipe),
   });
@@ -59,14 +57,13 @@ export async function deleteRecipe(token, id) {
   }
 }
 
-
 export async function updateRecipe(token, id, recipeData) {
   if (!token) {
     throw Error("You must be logged in to update a recipe.");
   }
 
   const response = await fetch(API + "/recipes/" + id, {
-    method: "PUT", 
+    method: "PUT",
     headers: {
       "Content-Type": "application/json",
       Authorization: "Bearer " + token,
