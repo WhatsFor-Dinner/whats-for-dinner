@@ -1,6 +1,6 @@
 import "./index.css";
 import { useState } from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router";
 import Home from "./pages/homePage/Home.jsx";
 import { Navbar } from "./layout/Navbar.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
