@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
+
 function FavoriteButton() {
     const [isFavorite, setIsFavorite] = useState(false)
     const handleFavorite = () =>{
@@ -12,7 +13,6 @@ function FavoriteButton() {
         {isFavorite ? <FaHeart color="red"/> : <FaRegHeart color=" "/>}
        
         </button>
-
     )
 };
 

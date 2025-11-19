@@ -5,16 +5,21 @@ import Home from "./pages/homePage/Home.jsx";
 import { Navbar } from "./layout/Navbar.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import SignIn from "./pages/sign_in.jsx";
-import RegisterPage from "./pages/register_page";
+import RegisterPage from "./pages/register_page.jsx";
 
 export default function App() {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
 
   return (
     <>
       <Navbar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
       <Routes>
-        <Route path="/" element={<Home searchTerm={searchTerm} onSearchChange={setSearchTerm} />} />
+        <Route
+          path="/"
+          element={
+            <Home searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+          }
+        />
         <Route path="/profilepage" element={<ProfilePage />} />
         <Route path="/login" element={<SignIn />} />
 

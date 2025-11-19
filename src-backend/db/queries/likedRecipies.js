@@ -1,6 +1,6 @@
-// Add a liked recipe to the users liked recipies list
+// Add a liked recipe to the users liked recipes list
 // Remove a liked recipe from the users liked list
-// get all liked user recipies
+// get all liked user recipes
 
 import db from "../client.js";
 
