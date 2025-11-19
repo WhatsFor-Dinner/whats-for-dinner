@@ -115,10 +115,37 @@
 }
 
 .ingredient-unit {
-  width: 120px;
-  padding: 0.25rem 0.5rem;
+  width: 180px;
+  padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 4px;
+  background-color: white;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+
+.ingredient-unit:focus {
+  outline: none;
+  border-color: #daa520;
+  box-shadow: 0 0 0 2px rgba(218, 165, 32, 0.1);
+}
+
+.ingredient-unit:hover {
+  border-color: #999;
+}
+
+.ingredient-unit optgroup {
+  font-weight: bold;
+  font-style: normal;
+  color: #666;
+  background-color: #f5f5f5;
+}
+
+.ingredient-unit option {
+  padding: 0.5rem;
+  background-color: white;
+  color: #333;
 }
 
 .remove-ingredient {

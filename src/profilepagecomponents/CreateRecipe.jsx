@@ -2,7 +2,7 @@ import { useEffect, useId, useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import { useAuth } from "../Auth/Auth.jsx";
 import { getIngredients, getIngredient } from "../../profileApi/ingredients.js";
-import { createRecipe } from "../../profileApi/recipe.js";
+import { createRecipe } from "../../profileApi/recipes.js";
 import Ingredients from "./Ingredients.jsx";
 import "./CreateRecipe.css";
 
@@ -17,7 +17,7 @@ function CreateRecipeCard({ syncRecipes }) {
   const [currentInstruction, setCurrentInstruction] = useState("");
 
   useEffect(() => {
-    const synceIngredients = async () => {
+    const syncIngredients = async () => {
       try {
         const data = await getIngredient(id);
         setIngredient(data);
@@ -25,7 +25,7 @@ function CreateRecipeCard({ syncRecipes }) {
         setError(error.message);
       }
     };
-    if (id) synceIngredients();
+    if (id) syncIngredients();
   }, [id]);
 
   const handleAddIngredient = (ingredient) => {
@@ -202,17 +202,51 @@ function CreateRecipeCard({ syncRecipes }) {
                       handleIngredientChange(index, "amount", e.target.value)
                     }
                     className="ingredient-amount"
+                    step="0.01"
+                    min="0"
                   />
 
-                  <input
-                    type="text"
-                    placeholder="Unit (cups, tbsp, etc.)"
+                  <select
                     value={ing.unit}
                     onChange={(e) =>
                       handleIngredientChange(index, "unit", e.target.value)
                     }
                     className="ingredient-unit"
-                  />
+                  >
+                    <option value="">Select unit</option>
+                    <optgroup label="Volume">
+                      <option value="tsp">teaspoon (tsp)</option>
+                      <option value="tbsp">tablespoon (tbsp)</option>
+                      <option value="fl oz">fluid ounce (fl oz)</option>
+                      <option value="cup">cup</option>
+                      <option value="pint">pint</option>
+                      <option value="quart">quart</option>
+                      <option value="gallon">gallon</option>
+                      <option value="ml">milliliter (ml)</option>
+                      <option value="l">liter (l)</option>
+                    </optgroup>
+                    <optgroup label="Weight">
+                      <option value="oz">ounce (oz)</option>
+                      <option value="lb">pound (lb)</option>
+                      <option value="g">gram (g)</option>
+                      <option value="kg">kilogram (kg)</option>
+                    </optgroup>
+                    <optgroup label="Quantity">
+                      <option value="piece">piece</option>
+                      <option value="whole">whole</option>
+                      <option value="clove">clove</option>
+                      <option value="slice">slice</option>
+                      <option value="pinch">pinch</option>
+                      <option value="dash">dash</option>
+                      <option value="can">can</option>
+                      <option value="package">package</option>
+                      <option value="bunch">bunch</option>
+                    </optgroup>
+                    <optgroup label="Other">
+                      <option value="to taste">to taste</option>
+                      <option value="as needed">as needed</option>
+                    </optgroup>
+                  </select>
                   <button
                     type="button"
                     onClick={() => handleRemoveIngredient(index)}

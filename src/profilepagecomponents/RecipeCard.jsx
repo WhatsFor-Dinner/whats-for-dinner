@@ -6,11 +6,19 @@ import StarRating from "./StarRating";
 import FavoriteButton from "./Favorite";
 
 export default function RecipeCard() {
-    const { token } = useAuth();
+    const { token, currentUser } = useAuth();
     const { id } = useParams();
     const navigate = useNavigate();
     const [recipe, setRecipe] = useState(null);
     const [error, setError] = useState(null);
+    const [userId, setUserId] = useState(currentUser.id);
+
+    useEffect(() => {
+        if (currentUser) setUserId(currentUser.id);
+    }, [currentUser]);
+
+
+
 
     useEffect(() => {
         const syncRecipe = async () => {
@@ -47,7 +55,9 @@ export default function RecipeCard() {
     if (!recipe) return <p>Loading Recipes...</p>;
 
     return (
+       
         <section>
+             
             {recipe.image && <img src={recipe.image} alt={recipe.name} />}
             <h1>{recipe.name}</h1>
             <p>{recipe.cuisine}</p>
