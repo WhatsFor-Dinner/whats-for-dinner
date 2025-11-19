@@ -7,7 +7,7 @@ import recipesRouter from "./src-backend/api/recipesAPI.js";
 import profileRouter from "./src-backend/api/profileAPI.js";
 import topTenRouter from "./src-backend/api/topTenAPI.js";
 import ingredientsRouter from "./src-backend/api/ingredientsAPI.js";
-import usersRouter from "./src-backend/api/users.js";
+import usersRouter from "./src-backend/api/usersAPI.js";
 
 // Express body-parsing middleware. It tells Express to automatically read JSON data from the request body and turn it into a JavaScript object on req.body
 app.use(express.json());
