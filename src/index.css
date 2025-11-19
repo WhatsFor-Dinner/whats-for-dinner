@@ -44,6 +44,7 @@ nav button {
   box-sizing: border-box;
   margin: 20px;
   padding: 24px;
+  width: 800px;
   max-width: 800px;
   background-color: blanchedalmond;
   border: 1px solid rgba(0, 0, 0, 0.08);
@@ -180,6 +181,30 @@ nav button {
   display: block;
   text-align: center;
 }
+
+body {
+  font-family: verdana;
+}
+
+
+input[type="file"] {
+  color: transparent;
+  width: 120px; 
+}
+
+
+input[type="file"]::file-selector-button {
+  margin-right: -100%; 
+  cursor: pointer;
+}
+
+
+input[type="file"]::-webkit-file-upload-button {
+  margin-right: -100%;
+  color: black;
+  cursor: pointer;
+}
+
 
 /* My recipes */
 

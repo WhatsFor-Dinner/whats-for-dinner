@@ -1,0 +1,187 @@
+body {
+  font-family: verdana;
+}
+
+/* Create Recipe Form Styling */
+.create-recipe {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.create-recipe h2 {
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.create-recipe form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Recipe Header Section - Photo + Name & Cuisine side by side */
+.recipe-header-section {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  padding: 1.5rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.recipe-photo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 200px;
+  height: 200px;
+  background-color: #e8e8e8;
+  border: 2px dashed #999;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  font-weight: 500;
+  color: #666;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.recipe-photo:hover {
+  background-color: #d8d8d8;
+  border-color: #666;
+}
+
+.recipe-basic-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.recipe-basic-info label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.recipe-basic-info input {
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.recipe-basic-info input:focus {
+  outline: none;
+  border-color: #4caf50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
+}
+
+/* Time inputs in header section - side by side */
+.time-inputs-row {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.time-inputs-row label {
+  flex: 1;
+  font-size: 0.9rem;
+}
+
+/* Time Input Styling */
+.time-input-group {
+  margin: 1rem 0;
+}
+
+.time-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.time-input {
+  width: 100px;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.time-unit {
+  color: #666;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+/* Remove spinner arrows from number inputs (optional) */
+.time-input::-webkit-inner-spin-button,
+.time-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.time-input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* General form label styling */
+.create-recipe label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.create-recipe input[type="text"],
+.create-recipe input[type="number"],
+.create-recipe textarea {
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.create-recipe input:focus,
+.create-recipe textarea:focus {
+  outline: none;
+  border-color: #4caf50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
+}
+
+/* Hide the "No file chosen" text completely */
+.recipe-photo input[type="file"] {
+  display: none;
+}
+
+/* Submit button styling */
+.form-button {
+  padding: 1rem 2rem;
+  background-color: goldenrod;
+  color: white;
+  border: none;
+  text-align: center;
+  border-radius: 4px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 1rem;
+}
+
+.form-button:hover {
+  background-color: #45a049;
+}
+
+.form-button:active {
+  background-color: goldenrod;
+}

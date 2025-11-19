@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router";
 import { useAuth } from "../Auth/Auth.jsx";
 import { getIngredients, getIngredient } from "../../profileApi/ingredients.js";
 import { createRecipe } from "../../profileApi/recipe.js";
+import Ingredients from "./Ingredients.jsx";
+import "./CreateRecipe.css";
 
 function CreateRecipeCard({ syncRecipes }) {
   const { token } = useAuth();
@@ -10,6 +12,7 @@ function CreateRecipeCard({ syncRecipes }) {
   const navigate = useNavigate();
   const [ingredient, setIngredient] = useState(null);
   const [error, setError] = useState(null);
+  const [selectedIngredients, setSelectedIngredients] = useState([]);
 
   useEffect(() => {
     const synceIngredients = async () => {
@@ -23,6 +26,26 @@ function CreateRecipeCard({ syncRecipes }) {
     if (id) synceIngredients();
   }, [id]);
 
+  const handleAddIngredient = (ingredient) => {
+    const newIngredient = {
+      id: ingredient.id,
+      name: ingredient.name,
+      amount: "",
+      unit: "",
+    };
+    setSelectedIngredients([...selectedIngredients, newIngredient]);
+  };
+
+  const handleRemoveIngredient = (index) => {
+    setSelectedIngredients(selectedIngredients.filter((_, i) => i !== index));
+  };
+
+  const handleIngredientChange = (index, field, value) => {
+    const updated = [...selectedIngredients];
+    updated[index][field] = value;
+    setSelectedIngredients(updated);
+  };
+
   const tryCreateRecipe = async (formData) => {
     setError(null);
     const image = formData.get("image");
@@ -32,10 +55,16 @@ function CreateRecipeCard({ syncRecipes }) {
     const cookTime = formData.get("cookTime");
     const macros = formData.get("macros");
     const calories = formData.get("calories");
-    const ingredients = formData.get("ingredients");
-    const measurements = formData.get("measurements");
     const instructions = formData.get("instructions");
     const notes = formData.get("notes");
+
+    // Convert selectedIngredients array to format expected by backend
+    const ingredientsData = selectedIngredients.map((ing) => ({
+      id: ing.id,
+      name: ing.name,
+      amount: ing.amount,
+      unit: ing.unit,
+    }));
 
     try {
       await createRecipe(token, {
@@ -46,14 +75,16 @@ function CreateRecipeCard({ syncRecipes }) {
         cookTime,
         macros,
         calories,
-        ingredients,
-        measurements,
+        ingredients: ingredientsData,
         instructions,
         notes,
       });
-      syncRecipes();
+      if (syncRecipes) syncRecipes();
+      // Reset form
+      setSelectedIngredients([]);
+      setError(null);
     } catch (error) {
-      setError(e.message);
+      setError(error.message);
     }
   };
 
@@ -68,53 +99,107 @@ function CreateRecipeCard({ syncRecipes }) {
       <section className="create-recipe">
         <h2>Create A Recipe</h2>
         <form onSubmit={handleSubmit}>
-          <label className="recipe-photo">
-            Add Photo of Food
-            <input type="file" />
-          </label>
-
-          <div className="health-info">
-            <label>
-              Calorie total:
-              <p type="text" name="recipe name">
-                {" "}
-              </p>
-              <p>Protien:</p>
-              <p>Carbs:</p>
-              <p>Fats</p>
-              <label>Numer of Servings:</label>
+          {/* Top Section: Photo + Recipe Info */}
+          <div className="recipe-header-section">
+            <label className="recipe-photo">
+              Add Photo of Food
+              <input type="file" name="image" />
             </label>
+
+            <div className="recipe-basic-info">
+              <label>
+                Recipe Name:
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Enter recipe name"
+                  required
+                />
+              </label>
+
+              <label>
+                Type of Cuisine:
+                <input
+                  type="text"
+                  name="cuisine"
+                  placeholder="e.g., Italian, Mexican"
+                />
+              </label>
+
+              <div className="time-inputs-row">
+                <label>
+                  Prep Time (minutes):
+                  <div className="time-input-wrapper">
+                    <input
+                      type="number"
+                      name="prepTime"
+                      min="0"
+                      placeholder="15"
+                      className="time-input"
+                    />
+                    <span className="time-unit">min</span>
+                  </div>
+                </label>
+
+                <label>
+                  Cook Time (minutes):
+                  <div className="time-input-wrapper">
+                    <input
+                      type="number"
+                      name="cookTime"
+                      min="0"
+                      placeholder="30"
+                      className="time-input"
+                    />
+                    <span className="time-unit">min</span>
+                  </div>
+                </label>
+              </div>
+            </div>
           </div>
-          <label></label>
 
-          <label>
-            Recipe Name:
-            <input type="text" name="recipe name" />
-          </label>
+          <div className="ingredients-section">
+            <label>Ingredients:</label>
+            <Ingredients
+              onAddIngredient={handleAddIngredient}
+              selectedIngredients={selectedIngredients}
+            />
 
-          <label>
-            Type of Cuisine:
-            <input type="text" name="cuisine" />
-          </label>
+            {/* Display added ingredients */}
+            <div className="selected-ingredients">
+              {selectedIngredients.map((ing, index) => (
+                <div key={index} className="ingredient-item">
+                  <span className="ingredient-name">{ing.name}</span>
+                  <input
+                    type="number"
+                    placeholder="Amount"
+                    value={ing.amount}
+                    onChange={(e) =>
+                      handleIngredientChange(index, "amount", e.target.value)
+                    }
+                    className="ingredient-amount"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Unit (cups, tbsp, etc.)"
+                    value={ing.unit}
+                    onChange={(e) =>
+                      handleIngredientChange(index, "unit", e.target.value)
+                    }
+                    className="ingredient-unit"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveIngredient(index)}
+                    className="remove-ingredient"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
 
-          <label>
-            Prep Time:
-            <input type="text" name="prep" />
-          </label>
-
-          <label>
-            Cook Time: {/* Cook Time: I want time in mins */}
-            <input type="text" name="cook time" />
-          </label>
-
-          <label className="ingredient-add">
-            Ingredients: {/*  type, add, press enter to add  */}
-            <input type="text" name=" ingredients" />
-            <button type="button" className="ingredient-add">
-              {" "}
-              +{" "}
-            </button>
-          </label>
           <label>
             {" "}
             {/*  need to revisit */}
@@ -128,6 +213,18 @@ function CreateRecipeCard({ syncRecipes }) {
             Chef's Note:
             <input type="text" />
           </label>
+          <div className="health-info">
+            <label>
+              Calorie total:
+              <p type="text" name="recipe name">
+                {" "}
+              </p>
+              <p>Protien:</p>
+              <p>Carbs:</p>
+              <p>Fats</p>
+              <label>Numer of Servings:</label>
+            </label>
+          </div>
           <section>
             <button type="submit" className="form-button">
               Create
