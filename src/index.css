@@ -387,3 +387,18 @@ Profile Navigaton  */
   color: gainsboro;
   z-index: -1;
 }
+
+
+.prep-instructions{
+  background-color: white;
+}
+
+.chef-notes input{
+  height: 75px;
+}
+
+.create-recipe-button{
+  background-color: #daa520;
+  width: 150px;
+  height: 50px;
+}

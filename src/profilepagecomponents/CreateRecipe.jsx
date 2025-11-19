@@ -13,6 +13,8 @@ function CreateRecipeCard({ syncRecipes }) {
   const [ingredient, setIngredient] = useState(null);
   const [error, setError] = useState(null);
   const [selectedIngredients, setSelectedIngredients] = useState([]);
+  const [instructions, setInstructions] = useState([]);
+  const [currentInstruction, setCurrentInstruction] = useState("");
 
   useEffect(() => {
     const synceIngredients = async () => {
@@ -46,6 +48,23 @@ function CreateRecipeCard({ syncRecipes }) {
     setSelectedIngredients(updated);
   };
 
+  const handleAddInstruction = () => {
+    if (currentInstruction.trim()) {
+      setInstructions([...instructions, currentInstruction]);
+      setCurrentInstruction("");
+    }
+  };
+
+  const handleRemoveInstruction = (index) => {
+    setInstructions(instructions.filter((_, i) => i !== index));
+  };
+
+  const handleInstructionChange = (index, value) => {
+    const updated = [...instructions];
+    updated[index] = value;
+    setInstructions(updated);
+  };
+
   const tryCreateRecipe = async (formData) => {
     setError(null);
     const image = formData.get("image");
@@ -55,8 +74,12 @@ function CreateRecipeCard({ syncRecipes }) {
     const cookTime = formData.get("cookTime");
     const macros = formData.get("macros");
     const calories = formData.get("calories");
-    const instructions = formData.get("instructions");
     const notes = formData.get("notes");
+
+    // Filter out empty instructions
+    const cleanedInstructions = instructions.filter(
+      (inst) => inst.trim() !== ""
+    );
 
     // Convert selectedIngredients array to format expected by backend
     const ingredientsData = selectedIngredients.map((ing) => ({
@@ -76,12 +99,14 @@ function CreateRecipeCard({ syncRecipes }) {
         macros,
         calories,
         ingredients: ingredientsData,
-        instructions,
+        instructions: cleanedInstructions,
         notes,
       });
       if (syncRecipes) syncRecipes();
       // Reset form
       setSelectedIngredients([]);
+      setInstructions([]);
+      setCurrentInstruction("");
       setError(null);
     } catch (error) {
       setError(error.message);
@@ -134,7 +159,7 @@ function CreateRecipeCard({ syncRecipes }) {
                       type="number"
                       name="prepTime"
                       min="0"
-                      placeholder="15"
+                      placeholder=" "
                       className="time-input"
                     />
                     <span className="time-unit">min</span>
@@ -148,7 +173,7 @@ function CreateRecipeCard({ syncRecipes }) {
                       type="number"
                       name="cookTime"
                       min="0"
-                      placeholder="30"
+                      placeholder=" "
                       className="time-input"
                     />
                     <span className="time-unit">min</span>
@@ -165,7 +190,6 @@ function CreateRecipeCard({ syncRecipes }) {
               selectedIngredients={selectedIngredients}
             />
 
-            {/* Display added ingredients */}
             <div className="selected-ingredients">
               {selectedIngredients.map((ing, index) => (
                 <div key={index} className="ingredient-item">
@@ -179,6 +203,7 @@ function CreateRecipeCard({ syncRecipes }) {
                     }
                     className="ingredient-amount"
                   />
+
                   <input
                     type="text"
                     placeholder="Unit (cups, tbsp, etc.)"
@@ -200,34 +225,76 @@ function CreateRecipeCard({ syncRecipes }) {
             </div>
           </div>
 
-          <label>
-            {" "}
-            {/*  need to revisit */}
-            Prep Instrutions:
-            <ol>
-              <li>Next step</li>
-              <button type="button">next </button>
-            </ol>
-          </label>
-          <label>
+          <div className="instructions-section">
+            <label>Prep Instructions:</label>
+
+            {/* Display existing instructions */}
+            {instructions.length > 0 && (
+              <ol className="prep-instructions-list">
+                {instructions.map((instruction, index) => (
+                  <li key={index} className="instruction-item">
+                    <textarea
+                      value={instruction}
+                      onChange={(e) =>
+                        handleInstructionChange(index, e.target.value)
+                      }
+                      className="instruction-input"
+                      placeholder={`Step ${index + 1}`}
+                      rows="2"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveInstruction(index)}
+                      className="remove-instruction"
+                    >
+                      X
+                    </button>
+                  </li>
+                ))}
+              </ol>
+            )}
+
+            {/* Add new instruction */}
+            <div className="add-instruction">
+              <textarea
+                value={currentInstruction}
+                onChange={(e) => setCurrentInstruction(e.target.value)}
+                placeholder="Add instructions..."
+                className="new-instruction-input"
+                rows="2"
+              />
+              <button
+                type="button"
+                onClick={handleAddInstruction}
+                className="add-instruction-btn"
+              >
+                + Add Step
+              </button>
+            </div>
+          </div>
+
+          <label className="chef-notes">
             Chef's Note:
-            <input type="text" />
+            <input
+              type="text"
+              name="notes"
+              placeholder="Add any special tips or notes..."
+            />
           </label>
+
           <div className="health-info">
             <label>
-              Calorie total:
-              <p type="text" name="recipe name">
-                {" "}
-              </p>
+              <b>Calorie total: </b>
+              <p type="text" name="recipe name"></p>
               <p>Protien:</p>
               <p>Carbs:</p>
-              <p>Fats</p>
-              <label>Numer of Servings:</label>
+              <p>Fats:</p>
+              <span>Numer of Servings:</span>
             </label>
           </div>
           <section>
-            <button type="submit" className="form-button">
-              Create
+            <button type="submit" className="create-recipe-button">
+              Create Recipe
             </button>
           </section>
         </form>
