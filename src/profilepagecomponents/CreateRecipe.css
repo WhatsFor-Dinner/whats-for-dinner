@@ -1,0 +1,360 @@
+body {
+  font-family: verdana;
+}
+
+/* Create Recipe Form Styling */
+.create-recipe {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.create-recipe h2 {
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.create-recipe form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Recipe Header Section - Photo + Name & Cuisine side by side */
+.recipe-header-section {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  padding: 1.5rem;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.recipe-photo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 200px;
+  height: 200px;
+  background-color: #e8e8e8;
+  border: 2px dashed #999;
+  border-radius: 8px;
+  transition: all 0.3s;
+  font-weight: 500;
+  color: #666;
+  text-align: center;
+  flex-shrink: 0;
+  padding: 1rem;
+}
+
+.recipe-photo:hover {
+  background-color: #d8d8d8;
+  border-color: #666;
+}
+
+.recipe-basic-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.recipe-basic-info label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.recipe-basic-info input {
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.recipe-basic-info input:focus {
+  outline: none;
+  border-color: #4caf50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
+}
+
+/* Time inputs in header section - side by side */
+.time-inputs-row {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.time-inputs-row label {
+  flex: 1;
+  font-size: 0.9rem;
+}
+
+/* Time Input Styling */
+.time-input-group {
+  margin: 1rem 0;
+}
+
+.time-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.time-input {
+  width: 100px;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.time-unit {
+  color: #666;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+/* Remove spinner arrows from number inputs (optional) */
+.time-input::-webkit-inner-spin-button,
+.time-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.time-input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* General form label styling */
+.create-recipe label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.create-recipe input[type="text"],
+.create-recipe input[type="number"],
+.create-recipe textarea {
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
+}
+
+.create-recipe input:focus,
+.create-recipe textarea:focus {
+  outline: none;
+  border-color: #4caf50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
+}
+
+/* Style the file input button */
+.recipe-photo input[type="file"] {
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+/* Hide the "No file chosen" text but keep the button */
+.recipe-photo input[type="file"]::file-selector-button {
+  padding: 0.5rem 1rem;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+
+.recipe-photo input[type="file"]::file-selector-button:hover {
+  background-color: #45a049;
+}
+
+.recipe-photo input[type="file"]::-webkit-file-upload-button {
+  padding: 0.5rem 1rem;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.3s;
+}
+
+.recipe-photo input[type="file"]::-webkit-file-upload-button:hover {
+  background-color: #45a049;
+}
+
+/* Hide the text after the button */
+.recipe-photo input[type="file"] {
+  color: transparent;
+  max-width: 150px;
+}
+
+/* Instructions Section */
+.instructions-section {
+  margin: 1.5rem 0;
+}
+
+.instructions-section > label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.prep-instructions-list {
+  list-style: decimal;
+  padding-left: 2rem;
+  margin-bottom: 1rem;
+}
+
+.instruction-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.instruction-input {
+  flex: 1;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  min-height: 60px;
+  resize: vertical;
+  font-family: inherit;
+  line-height: 1;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.instruction-input:focus {
+  outline: none;
+  border-color: #4caf50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
+}
+
+.remove-instruction {
+  background-color: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: background-color 0.2s;
+  flex-shrink: 0;
+}
+
+.remove-instruction:hover {
+  background-color: #cc0000;
+}
+
+.add-instruction {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.new-instruction-input {
+  flex: 1;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+  min-height: 60px;
+  resize: vertical;
+  font-family: inherit;
+  line-height: 1.5;
+}
+
+.new-instruction-input:focus {
+  outline: none;
+  border-color: #4caf50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
+}
+
+.add-instruction-btn {
+  padding: 0.75rem 1.5rem;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  white-space: nowrap;
+}
+
+.add-instruction-btn:hover {
+  background-color: #45a049;
+}
+
+.add-instruction-btn:active {
+  background-color: #3d8b40;
+}
+
+/* Submit button styling */
+
+.create-recipe-button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 1rem;
+}
+
+.create-recipe-button:hover {
+  background-color: #45a049;
+}
+
+.form-button:active,
+.create-recipe-button:active {
+  background-color: #3d8b40;
+}
+
+/* Health Info Section */
+.health-info {
+  background-color: #f9f9f9;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.health-info p,
+.health-info span {
+  margin: 0.5rem 0;
+  color: #666;
+}
+
+/* Center the submit button */
+.create-recipe form > section {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}

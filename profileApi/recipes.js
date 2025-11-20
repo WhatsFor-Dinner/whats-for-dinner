@@ -1,14 +1,15 @@
-import { response } from "express";
+const API = "/api";
 
-const API = notSureYet;
-
-export async function getRecipes() {
+export async function getRecipes(token, userId) {
   try {
-    const response = await fetch(API + "/recipes");
+    const url = userId ? `${API}/recipes?userId=${userId}` : `${API}/recipes`;
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+
+    const response = await fetch(url, { headers });
     const result = await response.json();
     return result;
   } catch (error) {
-    console.error(e);
+    console.error(error);
     return [];
   }
 }
@@ -31,8 +32,8 @@ export async function createRecipe(token, recipe) {
   const response = await fetch(API + "/recipes", {
     method: "POST",
     headers: {
-      "Context type": "application/json",
-      Authorization: "Bearer" + token,
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token,
     },
     body: JSON.stringify(recipe),
   });
@@ -59,14 +60,13 @@ export async function deleteRecipe(token, id) {
   }
 }
 
-
 export async function updateRecipe(token, id, recipeData) {
   if (!token) {
     throw Error("You must be logged in to update a recipe.");
   }
 
   const response = await fetch(API + "/recipes/" + id, {
-    method: "PUT", 
+    method: "PUT",
     headers: {
       "Content-Type": "application/json",
       Authorization: "Bearer " + token,
@@ -81,4 +81,52 @@ export async function updateRecipe(token, id, recipeData) {
 
   const result = await response.json();
   return result;
+}
+
+export async function getMyRecipes(token) {
+  if (!token) {
+    throw Error("You must be logged in to view your recipes.");
+  }
+
+  try {
+    const response = await fetch(API + "/profile/my-recipes", {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
+
+    if (!response.ok) {
+      throw Error("Failed to fetch your recipes.");
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}
+
+export async function getLikedRecipes(token) {
+  if (!token) {
+    throw Error("You must be logged in to view liked recipes.");
+  }
+
+  try {
+    const response = await fetch(API + "/profile/liked-recipes", {
+      headers: {
+        Authorization: "Bearer " + token,
+      },
+    });
+
+    if (!response.ok) {
+      throw Error("Failed to fetch liked recipes.");
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
 }
