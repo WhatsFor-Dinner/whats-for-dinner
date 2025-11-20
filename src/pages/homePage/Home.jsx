@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import './home.css';
-import topRecipesData from '../../data/topRecipes.json';
+
 
 const Home = ({ searchTerm = '', onSearchChange = () => {} }) => {
   const [topRecipes, setTopRecipes] = useState([]);
