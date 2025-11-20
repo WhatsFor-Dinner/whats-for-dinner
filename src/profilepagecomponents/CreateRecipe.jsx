@@ -316,7 +316,7 @@ function CreateRecipeCard({ syncRecipes }) {
             />
           </label>
 
-          <div className="health-info">
+          {/* <div className="health-info">
             <label>
               <b>Calorie total: </b>
               <p type="text" name="recipe name"></p>
@@ -325,7 +325,7 @@ function CreateRecipeCard({ syncRecipes }) {
               <p>Fats:</p>
               <span>Numer of Servings:</span>
             </label>
-          </div>
+          </div> */}
           <section>
             <button type="submit" className="create-recipe-button">
               Create Recipe

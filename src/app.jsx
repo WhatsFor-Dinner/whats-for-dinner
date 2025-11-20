@@ -6,6 +6,7 @@ import { Navbar } from "./layout/Navbar.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import SignIn from "./pages/sign_in.jsx";
 import RegisterPage from "./pages/register_page.jsx";
+import TestRecipeCard from "./profilepagecomponents/TestRecipeCard.jsx";
 
 export default function App() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -25,7 +26,7 @@ export default function App() {
 
         {/* 👇 Replace the placeholder with your actual component */}
         <Route path="/register" element={<RegisterPage/>} />
-
+        <Route path="/testlink" element={<TestRecipeCard/>}/>
         <Route path="*" element={<div>404 - Page Not Found</div>} />
       </Routes>
     </>
