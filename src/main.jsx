@@ -9,9 +9,7 @@ if (!rootEl) throw new Error("Could not find #root element to mount React");
 const root = createRoot(rootEl);
 
 root.render(
-  <React.StrictMode>
     <BrowserRouter>
       <App />
     </BrowserRouter>
-  </React.StrictMode>
 );
