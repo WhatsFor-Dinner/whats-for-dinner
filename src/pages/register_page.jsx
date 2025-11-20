@@ -1,4 +1,5 @@
 import "./RegisterPages.css";
+import { useState } from "react";
 
 export default function RegisterPage({ onRegister }) {
   const [form, setForm] = useState({
@@ -235,7 +236,7 @@ export default function RegisterPage({ onRegister }) {
           </div>
 
           <div>
-            <span className="label-text">Height (cm)</span>
+            <span className="label-text">Height (ft)</span>
             <input
               name="height"
               type="number"
@@ -249,7 +250,7 @@ export default function RegisterPage({ onRegister }) {
           </div>
 
           <div>
-            <span className="label-text">Weight (kg)</span>
+            <span className="label-text">Weight (lb)</span>
             <input
               name="weight"
               type="number"
