@@ -6,10 +6,11 @@ export function Navbar({ searchTerm = '', onSearchChange = () => {} }) {
   return (
     <>
       <nav>
-        <NavLink to="/">
-          <div className="logo">LOGO PLACEHOLDER</div>
+        <NavLink to="/" className="logo-link">
+          <div className="logo">LOGOPLACEHOLDER</div>
         </NavLink>
         <div className="search-container">
+          <span className="search-icon">🔍</span>
           <input
             type="text"
             placeholder="Search recipes..."
@@ -18,24 +19,20 @@ export function Navbar({ searchTerm = '', onSearchChange = () => {} }) {
             className="search-input"
           />
         </div>
-        <NavLink to="/">
-          <button>Home</button>{" "}
-        </NavLink>
-        <NavLink to="/profilepage">
-          <button> My Kitchen /Profile</button>{" "}
-        </NavLink>
-
-        <NavLink to="/register">
-          {" "}
-          <button> Register</button>{" "}
-        </NavLink>
-        <NavLink to="/login">
-          {" "}
-          <button>Login</button>{" "}
-        </NavLink>
-
-       
-       
+        <div className="nav-links">
+          <NavLink to="/">
+            <button className="nav-button">Home</button>
+          </NavLink>
+          <NavLink to="/profilepage">
+            <button className="nav-button">My Kitchen</button>
+          </NavLink>
+          <NavLink to="/register">
+            <button className="nav-button">Register</button>
+          </NavLink>
+          <NavLink to="/login">
+            <button className="nav-button">Login</button>
+          </NavLink>
+        </div>
       </nav>
     </>
   );

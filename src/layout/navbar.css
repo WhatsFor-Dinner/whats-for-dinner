@@ -2,7 +2,11 @@ nav {
   position: sticky;
   top: 0;
   z-index: 1000;
-  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,253,250,0.95));
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.98),
+    rgba(255, 253, 250, 0.95)
+  );
   backdrop-filter: blur(8px);
   border-bottom: 2px solid rgba(143, 94, 52, 0.1);
   display: flex;
@@ -18,48 +22,53 @@ nav a {
   transition: all 0.2s ease;
 }
 
-nav button {
-  background: linear-gradient(180deg, #b98a58, #8f5e34);
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 0.9rem;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 10px rgba(140, 100, 70, 0.15);
-}
-
-nav button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(140, 100, 70, 0.25);
-  background: linear-gradient(180deg, #c4985f, #9b6a3c);
+.logo-link {
+  margin-right: auto;
 }
 
 .logo {
   font-weight: 800;
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   color: #8f5e34;
-  margin-right: auto;
   letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.logo-link:hover .logo {
+  transform: scale(1.05);
+  color: #c94f2a;
 }
 
 .search-container {
-  flex: 1;
-  max-width: 300px;
-  margin: 0 1rem;
+  flex: 0 1 320px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.search-icon {
+  position: absolute;
+  left: 0.75rem;
+  font-size: 1rem;
+  pointer-events: none;
+  color: #a89080;
+  transition: all 0.2s ease;
 }
 
 .search-input {
   width: 100%;
-  padding: 0.5rem 1rem;
+  padding: 0.6rem 1rem 0.6rem 2.3rem;
   border: 2px solid rgba(143, 94, 52, 0.2);
-  border-radius: 20px;
+  border-radius: 25px;
   font-size: 0.9rem;
   background: rgba(255, 255, 255, 0.9);
   color: #5b4636;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .search-input::placeholder {
@@ -69,24 +78,117 @@ nav button:hover {
 .search-input:focus {
   outline: none;
   border-color: #8f5e34;
-  box-shadow: 0 0 8px rgba(143, 94, 52, 0.15);
+  box-shadow: 0 0 12px rgba(143, 94, 52, 0.2),
+    inset 0 0 4px rgba(143, 94, 52, 0.08);
   background: white;
 }
 
-nav > a:not(:has(button)) {
-  color: #6b5343;
-  font-weight: 600;
-  font-size: 0.95rem;
-}
-
-nav > a:not(:has(button)):hover {
+.search-input:focus + .search-icon,
+.search-container:has(.search-input:focus) .search-icon {
   color: #8f5e34;
 }
 
-/* Responsive small tweak */
+.nav-links {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.nav-button {
+  background: linear-gradient(180deg, #b98a58, #8f5e34);
+  color: white;
+  border: none;
+  padding: 0.55rem 1.1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 4px 12px rgba(140, 100, 70, 0.12);
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: left 0.3s ease;
+  z-index: -1;
+}
+
+.nav-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(140, 100, 70, 0.25);
+  background: linear-gradient(180deg, #c4985f, #9b6a3c);
+}
+
+.nav-button:hover::before {
+  left: 100%;
+}
+
+.nav-button:active {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(140, 100, 70, 0.15);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  nav {
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+  }
+
+  .logo {
+    font-size: 1.1rem;
+  }
+
+  .search-container {
+    flex: 0 1 250px;
+  }
+
+  .nav-links {
+    gap: 0.5rem;
+  }
+
+  .nav-button {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.85rem;
+  }
+}
+
 @media (max-width: 480px) {
-  .navbar {
-    gap: 8px;
-    padding: 8px;
+  nav {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding: 0.75rem;
+  }
+
+  .logo-link {
+    margin-right: 0;
+    width: 100%;
+    order: 1;
+  }
+
+  .search-container {
+    flex: 1 1 100%;
+    order: 2;
+    max-width: none;
+  }
+
+  .nav-links {
+    flex: 1 1 100%;
+    order: 3;
+    width: 100%;
+  }
+
+  .nav-button {
+    flex: 1;
+    font-size: 0.8rem;
+    padding: 0.5rem;
   }
 }
