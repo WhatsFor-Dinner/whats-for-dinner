@@ -17,6 +17,6 @@ export default function ProfilePage() {
       <div className="profile-content">
         {showCreateRecipe ? <CreateRecipe /> : <MyRecipes />}
       </div>
-    </>
+      </>
   );
 }
