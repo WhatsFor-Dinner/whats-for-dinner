@@ -34,10 +34,8 @@ export function Navbar({ searchTerm = '', onSearchChange = () => {} }) {
           <button>Login</button>{" "}
         </NavLink>
 
-         <NavLink to="/testlink">
-          {" "}
-          <button>Test link </button>{" "}
-        </NavLink>
+       
+       
       </nav>
     </>
   );
