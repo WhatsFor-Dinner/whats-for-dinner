@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
-import './home.css';
+import { useState, useEffect } from "react";
+import "./home.css";
 
-const Home = ({ searchTerm = '', onSearchChange = () => {} }) => {
+const Home = ({ searchTerm = "", onSearchChange = () => {} }) => {
   const [topRecipes, setTopRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -13,7 +13,7 @@ const Home = ({ searchTerm = '', onSearchChange = () => {} }) => {
       try {
         setLoading(true);
         setError(null);
-        const response = await fetch('/api/home');
+        const response = await fetch("/top-ten");
         if (!response.ok) {
           throw new Error(`Failed to fetch recipes: ${response.statusText}`);
         }
@@ -21,7 +21,7 @@ const Home = ({ searchTerm = '', onSearchChange = () => {} }) => {
         setTopRecipes(Array.isArray(data) ? data : data.recipes || []);
         setFilteredRecipes(Array.isArray(data) ? data : data.recipes || []);
       } catch (err) {
-        console.error('Error fetching recipes:', err);
+        console.error("Error fetching recipes:", err);
         setError(err.message);
         setTopRecipes([]);
         setFilteredRecipes([]);
@@ -35,11 +35,11 @@ const Home = ({ searchTerm = '', onSearchChange = () => {} }) => {
 
   // Filter recipes based on search term (from navbar)
   useEffect(() => {
-    if (searchTerm.trim() === '') {
+    if (searchTerm.trim() === "") {
       setFilteredRecipes(topRecipes);
     } else {
       const filtered = topRecipes.filter((recipe) => {
-        const name = recipe.recipe_name || recipe.name || '';
+        const name = recipe.recipe_name || recipe.name || "";
         return name.toLowerCase().includes(searchTerm.toLowerCase());
       });
       setFilteredRecipes(filtered);
@@ -60,7 +60,7 @@ const Home = ({ searchTerm = '', onSearchChange = () => {} }) => {
 
       <div className="top-recipes-section">
         <h2>Top Recipes</h2>
-        
+
         {loading && (
           <div className="loading-state">
             <div className="spinner"></div>
@@ -71,21 +71,26 @@ const Home = ({ searchTerm = '', onSearchChange = () => {} }) => {
         {error && (
           <div className="error-state">
             <p>⚠️ {error}</p>
-            <p className="error-hint">Please make sure the backend server is running on port 3000</p>
+            <p className="error-hint">
+              Please make sure the backend server is running on port 3000
+            </p>
           </div>
         )}
 
         {!loading && !error && filteredRecipes.length > 0 ? (
           <div className="recipes-grid">
             {filteredRecipes.map((recipe, index) => (
-              <div 
-                key={recipe.id} 
+              <div
+                key={recipe.id}
                 className="recipe-card"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
                 <div className="recipe-image-placeholder">
                   {recipe.picture_url ? (
-                    <img src={recipe.picture_url} alt={recipe.recipe_name || recipe.name} />
+                    <img
+                      src={recipe.picture_url}
+                      alt={recipe.recipe_name || recipe.name}
+                    />
                   ) : (
                     <div className="image-fallback">🍽️</div>
                   )}
@@ -99,18 +104,24 @@ const Home = ({ searchTerm = '', onSearchChange = () => {} }) => {
                   )}
                   <div className="recipe-meta">
                     {recipe.type_of_cuisine && (
-                      <span className="meta-tag cuisine">🌍 {recipe.type_of_cuisine}</span>
+                      <span className="meta-tag cuisine">
+                        🌍 {recipe.type_of_cuisine}
+                      </span>
                     )}
                     {recipe.difficulty && (
-                      <span className={`meta-tag difficulty ${recipe.difficulty.toLowerCase()}`}>
+                      <span
+                        className={`meta-tag difficulty ${recipe.difficulty.toLowerCase()}`}
+                      >
                         📊 {recipe.difficulty}
                       </span>
                     )}
                   </div>
                   {recipe.chef_rating && (
                     <div className="recipe-rating">
-                      {'⭐'.repeat(Math.round(recipe.chef_rating))}
-                      <span className="rating-value">{recipe.chef_rating}/5</span>
+                      {"⭐".repeat(Math.round(recipe.chef_rating))}
+                      <span className="rating-value">
+                        {recipe.chef_rating}/5
+                      </span>
                     </div>
                   )}
                 </div>

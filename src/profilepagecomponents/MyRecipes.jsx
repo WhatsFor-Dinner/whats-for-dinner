@@ -2,12 +2,8 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../Auth/Auth.jsx";
 import { useParams } from "react-router";
 import { Link } from "react-router";
-import { getMyRecipes, getLikedRecipes } from "../../profileApi/recipes.js";
+import { getMyRecipes, getLikedRecipes } from "../profileApi/recipes.js";
 import RecipeList from "./RecipeList.jsx";
-/* 
-
-I want to have personally made recipes, saved recipes and favorite recipes. 
-*/
 
 function MyRecipes() {
   const { token, user } = useAuth();

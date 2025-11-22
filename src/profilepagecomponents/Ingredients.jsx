@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { searchIngredients } from "../../profileApi/ingredients.js";
+import { searchIngredients } from "../profileApi/ingredients.js";
 import "./Ingredients.css";
 
 function Ingredients({ onAddIngredient, selectedIngredients = [] }) {
@@ -28,7 +28,6 @@ function Ingredients({ onAddIngredient, selectedIngredients = [] }) {
   }, [searchTerm]);
 
   const handleSelect = (ingredient) => {
-    
     const isAlreadyAdded = selectedIngredients.some(
       (ing) => ing.id === ingredient.id
     );

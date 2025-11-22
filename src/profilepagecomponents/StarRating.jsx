@@ -2,7 +2,7 @@ import { useState } from "react";
 import { BsStarFill, BsStarHalf } from "react-icons/bs";
 import { useAuth } from "../Auth/Auth";
 
-const API = import.meta.env.VITE_API_URL || "/api";
+const API = import.meta.env.VITE_API_URL || "";
 
 function StarRating({
   recipeId,
@@ -67,7 +67,6 @@ function StarRating({
 
       const data = await response.json();
 
-    
       if (onRatingSubmit) {
         onRatingSubmit(newRating, data);
       }
@@ -97,7 +96,6 @@ function StarRating({
             onMouseMove={(e) => handleMouseMove(e, index)}
             onMouseLeave={handleMouseLeave}
           >
-           
             {isFull ? (
               <span className="star-filled">
                 <BsStarFill />

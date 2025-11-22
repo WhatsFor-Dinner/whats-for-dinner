@@ -1,8 +1,8 @@
 import { useEffect, useId, useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import { useAuth } from "../Auth/Auth.jsx";
-import { getIngredients, getIngredient } from "../../profileApi/ingredients.js";
-import { createRecipe } from "../../profileApi/recipes.js";
+import { getIngredients, getIngredient } from "../profileApi/ingredients.js";
+import { createRecipe } from "../profileApi/recipes.js";
 import Ingredients from "./Ingredients.jsx";
 import "./CreateRecipe.css";
 
