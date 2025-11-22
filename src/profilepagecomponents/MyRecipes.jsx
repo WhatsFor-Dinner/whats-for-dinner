@@ -13,28 +13,40 @@ function MyRecipes() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
+
     const getUserRecipes = async () => {
       if (!token || !user) return;
 
       try {
-        setLoading(true);
+        if (isMounted) {
+          setLoading(true);
+          setError(null);
+        }
 
         const myRecipesData = await getMyRecipes(token);
-        setMyRecipes(myRecipesData);
-
         const likedRecipesData = await getLikedRecipes(token);
-        setFavoriteRecipes(likedRecipesData);
 
-        setError(null);
+        if (isMounted) {
+          setMyRecipes(myRecipesData);
+          setFavoriteRecipes(likedRecipesData);
+        }
       } catch (error) {
-        setError(error.message);
-        console.error("Error fetching recipes:", error);
+        if (isMounted) {
+          setError(error.message);
+          console.error("Error fetching recipes:", error);
+          setMyRecipes([]);
+          setFavoriteRecipes([]);
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
 
     getUserRecipes();
+    return () => {
+      isMounted = false;
+    };
   }, [token, user]);
 
   const [toggle, setToggle] = useState(1);

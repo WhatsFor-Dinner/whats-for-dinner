@@ -9,28 +9,39 @@ const Home = ({ searchTerm = "", onSearchChange = () => {} }) => {
 
   // Fetch top recipes from backend
   useEffect(() => {
+    let isMounted = true;
+
     const fetchTopRecipes = async () => {
       try {
-        setLoading(true);
-        setError(null);
+        if (isMounted) {
+          setLoading(true);
+          setError(null);
+        }
         const response = await fetch("/top-ten");
         if (!response.ok) {
           throw new Error(`Failed to fetch recipes: ${response.statusText}`);
         }
         const data = await response.json();
-        setTopRecipes(Array.isArray(data) ? data : data.recipes || []);
-        setFilteredRecipes(Array.isArray(data) ? data : data.recipes || []);
+        if (isMounted) {
+          setTopRecipes(Array.isArray(data) ? data : data.recipes || []);
+          setFilteredRecipes(Array.isArray(data) ? data : data.recipes || []);
+        }
       } catch (err) {
         console.error("Error fetching recipes:", err);
-        setError(err.message);
-        setTopRecipes([]);
-        setFilteredRecipes([]);
+        if (isMounted) {
+          setError(err.message);
+          setTopRecipes([]);
+          setFilteredRecipes([]);
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
 
     fetchTopRecipes();
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   // Filter recipes based on search term (from navbar)

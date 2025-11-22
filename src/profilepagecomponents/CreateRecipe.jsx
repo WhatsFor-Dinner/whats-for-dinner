@@ -17,15 +17,22 @@ function CreateRecipeCard({ syncRecipes }) {
   const [currentInstruction, setCurrentInstruction] = useState("");
 
   useEffect(() => {
+    let isMounted = true;
+
     const syncIngredients = async () => {
       try {
         const data = await getIngredient(id);
-        setIngredient(data);
+        if (isMounted) {
+          setIngredient(data);
+        }
       } catch (error) {
-        setError(error.message);
+        if (isMounted) {
+          setError(error.message);
+        }
       }
     };
     if (id) syncIngredients();
+    return () => { isMounted = false; };
   }, [id]);
 
   const handleAddIngredient = (ingredient) => {

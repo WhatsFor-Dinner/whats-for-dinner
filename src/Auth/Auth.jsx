@@ -34,6 +34,8 @@ export function AuthProvider({ children }) {
 
   // Validate token on app load (only once)
   useEffect(() => {
+    let isMounted = true;
+
     const validateToken = async () => {
       const savedToken = localStorage.getItem("token");
       const savedUser = localStorage.getItem("user");
@@ -49,22 +51,31 @@ export function AuthProvider({ children }) {
           if (!response.ok) {
             // Token is invalid, clear it
             localStorage.removeItem("token");
-            setToken(null);
-            setUser(null);
+            if (isMounted) {
+              setToken(null);
+              setUser(null);
+            }
           } else {
             const userData = await response.json();
-            setUser(userData);
+            if (isMounted) {
+              setUser(userData);
+            }
           }
         } catch (err) {
           console.error("Token validation failed:", err);
           localStorage.removeItem("token");
-          setToken(null);
-          setUser(null);
+          if (isMounted) {
+            setToken(null);
+            setUser(null);
+          }
         }
       }
     };
 
     validateToken();
+    return () => {
+      isMounted = false;
+    };
   }, []); // Function to login with backend
   const login = async (username, password) => {
     setLoading(true);
