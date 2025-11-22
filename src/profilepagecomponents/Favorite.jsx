@@ -2,7 +2,7 @@ import { useState } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { useAuth } from "../Auth/Auth";
 
-const API = import.meta.env.VITE_API_URL || "/api";
+const API = import.meta.env.VITE_API_URL || "";
 
 function FavoriteButton({ recipeId, initialFavorite = false }) {
   const [isFavorite, setIsFavorite] = useState(initialFavorite);
@@ -31,7 +31,7 @@ function FavoriteButton({ recipeId, initialFavorite = false }) {
       }
     } catch (error) {
       console.error("Error updating favorite:", error);
-      
+
       setIsFavorite(!newFavorite);
       alert("Failed to update favorite status");
     }

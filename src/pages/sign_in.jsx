@@ -1,46 +1,35 @@
 import React, { useState } from "react";
 import "./SignIn.css";
+import { useAuth } from "../Auth/Auth";
 
 export default function SignIn() {
+  const { login, loading, error: authError } = useAuth();
   const [form, setForm] = useState({
-    email: "",
+    username: "",
     password: "",
   });
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
   const [serverMsg, setServerMsg] = useState(null);
 
   function handleChange(e) {
     const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
+    setForm((prev) => ({ ...prev, [name]: value }));
     setError("");
     setServerMsg(null);
   }
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (!form.email || !form.password) {
-      setError("Please enter your email and password.");
+    if (!form.username || !form.password) {
+      setError("Please enter your username and password.");
       return;
     }
 
-    setLoading(true);
-
     try {
-      // 👇 You’re not handling backend, but this can stay for integration later
-      const res = await fetch("/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
-      if (!res.ok) throw new Error("Invalid credentials or server error.");
-
-      setServerMsg({ type: "success", text: "Signed in successfully!" });
-      setForm({ email: "", password: "" });
+      await login(form.username, form.password);
+      // login function will navigate to profile page on success
     } catch (err) {
       setServerMsg({ type: "error", text: err.message });
-    } finally {
-      setLoading(false);
     }
   }
 
@@ -51,12 +40,12 @@ export default function SignIn() {
         <p className="subtitle">Sign in to continue</p>
 
         <label className="field">
-          <span className="label-text">Email</span>
+          <span className="label-text">Username</span>
           <input
-            name="email"
-            type="email"
-            placeholder="you@example.com"
-            value={form.email}
+            name="username"
+            type="text"
+            placeholder="Enter your username"
+            value={form.username}
             onChange={handleChange}
             className="input"
             required
@@ -78,7 +67,11 @@ export default function SignIn() {
 
         {error && <div className="error-text">{error}</div>}
         {serverMsg && (
-          <div className={`server-msg ${serverMsg.type === "error" ? "err" : "ok"}`}>
+          <div
+            className={`server-msg ${
+              serverMsg.type === "error" ? "err" : "ok"
+            }`}
+          >
             {serverMsg.text}
           </div>
         )}

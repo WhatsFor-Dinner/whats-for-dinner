@@ -6,8 +6,12 @@ export default defineConfig({
   plugins: [react()],
   server: {
     proxy: {
-      // proxy /api requests to the backend server running on port 3000
-      "/api": "http://localhost:3000",
+      // proxy backend API requests to the server running on port 3000
+      "/users": "http://localhost:3000",
+      "/recipes": "http://localhost:3000",
+      "/profile": "http://localhost:3000",
+      "/top-ten": "http://localhost:3000",
+      "/ingredients": "http://localhost:3000",
     },
   },
 });

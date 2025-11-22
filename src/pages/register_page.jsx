@@ -1,9 +1,11 @@
 import "./RegisterPages.css";
 import { useState } from "react";
+import { useAuth } from "../Auth/Auth";
 
 export default function RegisterPage({ onRegister }) {
+  const { register } = useAuth();
   const [form, setForm] = useState({
-    email: "",
+    username: "",
     password: "",
     confirmPassword: "",
     gender: "",
@@ -26,8 +28,8 @@ export default function RegisterPage({ onRegister }) {
 
   function validate() {
     const errs = {};
-    if (!form.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/))
-      errs.email = "Please enter a valid email.";
+    if (!form.username || form.username.trim().length < 3)
+      errs.username = "Username must be at least 3 characters.";
     if (form.password.length < 8)
       errs.password = "Password must be at least 8 characters.";
     if (form.password !== form.confirmPassword)
@@ -57,7 +59,7 @@ export default function RegisterPage({ onRegister }) {
     setServerMsg(null);
 
     const payload = {
-      email: form.email,
+      username: form.username,
       password: form.password,
       profile: {
         gender: form.gender,
@@ -69,38 +71,8 @@ export default function RegisterPage({ onRegister }) {
     };
 
     try {
-      if (typeof onRegister === "function") {
-        // allow parent to handle registration (useful for tests/alternate backends)
-        await onRegister(payload);
-        setServerMsg({ type: "success", text: "Registration successful." });
-      } else {
-        // default: POST to /api/register (adjust endpoint to match your backend)
-        const res = await fetch("/api/register", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-        if (!res.ok) {
-          const body = await res.json().catch(() => ({}));
-          throw new Error(
-            body.message || `Request failed with status ${res.status}`
-          );
-        }
-        setServerMsg({
-          type: "success",
-          text: "Account created — check your email for verification (if required).",
-        });
-        setForm({
-          email: "",
-          password: "",
-          confirmPassword: "",
-          gender: "",
-          age: "",
-          height: "",
-          weight: "",
-          bodyType: "",
-        });
-      }
+      await register(form.username, form.password);
+      // register function will navigate to profile page on success
     } catch (err) {
       setServerMsg({
         type: "error",
@@ -129,18 +101,20 @@ export default function RegisterPage({ onRegister }) {
         <h2 className="brand">Create your account</h2>
 
         <label className="field">
-          <span className="label-text">Email</span>
+          <span className="label-text">Username</span>
           <input
-            name="email"
-            type="email"
-            placeholder="you@example.com"
-            value={form.email}
+            name="username"
+            type="text"
+            placeholder="Choose a username"
+            value={form.username}
             onChange={handleChange}
             required
-            aria-invalid={!!errors.email}
-            className={errors.email ? "input error" : "input"}
+            aria-invalid={!!errors.username}
+            className={errors.username ? "input error" : "input"}
           />
-          {errors.email && <div className="error-text">{errors.email}</div>}
+          {errors.username && (
+            <div className="error-text">{errors.username}</div>
+          )}
         </label>
 
         <label className="field two-up">
@@ -302,7 +276,7 @@ export default function RegisterPage({ onRegister }) {
             className="btn subtle"
             onClick={() =>
               setForm({
-                email: "",
+                username: "",
                 password: "",
                 confirmPassword: "",
                 gender: "",
