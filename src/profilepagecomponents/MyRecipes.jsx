@@ -14,7 +14,6 @@ function MyRecipes() {
 
   useEffect(() => {
     let isMounted = true;
-
     const getUserRecipes = async () => {
       if (!token || !user) return;
 

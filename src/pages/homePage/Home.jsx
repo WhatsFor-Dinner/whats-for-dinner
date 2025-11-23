@@ -7,7 +7,7 @@ const Home = ({ searchTerm = "", onSearchChange = () => {} }) => {
   const [error, setError] = useState(null);
   const [filteredRecipes, setFilteredRecipes] = useState([]);
 
-  // Fetch top recipes from backend
+  
   useEffect(() => {
     let isMounted = true;
 

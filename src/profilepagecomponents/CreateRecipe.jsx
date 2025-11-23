@@ -32,7 +32,9 @@ function CreateRecipeCard({ syncRecipes }) {
       }
     };
     if (id) syncIngredients();
-    return () => { isMounted = false; };
+    return () => {
+      isMounted = false;
+    };
   }, [id]);
 
   const handleAddIngredient = (ingredient) => {
@@ -191,12 +193,15 @@ function CreateRecipeCard({ syncRecipes }) {
           </div>
 
           <div className="ingredients-section">
-            <label>Ingredients:</label>
+            <label>Add Ingredients:</label>
             <Ingredients
               onAddIngredient={handleAddIngredient}
               selectedIngredients={selectedIngredients}
             />
+          </div>
 
+          <div className="selected-ingredients-section">
+            <label>Selected Ingredients:</label>
             <div className="selected-ingredients">
               {selectedIngredients.map((ing, index) => (
                 <div key={index} className="ingredient-item">

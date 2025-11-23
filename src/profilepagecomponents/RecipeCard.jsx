@@ -73,7 +73,7 @@ export default function RecipeCard() {
       <p>{recipe.preTime}</p>
       <p>{recipe.cookTime}</p>
       <p>{recipe.calories}</p>
-      <p>{recipe.macros}</p>
+      {/* <p>{recipe.macros}</p> */}
       <p>{recipe.ingredients}</p>
       <p>{recipe.measurements}</p>
       <p>{recipe.instructions}</p>
