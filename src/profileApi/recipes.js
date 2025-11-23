@@ -94,10 +94,14 @@ export async function getMyRecipes(token) {
         Authorization: "Bearer " + token,
       },
     });
-
+    if (response.status === 404) {
+      return [];
+    }
     if (!response.ok) {
       throw Error("Failed to fetch your recipes.");
+
     }
+    
 
     const result = await response.json();
     return result;

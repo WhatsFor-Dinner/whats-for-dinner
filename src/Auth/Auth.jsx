@@ -19,41 +19,63 @@ export function AuthProvider({ children }) {
 
   // Save token/user when they change
   useEffect(() => {
-    if (token) localStorage.setItem("token", token);
-    else localStorage.removeItem("token");
+    if (token) {
+      localStorage.setItem("token", token);
+    } else {
+      localStorage.removeItem("token");
+    }
 
-    if (user) localStorage.setItem("user", JSON.stringify(user));
-    else localStorage.removeItem("user");
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user));
+    } else {
+      localStorage.removeItem("user");
+    }
   }, [token, user]);
 
-  // Validate token on app load
+  // Validate token on app load (only once)
   useEffect(() => {
+    let isMounted = true;
+
     const validateToken = async () => {
-      if (token && !user) {
+      const savedToken = localStorage.getItem("token");
+      const savedUser = localStorage.getItem("user");
+
+      if (savedToken && !savedUser) {
         try {
           const response = await fetch("/profile", {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${savedToken}`,
             },
           });
 
           if (!response.ok) {
             // Token is invalid, clear it
-            setToken(null);
-            setUser(null);
+            localStorage.removeItem("token");
+            if (isMounted) {
+              setToken(null);
+              setUser(null);
+            }
           } else {
             const userData = await response.json();
-            setUser(userData);
+            if (isMounted) {
+              setUser(userData);
+            }
           }
         } catch (err) {
           console.error("Token validation failed:", err);
-          setToken(null);
-          setUser(null);
+          localStorage.removeItem("token");
+          if (isMounted) {
+            setToken(null);
+            setUser(null);
+          }
         }
       }
     };
 
     validateToken();
+    return () => {
+      isMounted = false;
+    };
   }, []); // Function to login with backend
   const login = async (username, password) => {
     setLoading(true);

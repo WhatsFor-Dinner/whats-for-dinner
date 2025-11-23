@@ -297,7 +297,6 @@ input[type="file"]::-webkit-file-upload-button {
   text-decoration: none;
   font-weight: 600;
   border-bottom: 2px solid transparent;
-  
 }
 
 .login-message a:hover {
@@ -354,11 +353,15 @@ Profile Navigaton  */
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   padding: 15px;
   width: 200px;
   height: 200px;
   background-color: white;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   border-radius: 5px;
   cursor: pointer;
   font-size: 13px;
@@ -367,9 +370,19 @@ Profile Navigaton  */
   transition: all 0.3s ease;
 }
 
+.profile-photo-upload.has-image {
+  border: 2px solid #daa520;
+  color: transparent;
+}
+
 .profile-photo-upload:hover {
   background-color: #fffaf0;
   border-color: goldenrod;
+}
+
+.profile-photo-upload.has-image:hover {
+  background-color: transparent;
+  opacity: 0.9;
 }
 
 .profile-photo-upload input[type="file"] {
@@ -389,15 +402,21 @@ Profile Navigaton  */
   border-radius: 6px;
   color: #333;
   font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
-  text-align: left;
+  text-align: center;
 }
 
 .sidebar-navigation button:hover {
-  background-color: goldenrod;
+  background-color: #fffaf0;
+  border-color: #daa520;
+}
+
+.sidebar-navigation button.active {
+  background-color: #daa520;
   color: white;
-  border-color: goldenrod;
+  border-color: #daa520;
 }
 
 .favorite-button {

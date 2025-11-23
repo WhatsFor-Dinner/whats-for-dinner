@@ -1,8 +1,16 @@
 import React from "react";
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
+import { useAuth } from "../Auth/Auth";
 import "./navbar.css";
 
-export function Navbar({ searchTerm = '', onSearchChange = () => {} }) {
+export function Navbar({ searchTerm = "", onSearchChange = () => {} }) {
+  const { token, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
   return (
     <>
       <nav>
@@ -26,12 +34,20 @@ export function Navbar({ searchTerm = '', onSearchChange = () => {} }) {
           <NavLink to="/profilepage">
             <button className="nav-button">My Kitchen</button>
           </NavLink>
-          <NavLink to="/register">
-            <button className="nav-button">Register</button>
-          </NavLink>
-          <NavLink to="/login">
-            <button className="nav-button">Login</button>
-          </NavLink>
+          {!token ? (
+            <>
+              <NavLink to="/register">
+                <button className="nav-button">Register</button>
+              </NavLink>
+              <NavLink to="/login">
+                <button className="nav-button">Login</button>
+              </NavLink>
+            </>
+          ) : (
+            <button className="nav-button" onClick={handleLogout}>
+              Sign Out
+            </button>
+          )}
         </div>
       </nav>
     </>

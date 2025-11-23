@@ -57,10 +57,12 @@ function TestRecipeCard() {
   };
 
   useEffect(() => {
+    let isMounted = true;
+
     // Simulate fetching from backend
     const fetchRecipe = async () => {
       try {
-        setLoading(true);
+        if (isMounted) setLoading(true);
 
         // Simulate API delay
         await new Promise((resolve) => setTimeout(resolve, 500));
@@ -73,17 +75,24 @@ function TestRecipeCard() {
         // setRecipe(data);
 
         // For now, use test data
-        setRecipe(testRecipeData);
-        setError(null);
+        if (isMounted) {
+          setRecipe(testRecipeData);
+          setError(null);
+        }
       } catch (err) {
-        setError(err.message);
-        console.error("Error fetching recipe:", err);
+        if (isMounted) {
+          setError(err.message);
+          console.error("Error fetching recipe:", err);
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
 
     fetchRecipe();
+    return () => {
+      isMounted = false;
+    };
   }, [token]);
 
   if (loading) {
