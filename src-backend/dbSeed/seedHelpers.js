@@ -1,4 +1,5 @@
-import db from "./client.js";
+import db from "../db/client.js";
+import bcrypt from "bcrypt";
 
 export async function insertOrGetIngredient(name) {
   const sql = `
@@ -79,3 +80,18 @@ export async function linkIngredientToRecipe(recipeId, ingredientId, quantity, u
   await db.query(sql, values);
 };
 
+export async function seedUser(username, password) {
+  // Hash password
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const sql = `
+    INSERT INTO users (username, password)
+    VALUES ($1, $2)
+    ON CONFLICT (username) DO UPDATE SET username = EXCLUDED.username
+    RETURNING *;
+  `;
+
+  const values = [username, hashedPassword];
+  const { rows } = await db.query(sql, values);
+
+  return rows[0];
+}
