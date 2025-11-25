@@ -1,15 +1,24 @@
 import React from "react";
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
+import { useAuth } from "../Auth/Auth";
 import "./navbar.css";
 
-export function Navbar({ searchTerm = '', onSearchChange = () => {} }) {
+export function Navbar({ searchTerm = "", onSearchChange = () => {} }) {
+  const { token, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
   return (
     <>
       <nav>
-        <NavLink to="/">
-          <div className="logo">LOGO PLACEHOLDER</div>
+        <NavLink to="/" className="logo-link">
+          <div className="logo">LOGOPLACEHOLDER</div>
         </NavLink>
         <div className="search-container">
+          <span className="search-icon">🔍</span>
           <input
             type="text"
             placeholder="Search recipes..."
@@ -18,21 +27,28 @@ export function Navbar({ searchTerm = '', onSearchChange = () => {} }) {
             className="search-input"
           />
         </div>
-        <NavLink to="/">
-          <button>Home</button>{" "}
-        </NavLink>
-        <NavLink to="/profilepage">
-          <button> My Kitchen /Profile</button>{" "}
-        </NavLink>
-
-        <NavLink to="/register">
-          {" "}
-          <button> Register</button>{" "}
-        </NavLink>
-        <NavLink to="/login">
-          {" "}
-          <button>Login</button>{" "}
-        </NavLink>
+        <div className="nav-links">
+          <NavLink to="/">
+            <button className="nav-button">Home</button>
+          </NavLink>
+          <NavLink to="/profilepage">
+            <button className="nav-button">My Kitchen</button>
+          </NavLink>
+          {!token ? (
+            <>
+              <NavLink to="/register">
+                <button className="nav-button">Register</button>
+              </NavLink>
+              <NavLink to="/login">
+                <button className="nav-button">Login</button>
+              </NavLink>
+            </>
+          ) : (
+            <button className="nav-button" onClick={handleLogout}>
+              Sign Out
+            </button>
+          )}
+        </div>
       </nav>
     </>
   );
