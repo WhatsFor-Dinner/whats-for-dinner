@@ -18,7 +18,7 @@ CREATE TABLE recipes (
   cuisine_type TEXT,
   difficulty TEXT NOT NULL, -- e.g. Easy, Medium, Hard
   chef_rating DECIMAL(2,1), -- Input would need to be a decimal for chef rating
-  number_of_servings INTEGER NOT NULL, --Not null because we need to know how much the recipe yeilds
+  number_of_servings INTEGER NOT NULL,--Not null because we need to know how much the recipe yeilds
   prep_time_minutes INTEGER,
   cook_time_minutes INTEGER,
   calories INTEGER,
