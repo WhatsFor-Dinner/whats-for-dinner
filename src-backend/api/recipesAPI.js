@@ -2,7 +2,7 @@ import express from "express";
 const router = express.Router();
 export default router;
 
-import { searchRecipes, createRecipe, getRecipeCard, deleteRecipe } from "../db/queries/recipes.js";
+import { searchRecipes, createRecipe, getRecipeCard, deleteRecipe, updateRecipeWithIngredients } from "../db/queries/recipes.js";
 import { toggleLiked } from "../db/queries/likedRecipies.js";
 import requireUser from "../middleware/requireUser.js";
 import requireBody from "../middleware/requireBody.js";
@@ -35,6 +35,38 @@ router.route("/:id")
     next(error);
   }
 })
+.patch(requireUser, async (req, res, next) => {
+    try {
+      const recipeId = Number(req.params.id);
+      const userId = req.user.id;
+
+      if (Number.isNaN(recipeId)) {
+        return res.status(400).send("Recipe ID must be a number.");
+      }
+
+      // Body shape: recipe fields + ingredients[]
+      const { ingredients = [], ...recipeData } = req.body;
+
+      const updated = await updateRecipeWithIngredients(
+        recipeId,
+        userId,
+        recipeData,
+        ingredients
+      );
+
+      if (!updated) {
+        return res
+          .status(404)
+          .send("Recipe not found or you do not have permission to update it.");
+      }
+
+      // Re-fetch full card (with aggregated ingredients JSON) to return to client
+      const fullCard = await getRecipeCard(recipeId);
+      res.send(fullCard);
+    } catch (error) {
+      next(error);
+    }
+  })
 .delete(requireUser,  async (req, res, next) => {
   try {
     const recipeId = Number(req.params.id);
@@ -96,7 +128,8 @@ router
       const { ingredients = [], ...recipeData } = req.body;
 
       const newRecipe = await createRecipe(userId, recipeData, ingredients);
-      res.status(201).send(newRecipe);
+      const fullRecipe = await getRecipeCard(newRecipe.id);
+      res.status(201).send(fullRecipe);
     } catch (error) {
       next(error);
     }
