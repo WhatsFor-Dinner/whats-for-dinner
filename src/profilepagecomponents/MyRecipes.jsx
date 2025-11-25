@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../Auth/Auth.jsx";
-import { useParams } from "react-router";
-import { Link } from "react-router";
+import { Link, NavLink } from "react-router";
 import { getMyRecipes, getLikedRecipes } from "../profileApi/recipes.js";
 import RecipeList from "./RecipeList.jsx";
 
@@ -77,7 +76,7 @@ function MyRecipes() {
             <div className="login-message">
               <p>
                 Please <Link to="/register">create an account</Link> or{" "}
-                <Link to="/signin">log in</Link> to create and view your
+                <NavLink to="/login">log in</NavLink> to create and view your
                 recipes.
               </p>
             </div>
@@ -100,7 +99,7 @@ function MyRecipes() {
             <div className="login-message">
               <p>
                 Please <Link to="/register">create an account</Link> or{" "}
-                <Link to="/signin">log in</Link> to favorite recipes.
+                <NavLink to="/login">log in</NavLink> to favorite recipes.
               </p>
             </div>
           ) : loading ? (

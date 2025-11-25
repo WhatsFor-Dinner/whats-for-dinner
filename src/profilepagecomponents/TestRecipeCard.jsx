@@ -1,99 +1,60 @@
 import { useState, useEffect } from "react";
+import { useParams } from "react-router";
 import { useAuth } from "../Auth/Auth.jsx";
 import StarRating from "./StarRating.jsx";
 import "./RecipeCardDetails.css";
 
 function TestRecipeCard() {
+  const { id } = useParams();
   const { token } = useAuth();
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Sample test data that matches backend structure
-  const testRecipeData = {
-    id: 1,
-    user_id: 1,
-    username: "TestChef",
-    recipe_name: "Test Chocolate Chip Cookies",
-    description:
-      "Delicious homemade chocolate chip cookies that are crispy on the outside and chewy on the inside.",
-    cuisine_type: "American",
-    difficulty: "Easy",
-    chef_rating: 4.5,
-    number_of_servings: 24,
-    prep_time_minutes: 15,
-    cook_time_minutes: 12,
-    calories: 150,
-    notes:
-      "For extra chewy cookies, slightly underbake them. Store in an airtight container for up to 5 days.",
-    instructions: [
-      "Preheat oven to 375°F (190°C)",
-      "Mix butter and sugars until creamy",
-      "Beat in eggs and vanilla",
-      "Combine flour, baking soda, and salt",
-      "Stir in chocolate chips",
-      "Drop spoonfuls onto baking sheet",
-      "Bake for 10-12 minutes until golden",
-    ],
-    picture_url:
-      "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?w=500",
-    like_count: 42,
-    ingredients: [
-      {
-        ingredientId: 1,
-        name: "All-purpose flour",
-        quantity: 2.25,
-        unit: "cup",
-      },
-      { ingredientId: 2, name: "Butter", quantity: 1, unit: "cup" },
-      { ingredientId: 3, name: "White sugar", quantity: 0.75, unit: "cup" },
-      { ingredientId: 4, name: "Brown sugar", quantity: 0.75, unit: "cup" },
-      { ingredientId: 5, name: "Eggs", quantity: 2, unit: "piece" },
-      { ingredientId: 6, name: "Vanilla extract", quantity: 2, unit: "tsp" },
-      { ingredientId: 7, name: "Baking soda", quantity: 1, unit: "tsp" },
-      { ingredientId: 8, name: "Salt", quantity: 0.5, unit: "tsp" },
-      { ingredientId: 9, name: "Chocolate chips", quantity: 2, unit: "cup" },
-    ],
-  };
 
   useEffect(() => {
     let isMounted = true;
 
-    // Simulate fetching from backend
+    // Fetch recipe from backend
     const fetchRecipe = async () => {
       try {
         if (isMounted) setLoading(true);
 
-        // Simulate API delay
-        await new Promise((resolve) => setTimeout(resolve, 500));
+        
+        const response = await fetch(`/recipes/${id}`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {}
+        });
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch recipe: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
 
-        // TODO: Replace with actual API call when backend is ready
-        // const response = await fetch('/api/recipes/1', {
-        //   headers: token ? { Authorization: `Bearer ${token}` } : {}
-        // });
-        // const data = await response.json();
-        // setRecipe(data);
-
-        // For now, use test data
+        
         if (isMounted) {
-          setRecipe(testRecipeData);
+          setRecipe(data);
           setError(null);
         }
       } catch (err) {
         if (isMounted) {
-          setError(err.message);
-          console.error("Error fetching recipe:", err);
+          
+          console.warn("Recipe not found", err.message);
+          setRecipe(RecipeData);
+          setError(null);
         }
       } finally {
         if (isMounted) setLoading(false);
       }
     };
 
-    fetchRecipe();
+    if (id) {
+      fetchRecipe();
+    }
     return () => {
       isMounted = false;
     };
-  }, [token]);
+  }, [id, token]);
 
   if (loading) {
     return (
@@ -122,7 +83,7 @@ function TestRecipeCard() {
   return (
     <section className="test-recipe-card">
       <div className="recipe-card-header">
-        <h2>🧪 Test Recipe Card (Remove when backend is ready)</h2>
+        <h2></h2>
       </div>
 
       <div className="recipe-card-content">
@@ -147,10 +108,7 @@ function TestRecipeCard() {
                 <span className="meta-label">Cuisine:</span>
                 <span className="meta-value">{recipe.cuisine_type}</span>
               </div>
-              <div className="meta-item">
-                <span className="meta-label">Difficulty:</span>
-                <span className="meta-value">{recipe.difficulty}</span>
-              </div>
+              
               <div className="meta-item">
                 <span className="meta-label">Servings:</span>
                 <span className="meta-value">{recipe.number_of_servings}</span>
@@ -167,12 +125,7 @@ function TestRecipeCard() {
                   {recipe.cook_time_minutes} min
                 </span>
               </div>
-              <div className="meta-item">
-                <span className="meta-label">Calories:</span>
-                <span className="meta-value">
-                  {recipe.calories} per serving
-                </span>
-              </div>
+           
               <div className="meta-item">
                 <span className="meta-label">Likes:</span>
                 <span className="meta-value">❤️ {recipe.like_count}</span>
@@ -233,7 +186,7 @@ function TestRecipeCard() {
           </div>
         )}
 
-        {/* Action Buttons */}
+      
         <div className="recipe-actions">
           <button className="btn btn-primary">❤️ Favorite</button>
           <button className="btn btn-secondary">✏️ Update Recipe</button>
