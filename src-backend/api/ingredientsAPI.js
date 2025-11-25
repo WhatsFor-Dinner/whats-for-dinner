@@ -8,7 +8,7 @@ import {
 } from "../db/queries/ingredients.js";
 
 // GET: Search ingredients by name, first in DB then in Spoonacular if not found. If found in Spoonacular, save to DB.
-router.get("/ingredients/search", async (req, res, next) => {
+router.get("/search", async (req, res, next) => {
   try {
     // if query is missing or undefined, set to empty string
     const searchTerm = (req.query.query || "").trim();
