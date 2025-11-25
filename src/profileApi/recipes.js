@@ -29,7 +29,7 @@ export async function createRecipe(token, recipe) {
   if (!token) {
     throw Error("You must be logged in to create a recipe.");
   }
-  const response = await fetch(API + "/recipes", {
+  const response = await fetch(API + "/recipes/create", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -99,9 +99,7 @@ export async function getMyRecipes(token) {
     }
     if (!response.ok) {
       throw Error("Failed to fetch your recipes.");
-
     }
-    
 
     const result = await response.json();
     return result;

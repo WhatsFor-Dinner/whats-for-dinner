@@ -91,11 +91,11 @@ export function AuthProvider({ children }) {
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
+        const errorText = await response.json();
         throw new Error(errorText || "Login failed");
       }
 
-      const token = await response.text();
+      const token = await response.json();
       setToken(token);
       setUser({ username });
       navigate("/profilepage");
@@ -113,7 +113,7 @@ export function AuthProvider({ children }) {
     setError(null);
 
     try {
-      const response = await fetch("/users/register", {
+      const response = await fetch("/users/register",{
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -122,11 +122,11 @@ export function AuthProvider({ children }) {
       });
 
       if (!response.ok) {
-        const errorText = await response.text();
+        const errorText = await response.json();
         throw new Error(errorText || "Registration failed");
       }
 
-      const token = await response.text();
+      const token = await response.json();
       setToken(token);
       setUser({ username });
       navigate("/profilepage");

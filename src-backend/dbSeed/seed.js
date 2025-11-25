@@ -4,14 +4,16 @@ import {
   insertRecipe,
   insertOrGetIngredient,
   linkIngredientToRecipe,
-  seedUser
+  seedUser,
 } from "./seedHelpers.js";
-
 
 async function recipeData() {
   // Read and parse the seed data JSON file
   // What fs.readFile does is read the contents of a file and return it as a Buffer or string.
-  const jsonData = await fs.readFile("./src-backend/dbSeed/sampleData.json", "utf-8");
+  const jsonData = await fs.readFile(
+    "./src-backend/dbSeed/sampleData.json",
+    "utf-8"
+  );
   const recipes = JSON.parse(jsonData);
 
   return recipes;
@@ -19,8 +21,9 @@ async function recipeData() {
 
 async function seed() {
   try {
+    await db.connect();
     console.log("Starting seed...");
-    await db.query("SELECT 1")
+    await db.query("SELECT 1");
     console.log("Database connected.");
 
     // create a seed user
@@ -45,7 +48,7 @@ async function seed() {
           ...recipe,
           user_id: userId,
         };
-        
+
         // insert recipe
         const insertedRecipe = await insertRecipe(recipeToInsert);
         console.log(`Inserted recipe: ${insertedRecipe.recipe_name}`);

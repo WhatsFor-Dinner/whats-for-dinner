@@ -7,7 +7,6 @@ const Home = ({ searchTerm = "", onSearchChange = () => {} }) => {
   const [error, setError] = useState(null);
   const [filteredRecipes, setFilteredRecipes] = useState([]);
 
-  
   useEffect(() => {
     let isMounted = true;
 
