@@ -59,7 +59,6 @@ export async function deleteRecipe(token, id) {
   }
 }
 
-
 export async function updateRecipe(token, id, recipeData) {
   if (!token) {
     throw Error("You must be logged in to update a recipe.");
