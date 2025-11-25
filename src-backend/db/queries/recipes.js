@@ -7,7 +7,7 @@ export async function createRecipe(userId, recipeData, ingredients) {
   await db.query("BEGIN");
 
   try {
-    // First insert all the other recipe info into recipes table
+    // insert all the other recipe info into recipes table
     const insertRecipeSql = `
       INSERT INTO recipes (
         user_id,
@@ -28,7 +28,7 @@ export async function createRecipe(userId, recipeData, ingredients) {
         ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
       RETURNING *;
     `;
-    // Values array for recipe insertion which matches the above SQL placeholders
+    // Prepare the values array for parameterized query in await function below
     const recipeValues = [
       userId,
       recipeData.recipe_name,
@@ -218,4 +218,120 @@ export async function searchRecipes(input) {
   const cleanInput = (input || "").trim();
   const { rows } = await db.query(sql, [`${cleanInput}%`]);
   return rows;
+}
+
+
+// Helper function to insert a new ingredient or get existing ingredient ID by name. Will be used in updateRecipeWithIngredients.
+async function insertOrGetIngredientByName(name) {
+  const insertSql = `
+    INSERT INTO ingredients (name)
+    VALUES ($1)
+    ON CONFLICT (name) DO NOTHING
+    RETURNING id;
+  `;
+
+  const { rows } = await db.query(insertSql, [name]);
+
+  if (rows.length > 0) {
+    return rows[0].id;
+  }
+
+  const { rows: existing } = await db.query(
+    `SELECT id FROM ingredients WHERE name = $1;`,
+    [name]
+  );
+
+  return existing[0].id;
+}
+
+// UPDATE: recipe + ingredients, only if recipe belongs to this user
+export async function updateRecipeWithIngredients(
+  recipeId,
+  userId,
+  recipeData,
+  ingredients
+) {
+  // Start transaction to ensure both recipe and ingredients update together
+  await db.query("BEGIN");
+
+  try {
+    // Update the recipe itself
+    const updateSql = `
+      UPDATE recipes
+      SET
+        recipe_name        = $3,
+        description        = $4,
+        cuisine_type       = $5,
+        difficulty         = $6,
+        chef_rating        = $7,
+        number_of_servings = $8,
+        prep_time_minutes  = $9,
+        cook_time_minutes  = $10,
+        calories           = $11,
+        notes              = $12,
+        instructions       = $13,
+        picture_url        = $14
+      WHERE id = $1
+        AND user_id = $2
+      RETURNING *;
+    `;
+    // Prepare values array for parameterized query
+    const values = [
+      recipeId,
+      userId,
+      recipeData.recipe_name,
+      recipeData.description,
+      recipeData.cuisine_type ?? null,
+      recipeData.difficulty,
+      recipeData.chef_rating ?? null,
+      recipeData.number_of_servings,
+      recipeData.prep_time_minutes ?? null,
+      recipeData.cook_time_minutes ?? null,
+      recipeData.calories ?? null,
+      recipeData.notes ?? null,
+      recipeData.instructions,
+      recipeData.picture_url ?? null,
+    ];
+
+    const { rows: updatedRows } = await db.query(updateSql, values);
+
+    // If no row was updated, recipe either doesn't exist or isn't owned by user
+    if (updatedRows.length === 0) {
+      await db.query("ROLLBACK");
+      return null;
+    }
+
+    const updatedRecipe = updatedRows[0];
+
+    // Replace ingredient links so that only provided/updated ingredients remain
+    await db.query(
+      `DELETE FROM recipe_ingredients WHERE recipe_id = $1;`,
+      [recipeId]
+    );
+
+    if (Array.isArray(ingredients)) {
+      for (const item of ingredients) {
+        if (!item || !item.ingredientId) continue;
+
+        await db.query(
+          `
+          INSERT INTO recipe_ingredients (recipe_id, ingredient_id, quantity, unit)
+          VALUES ($1, $2, $3, $4);
+        `,
+          [
+            recipeId,
+            item.ingredientId,
+            item.quantity ?? null,
+            item.unit ?? null,
+          ]
+        );
+      }
+    }
+
+    await db.query("COMMIT");
+    return updatedRecipe;
+  } catch (error) {
+    await db.query("ROLLBACK");
+    throw error;
+  }
 }
