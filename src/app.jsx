@@ -25,8 +25,9 @@ export default function App() {
         <Route path="/login" element={<SignIn />} />
 
         {/* 👇 Replace the placeholder with your actual component */}
-        <Route path="/register" element={<RegisterPage/>} />
-        <Route path="/testlink" element={<TestRecipeCard/>}/>
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/recipe/:id" element={<TestRecipeCard />} />
+        
         <Route path="*" element={<div>404 - Page Not Found</div>} />
       </Routes>
     </>

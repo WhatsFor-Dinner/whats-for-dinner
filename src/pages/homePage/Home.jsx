@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
 import "./home.css";
 
 const Home = ({ searchTerm = "", onSearchChange = () => {} }) => {
+  const navigate = useNavigate();
   const [topRecipes, setTopRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -94,6 +96,7 @@ const Home = ({ searchTerm = "", onSearchChange = () => {} }) => {
                 key={recipe.id}
                 className="recipe-card"
                 style={{ animationDelay: `${index * 0.1}s` }}
+                onClick={() => navigate(`/recipe/${recipe.id}`)}
               >
                 <div className="recipe-image-placeholder">
                   {recipe.picture_url ? (

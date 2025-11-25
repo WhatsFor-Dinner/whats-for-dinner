@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router";
 import {
   getRecipe,
   updateRecipe,
@@ -69,11 +69,8 @@ export default function RecipeCard() {
       {recipe.image && <img src={recipe.image} alt={recipe.name} />}
       <h1>{recipe.name}</h1>
       <p>{recipe.cuisine}</p>
-      <p>{recipe.servings}</p>
       <p>{recipe.preTime}</p>
       <p>{recipe.cookTime}</p>
-      <p>{recipe.calories}</p>
-      {/* <p>{recipe.macros}</p> */}
       <p>{recipe.ingredients}</p>
       <p>{recipe.measurements}</p>
       <p>{recipe.instructions}</p>
