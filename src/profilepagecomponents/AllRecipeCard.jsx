@@ -2,15 +2,15 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router";
 import { useAuth } from "../Auth/Auth.jsx";
 import StarRating from "./StarRating.jsx";
+import LikeButton from "./Favorite.jsx";
 import "./RecipeCardDetails.css";
 
-function TestRecipeCard() {
+function AllRecipeCard() {
   const { id } = useParams();
   const { token } = useAuth();
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
 
   useEffect(() => {
     let isMounted = true;
@@ -20,25 +20,22 @@ function TestRecipeCard() {
       try {
         if (isMounted) setLoading(true);
 
-        
         const response = await fetch(`/recipes/${id}`, {
-          headers: token ? { Authorization: `Bearer ${token}` } : {}
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
         });
-        
+
         if (!response.ok) {
           throw new Error(`Failed to fetch recipe: ${response.statusText}`);
         }
-        
+
         const data = await response.json();
 
-        
         if (isMounted) {
           setRecipe(data);
           setError(null);
         }
       } catch (err) {
         if (isMounted) {
-          
           console.warn("Recipe not found", err.message);
           setRecipe(RecipeData);
           setError(null);
@@ -104,31 +101,37 @@ function TestRecipeCard() {
 
             {/* Recipe Meta Info - Now inside header section */}
             <div className="recipe-meta">
-              <div className="meta-item">
-                <span className="meta-label">Cuisine:</span>
-                <span className="meta-value">{recipe.cuisine_type}</span>
+              <div className="recipe-detail-item">
+                <span className="recipe-detail-label">Cuisine:</span>
+                <span className="recipe-detail-value">
+                  {recipe.cuisine_type}
+                </span>
               </div>
-              
-              <div className="meta-item">
-                <span className="meta-label">Servings:</span>
-                <span className="meta-value">{recipe.number_of_servings}</span>
+
+              <div className="recipe-detail-item">
+                <span className="recipe-detail-label">Servings:</span>
+                <span className="recipe-detail-value">
+                  {recipe.number_of_servings}
+                </span>
               </div>
-              <div className="meta-item">
-                <span className="meta-label">Prep Time:</span>
-                <span className="meta-value">
+              <div className="recipe-detail-item">
+                <span className="recipe-detail-label">Prep Time:</span>
+                <span className="recipe-detail-value">
                   {recipe.prep_time_minutes} min
                 </span>
               </div>
-              <div className="meta-item">
-                <span className="meta-label">Cook Time:</span>
-                <span className="meta-value">
+              <div className="recipe-detail-item">
+                <span className="recipe-detail-label">Cook Time:</span>
+                <span className="recipe-detail-value">
                   {recipe.cook_time_minutes} min
                 </span>
               </div>
-           
-              <div className="meta-item">
-                <span className="meta-label">Likes:</span>
-                <span className="meta-value">❤️ {recipe.like_count}</span>
+
+              <div className="recipe-detail-item">
+                <span className="recipe-detail-label">Likes:</span>
+                <span className="recipe-detail-value">
+                  ❤️ {recipe.like_count}
+                </span>
               </div>
             </div>
 
@@ -186,15 +189,15 @@ function TestRecipeCard() {
           </div>
         )}
 
-      
         <div className="recipe-actions">
-          <button className="btn btn-primary">❤️ Favorite</button>
-          <button className="btn btn-secondary">✏️ Update Recipe</button>
-          <button className="btn btn-danger">🗑️ Delete Recipe</button>
+          <LikeButton
+            recipeId={recipe.id}
+            initialFavorite={recipe.is_favorited}
+          />
         </div>
       </div>
     </section>
   );
 }
 
-export default TestRecipeCard;
+export default AllRecipeCard;

@@ -79,19 +79,19 @@
   border-radius: 6px;
   border-left: 3px solid #daa520;
 }
-.meta-item {
+.recipe-detail-item {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
-.meta-label {
+.recipe-detail-label {
   font-size: 10px;
   color: #888;
   text-transform: uppercase;
   font-weight: 600;
   letter-spacing: 0.5px;
 }
-.meta-value {
+.recipe-detail-value {
   font-size: 13px;
   color: #333;
   font-weight: 600;

@@ -66,7 +66,7 @@ function MyRecipes() {
           className={toggle === 2 ? "tabs active-tabs" : "tabs"}
           onClick={() => updateToggle(2)}
         >
-          Favorite Recipes
+         Liked Recipes
         </button>
       </div>
 

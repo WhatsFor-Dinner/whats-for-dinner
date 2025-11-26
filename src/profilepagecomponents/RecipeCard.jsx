@@ -79,6 +79,8 @@ export default function RecipeCard() {
       {token && <button onClick={tryDelete}>Delete Recipe</button>}
       {token && <StarRating />}
       {token && <FavoriteButton />}
+      <button className="btn btn-secondary">✏️ Update Recipe</button>
+          <button className="btn btn-danger">🗑️ Delete Recipe</button>
     </section>
   );
 }
