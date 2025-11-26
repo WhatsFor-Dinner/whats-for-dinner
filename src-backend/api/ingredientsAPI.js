@@ -8,7 +8,7 @@ import {
 } from "../db/queries/ingredients.js";
 
 // GET: Search ingredients by name, first in DB then in Spoonacular if not found. If found in Spoonacular, save to DB.
-router.get("/ingredients/search", async (req, res, next) => {
+router.get("/search", async (req, res, next) => {
   try {
     // if query is missing or undefined, set to empty string
     const searchTerm = (req.query.query || "").trim();
@@ -28,7 +28,7 @@ router.get("/ingredients/search", async (req, res, next) => {
     // If not found in DB, search Spoonacular API
     const apiKey = process.env.SPOONACULAR_API_KEY;
     const url = new URL(
-      "https://api.spoonacular.com/food/ingredients/autocomplete"
+      "https://api.spoonacular.com/food/ingredients/autocomplete" // Spoonacular endpoint for ingredient autocomplete
     );
 
     // Set URL parameters for the API request. Final URL will look like:

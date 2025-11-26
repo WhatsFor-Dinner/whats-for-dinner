@@ -1,44 +1,60 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../Auth/Auth.jsx";
-import { useParams } from "react-router";
-import { Link } from "react-router";
-import { getMyRecipes, getLikedRecipes } from "../../profileApi/recipes.js";
+import { Link, NavLink } from "react-router";
+import {
+  getMyRecipes,
+  getLikedRecipes,
+  getRecipe,
+} from "../profileApi/recipes.js";
 import RecipeList from "./RecipeList.jsx";
-/* 
-
-I want to have personally made recipes, saved recipes and favorite recipes. 
-*/
 
 function MyRecipes() {
   const { token, user } = useAuth();
   const [error, setError] = useState(null);
   const [myRecipes, setMyRecipes] = useState([]);
-  const [favoriteRecipes, setFavoriteRecipes] = useState([]);
+  const [likedRecipes, setLikedRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
+
     const getUserRecipes = async () => {
       if (!token || !user) return;
 
       try {
-        setLoading(true);
+        if (isMounted) {
+          setLoading(true);
+          setError(null);
+        }
 
         const myRecipesData = await getMyRecipes(token);
-        setMyRecipes(myRecipesData);
-
         const likedRecipesData = await getLikedRecipes(token);
-        setFavoriteRecipes(likedRecipesData);
-
-        setError(null);
+        const likedRecipesCard = await Promise.all(
+          likedRecipesData.map(async (liked) => {
+            const recipe = await getRecipe(liked.recipe_id);
+            return recipe;
+          })
+        );
+        if (isMounted) {
+          setMyRecipes(myRecipesData);
+          setLikedRecipes(likedRecipesCard.filter((recipe) => recipe !== null));
+        }
       } catch (error) {
-        setError(error.message);
-        console.error("Error fetching recipes:", error);
+        if (isMounted) {
+          setError(error.message);
+          console.error("Error fetching recipes:", error);
+          setMyRecipes([]);
+          setLikedRecipes([]);
+        }
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
 
     getUserRecipes();
+    return () => {
+      isMounted = false;
+    };
   }, [token, user]);
 
   const [toggle, setToggle] = useState(1);
@@ -60,7 +76,7 @@ function MyRecipes() {
           className={toggle === 2 ? "tabs active-tabs" : "tabs"}
           onClick={() => updateToggle(2)}
         >
-          Favorite Recipes
+          Liked Recipes
         </button>
       </div>
 
@@ -70,7 +86,7 @@ function MyRecipes() {
             <div className="login-message">
               <p>
                 Please <Link to="/register">create an account</Link> or{" "}
-                <Link to="/signin">log in</Link> to create and view your
+                <NavLink to="/login">log in</NavLink> to create and view your
                 recipes.
               </p>
             </div>
@@ -93,20 +109,20 @@ function MyRecipes() {
             <div className="login-message">
               <p>
                 Please <Link to="/register">create an account</Link> or{" "}
-                <Link to="/signin">log in</Link> to favorite recipes.
+                <NavLink to="/login">log in</NavLink> to like recipes.
               </p>
             </div>
           ) : loading ? (
-            <p>Loading your favorite recipes...</p>
+            <p>Loading your liked recipes...</p>
           ) : error ? (
             <p className="error-message">{error}</p>
-          ) : favoriteRecipes.length === 0 ? (
+          ) : likedRecipes.length === 0 ? (
             <p>
-              You haven't favorited any recipes yet. Start exploring recipes to
-              add to your favorites!
+              You haven't liked any recipes yet. Start exploring recipes to add
+              to your liked recipes!
             </p>
           ) : (
-            <RecipeList recipes={favoriteRecipes} />
+            <RecipeList recipes={likedRecipes} />
           )}
         </div>
       </div>

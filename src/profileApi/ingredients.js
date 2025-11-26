@@ -1,4 +1,4 @@
-const API = "/api";
+const API = "";
 
 export async function getIngredients() {
   try {

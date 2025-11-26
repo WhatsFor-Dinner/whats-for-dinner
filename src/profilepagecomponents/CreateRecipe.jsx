@@ -1,8 +1,8 @@
 import { useEffect, useId, useState } from "react";
 import { useParams, useNavigate } from "react-router";
 import { useAuth } from "../Auth/Auth.jsx";
-import { getIngredients, getIngredient } from "../../profileApi/ingredients.js";
-import { createRecipe } from "../../profileApi/recipes.js";
+import { getIngredients, getIngredient } from "../profileApi/ingredients.js";
+import { createRecipe } from "../profileApi/recipes.js";
 import Ingredients from "./Ingredients.jsx";
 import "./CreateRecipe.css";
 
@@ -17,15 +17,24 @@ function CreateRecipeCard({ syncRecipes }) {
   const [currentInstruction, setCurrentInstruction] = useState("");
 
   useEffect(() => {
+    let isMounted = true;
+
     const syncIngredients = async () => {
       try {
         const data = await getIngredient(id);
-        setIngredient(data);
+        if (isMounted) {
+          setIngredient(data);
+        }
       } catch (error) {
-        setError(error.message);
+        if (isMounted) {
+          setError(error.message);
+        }
       }
     };
     if (id) syncIngredients();
+    return () => {
+      isMounted = false;
+    };
   }, [id]);
 
   const handleAddIngredient = (ingredient) => {
@@ -70,9 +79,11 @@ function CreateRecipeCard({ syncRecipes }) {
     const image = formData.get("image");
     const name = formData.get("name");
     const cuisine = formData.get("cuisine");
+    const description = formData.get("description");
+    const difficulty = formData.get("difficulty");
+    const servings = formData.get("servings");
     const prepTime = formData.get("prepTime");
     const cookTime = formData.get("cookTime");
-    const macros = formData.get("macros");
     const calories = formData.get("calories");
     const notes = formData.get("notes");
 
@@ -80,27 +91,30 @@ function CreateRecipeCard({ syncRecipes }) {
     const cleanedInstructions = instructions.filter(
       (inst) => inst.trim() !== ""
     );
+    const instructionsText = cleanedInstructions.join("\n");
 
     // Convert selectedIngredients array to format expected by backend
     const ingredientsData = selectedIngredients.map((ing) => ({
-      id: ing.id,
+      ingredientId: ing.id,
       name: ing.name,
-      amount: ing.amount,
-      unit: ing.unit,
+      quantity: ing.amount || null,
+      unit: ing.unit || null,
     }));
 
     try {
       await createRecipe(token, {
-        image,
-        name,
-        cuisine,
-        prepTime,
-        cookTime,
-        macros,
-        calories,
+        recipe_name: name,
+        description: description,
+        difficulty: difficulty,
+        number_of_servings: parseInt(servings),
+        cuisine_type: cuisine || null,
+        prep_time_minutes: prepTime ? parseInt(prepTime) : null,
+        cook_time_minutes: cookTime ? parseInt(cookTime) : null,
+        calories: calories || null,
+        notes: notes || null,
+        instructions: instructionsText,
+        picture_url: image || null,
         ingredients: ingredientsData,
-        instructions: cleanedInstructions,
-        notes,
       });
       if (syncRecipes) syncRecipes();
       // Reset form
@@ -123,6 +137,7 @@ function CreateRecipeCard({ syncRecipes }) {
     <>
       <section className="create-recipe">
         <h2>Create A Recipe</h2>
+        {error && <p className="error-message">{error}</p>}
         <form onSubmit={handleSubmit}>
           {/* Top Section: Photo + Recipe Info */}
           <div className="recipe-header-section">
@@ -150,6 +165,39 @@ function CreateRecipeCard({ syncRecipes }) {
                   placeholder="e.g., Italian, Mexican"
                 />
               </label>
+
+              <label>
+                Description:
+                <textarea
+                  name="description"
+                  placeholder="Brief description of the recipe"
+                  rows="3"
+                  required
+                />
+              </label>
+
+              <div className="time-inputs-row">
+                <label>
+                  Difficulty:
+                  <select name="difficulty" required>
+                    <option value="">Select difficulty</option>
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                  </select>
+                </label>
+
+                <label>
+                  Servings:
+                  <input
+                    type="number"
+                    name="servings"
+                    min="1"
+                    placeholder="Number of servings"
+                    required
+                  />
+                </label>
+              </div>
 
               <div className="time-inputs-row">
                 <label>
@@ -184,12 +232,15 @@ function CreateRecipeCard({ syncRecipes }) {
           </div>
 
           <div className="ingredients-section">
-            <label>Ingredients:</label>
+            <label>Add Ingredients:</label>
             <Ingredients
               onAddIngredient={handleAddIngredient}
               selectedIngredients={selectedIngredients}
             />
+          </div>
 
+          <div className="selected-ingredients-section">
+            <label>Selected Ingredients:</label>
             <div className="selected-ingredients">
               {selectedIngredients.map((ing, index) => (
                 <div key={index} className="ingredient-item">
@@ -222,14 +273,11 @@ function CreateRecipeCard({ syncRecipes }) {
                       <option value="pint">pint</option>
                       <option value="quart">quart</option>
                       <option value="gallon">gallon</option>
-                      <option value="ml">milliliter (ml)</option>
-                      <option value="l">liter (l)</option>
                     </optgroup>
                     <optgroup label="Weight">
                       <option value="oz">ounce (oz)</option>
                       <option value="lb">pound (lb)</option>
-                      <option value="g">gram (g)</option>
-                      <option value="kg">kilogram (kg)</option>
+                     
                     </optgroup>
                     <optgroup label="Quantity">
                       <option value="piece">piece</option>
@@ -262,7 +310,7 @@ function CreateRecipeCard({ syncRecipes }) {
           <div className="instructions-section">
             <label>Prep Instructions:</label>
 
-            {/* Display existing instructions */}
+          
             {instructions.length > 0 && (
               <ol className="prep-instructions-list">
                 {instructions.map((instruction, index) => (
@@ -288,7 +336,6 @@ function CreateRecipeCard({ syncRecipes }) {
               </ol>
             )}
 
-            {/* Add new instruction */}
             <div className="add-instruction">
               <textarea
                 value={currentInstruction}
@@ -315,17 +362,7 @@ function CreateRecipeCard({ syncRecipes }) {
               placeholder="Add any special tips or notes..."
             />
           </label>
-
-          {/* <div className="health-info">
-            <label>
-              <b>Calorie total: </b>
-              <p type="text" name="recipe name"></p>
-              <p>Protien:</p>
-              <p>Carbs:</p>
-              <p>Fats:</p>
-              <span>Numer of Servings:</span>
-            </label>
-          </div> */}
+ 
           <section>
             <button type="submit" className="create-recipe-button">
               Create Recipe

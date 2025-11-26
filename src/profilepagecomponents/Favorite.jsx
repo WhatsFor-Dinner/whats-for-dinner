@@ -2,24 +2,24 @@ import { useState } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { useAuth } from "../Auth/Auth";
 
-const API = import.meta.env.VITE_API_URL || "/api";
+const API = import.meta.env.VITE_API_URL || "";
 
-function FavoriteButton({ recipeId, initialFavorite = false }) {
-  const [isFavorite, setIsFavorite] = useState(initialFavorite);
+function LikeButton({ recipeId, initialLiked = false }) {
+  const [isLiked, setIsLiked] = useState(initialLiked);
   const { token } = useAuth();
 
-  const handleFavorite = async () => {
+  const handleLike = async () => {
     if (!token) {
-      alert("Please log in to favorite recipes");
+      alert("Please log in to like recipes");
       return;
     }
 
-    const newFavorite = !isFavorite;
-    setIsFavorite(newFavorite);
+    const newLiked = !isLiked;
+    setIsLiked(newLiked);
 
     try {
-      const response = await fetch(`${API}/favorites/${recipeId}`, {
-        method: newFavorite ? "POST" : "DELETE",
+      const response = await fetch(`${API}/recipes/${recipeId}/like`, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -27,25 +27,30 @@ function FavoriteButton({ recipeId, initialFavorite = false }) {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to update favorite status");
+        throw new Error("Failed to update liked status");
       }
+
+      const result = await response.json();
+    
+      setIsLiked(result.liked);
     } catch (error) {
-      console.error("Error updating favorite:", error);
-      
-      setIsFavorite(!newFavorite);
-      alert("Failed to update favorite status");
+      console.error("Error updating liked:", error);
+      setIsLiked(!newLiked);
+      alert("Failed to update liked status");
     }
   };
 
   return (
     <button
-      className="favorite-button"
-      onClick={handleFavorite}
-      aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+      className="like-button"
+      onClick={handleLike}
+      aria-label={
+        isLiked ? "Remove from liked recipes" : "Add to liked recipes"
+      }
     >
-      {isFavorite ? <FaHeart color="red" /> : <FaRegHeart color="gray" />}
+      {isLiked ? <FaHeart color="red" /> : <FaRegHeart color="gray" />}
     </button>
   );
 }
 
-export default FavoriteButton;
+export default LikeButton;

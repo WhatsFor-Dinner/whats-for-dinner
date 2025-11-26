@@ -21,6 +21,10 @@ router
       const token = await createToken({ id: user.id });
       res.status(201).send(token);
     } catch (error) {
+      if (error.code === "23505") {
+        // unique violation error code from Postgres
+        return res.status(409).send("Username already exists.");
+      }
       next(error);
     }
   });

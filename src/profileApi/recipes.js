@@ -1,4 +1,4 @@
-const API = "/api";
+const API = "";
 
 export async function getRecipes(token, userId) {
   try {
@@ -29,7 +29,7 @@ export async function createRecipe(token, recipe) {
   if (!token) {
     throw Error("You must be logged in to create a recipe.");
   }
-  const response = await fetch(API + "/recipes", {
+  const response = await fetch(API + "/recipes/create", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -66,7 +66,7 @@ export async function updateRecipe(token, id, recipeData) {
   }
 
   const response = await fetch(API + "/recipes/" + id, {
-    method: "PUT",
+    method: "PATCH",
     headers: {
       "Content-Type": "application/json",
       Authorization: "Bearer " + token,
@@ -94,7 +94,9 @@ export async function getMyRecipes(token) {
         Authorization: "Bearer " + token,
       },
     });
-
+    if (response.status === 404) {
+      return [];
+    }
     if (!response.ok) {
       throw Error("Failed to fetch your recipes.");
     }

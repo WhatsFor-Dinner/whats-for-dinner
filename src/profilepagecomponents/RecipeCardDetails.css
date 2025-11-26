@@ -12,7 +12,7 @@
   text-align: center;
 }
 .recipe-card-header {
-  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+  background: linear-gradient(135deg, #b98a58 0%, #8f5e34 100%);
   padding: 15px 20px;
   color: #fff;
   text-align: center;
@@ -79,19 +79,19 @@
   border-radius: 6px;
   border-left: 3px solid #daa520;
 }
-.meta-item {
+.recipe-detail-item {
   display: flex;
   flex-direction: column;
   gap: 2px;
 }
-.meta-label {
+.recipe-detail-label {
   font-size: 10px;
   color: #888;
   text-transform: uppercase;
   font-weight: 600;
   letter-spacing: 0.5px;
 }
-.meta-value {
+.recipe-detail-value {
   font-size: 13px;
   color: #333;
   font-weight: 600;
@@ -202,6 +202,46 @@
   margin-top: 20px;
   padding-top: 20px;
   border-top: 2px solid #f0f0f0;
+  align-items: center;
+}
+
+.owner-actions {
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.update-recipe-btn,
+.delete-recipe-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.update-recipe-btn {
+  background-color: goldenrod;
+  color: white;
+}
+
+.update-recipe-btn:hover {
+  background: linear-gradient(135deg, #8f5e34, #6b4423);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(185, 138, 88, 0.3);
+}
+
+.delete-recipe-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.delete-recipe-btn:hover {
+  background-color: #c82333;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(220, 53, 69, 0.3);
 }
 .recipe-actions .btn {
   flex: 1;

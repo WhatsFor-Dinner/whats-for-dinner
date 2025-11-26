@@ -13,7 +13,7 @@ export default function RecipeList({ recipes }) {
 function RecipeListItem({ recipe }) {
   return (
     <li>
-      <Link to={"/recipes/" + recipe.id}>
+      <Link to={"/recipe/" + recipe.id}>
         {recipe.picture_url && (
           <img src={recipe.picture_url} alt={recipe.recipe_name} />
         )}

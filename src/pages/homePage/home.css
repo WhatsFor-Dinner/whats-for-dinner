@@ -465,9 +465,21 @@ body {
   background: linear-gradient(180deg, var(--wood-1), var(--wood-2));
   color: white;
   border: none;
-  border-radius: 999px;
+  border-radius: 8px;
   cursor: pointer;
   box-shadow: 0 8px 18px rgba(140, 100, 70, 0.15);
+  transition: all 0.3s ease;
+}
+
+.search-button:hover {
+  background: linear-gradient(180deg, #c4985f, #9b6a3c);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(140, 100, 70, 0.25);
+}
+
+.search-button:active {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(140, 100, 70, 0.2);
 }
 
 /* Responsive tweaks */
