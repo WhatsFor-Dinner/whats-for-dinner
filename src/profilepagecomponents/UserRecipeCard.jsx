@@ -6,10 +6,10 @@ import {
   deleteRecipe,
 } from "../profileApi/recipe.jsx";
 import { useAuth } from "../Auth/Auth.jsx";
-import StarRating from "./StarRating";
-import FavoriteButton from "./Favorite";
+import StarRating from "./StarRating.jsx";
+import LikeButton from "./Favorite.jsx";
 
-export default function RecipeCard() {
+export default function UserRecipeCard() {
   const { token, currentUser } = useAuth();
   const { id } = useParams();
   const navigate = useNavigate();
@@ -71,6 +71,9 @@ export default function RecipeCard() {
       <p>{recipe.cuisine}</p>
       <p>{recipe.preTime}</p>
       <p>{recipe.cookTime}</p>
+      <p>{recipe.description}</p>
+      <p>{recipe.difficulty}</p>
+      <p>{repipe.numberof}</p>
       <p>{recipe.ingredients}</p>
       <p>{recipe.measurements}</p>
       <p>{recipe.instructions}</p>
@@ -78,7 +81,9 @@ export default function RecipeCard() {
       {token && <button onClick={tryUpdate}>Update Recipe</button>}
       {token && <button onClick={tryDelete}>Delete Recipe</button>}
       {token && <StarRating />}
-      {token && <FavoriteButton />}
+      {token && <LikeButton />}
+      <button className="btn btn-secondary">✏️ Update Recipe</button>
+      <button className="btn btn-danger">🗑️ Delete Recipe</button>
     </section>
   );
 }

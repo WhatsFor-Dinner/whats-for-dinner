@@ -79,9 +79,11 @@ function CreateRecipeCard({ syncRecipes }) {
     const image = formData.get("image");
     const name = formData.get("name");
     const cuisine = formData.get("cuisine");
+    const description = formData.get("description");
+    const difficulty = formData.get("difficulty");
+    const servings = formData.get("servings");
     const prepTime = formData.get("prepTime");
     const cookTime = formData.get("cookTime");
-    const macros = formData.get("macros");
     const calories = formData.get("calories");
     const notes = formData.get("notes");
 
@@ -102,9 +104,12 @@ function CreateRecipeCard({ syncRecipes }) {
     try {
       await createRecipe(token, {
         recipe_name: name,
+        description: description,
+        difficulty: difficulty,
+        number_of_servings: parseInt(servings),
         cuisine_type: cuisine || null,
-        prep_time_minutes: prepTime || null,
-        cook_time_minutes: cookTime || null,
+        prep_time_minutes: prepTime ? parseInt(prepTime) : null,
+        cook_time_minutes: cookTime ? parseInt(cookTime) : null,
         calories: calories || null,
         notes: notes || null,
         instructions: instructionsText,
@@ -160,6 +165,39 @@ function CreateRecipeCard({ syncRecipes }) {
                   placeholder="e.g., Italian, Mexican"
                 />
               </label>
+
+              <label>
+                Description:
+                <textarea
+                  name="description"
+                  placeholder="Brief description of the recipe"
+                  rows="3"
+                  required
+                />
+              </label>
+
+              <div className="time-inputs-row">
+                <label>
+                  Difficulty:
+                  <select name="difficulty" required>
+                    <option value="">Select difficulty</option>
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                  </select>
+                </label>
+
+                <label>
+                  Servings:
+                  <input
+                    type="number"
+                    name="servings"
+                    min="1"
+                    placeholder="Number of servings"
+                    required
+                  />
+                </label>
+              </div>
 
               <div className="time-inputs-row">
                 <label>
@@ -235,14 +273,11 @@ function CreateRecipeCard({ syncRecipes }) {
                       <option value="pint">pint</option>
                       <option value="quart">quart</option>
                       <option value="gallon">gallon</option>
-                      <option value="ml">milliliter (ml)</option>
-                      <option value="l">liter (l)</option>
                     </optgroup>
                     <optgroup label="Weight">
                       <option value="oz">ounce (oz)</option>
                       <option value="lb">pound (lb)</option>
-                      <option value="g">gram (g)</option>
-                      <option value="kg">kilogram (kg)</option>
+                     
                     </optgroup>
                     <optgroup label="Quantity">
                       <option value="piece">piece</option>
@@ -275,7 +310,7 @@ function CreateRecipeCard({ syncRecipes }) {
           <div className="instructions-section">
             <label>Prep Instructions:</label>
 
-            {/* Display existing instructions */}
+          
             {instructions.length > 0 && (
               <ol className="prep-instructions-list">
                 {instructions.map((instruction, index) => (
@@ -301,7 +336,6 @@ function CreateRecipeCard({ syncRecipes }) {
               </ol>
             )}
 
-            {/* Add new instruction */}
             <div className="add-instruction">
               <textarea
                 value={currentInstruction}
@@ -328,17 +362,7 @@ function CreateRecipeCard({ syncRecipes }) {
               placeholder="Add any special tips or notes..."
             />
           </label>
-
-          {/* <div className="health-info">
-            <label>
-              <b>Calorie total: </b>
-              <p type="text" name="recipe name"></p>
-              <p>Protien:</p>
-              <p>Carbs:</p>
-              <p>Fats:</p>
-              <span>Numer of Servings:</span>
-            </label>
-          </div> */}
+ 
           <section>
             <button type="submit" className="create-recipe-button">
               Create Recipe
