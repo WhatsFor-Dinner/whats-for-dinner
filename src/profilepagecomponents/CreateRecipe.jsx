@@ -89,27 +89,27 @@ function CreateRecipeCard({ syncRecipes }) {
     const cleanedInstructions = instructions.filter(
       (inst) => inst.trim() !== ""
     );
+    const instructionsText = cleanedInstructions.join("\n");
 
     // Convert selectedIngredients array to format expected by backend
     const ingredientsData = selectedIngredients.map((ing) => ({
-      id: ing.id,
+      ingredientId: ing.id,
       name: ing.name,
-      amount: ing.amount,
-      unit: ing.unit,
+      quantity: ing.amount || null,
+      unit: ing.unit || null,
     }));
 
     try {
       await createRecipe(token, {
-        image,
-        name,
-        cuisine,
-        prepTime,
-        cookTime,
-        macros,
-        calories,
+        recipe_name: name,
+        cuisine_type: cuisine || null,
+        prep_time_minutes: prepTime || null,
+        cook_time_minutes: cookTime || null,
+        calories: calories || null,
+        notes: notes || null,
+        instructions: instructionsText,
+        picture_url: image || null,
         ingredients: ingredientsData,
-        instructions: cleanedInstructions,
-        notes,
       });
       if (syncRecipes) syncRecipes();
       // Reset form
@@ -132,6 +132,7 @@ function CreateRecipeCard({ syncRecipes }) {
     <>
       <section className="create-recipe">
         <h2>Create A Recipe</h2>
+        {error && <p className="error-message">{error}</p>}
         <form onSubmit={handleSubmit}>
           {/* Top Section: Photo + Recipe Info */}
           <div className="recipe-header-section">

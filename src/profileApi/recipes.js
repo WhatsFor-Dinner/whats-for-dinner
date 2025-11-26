@@ -66,7 +66,7 @@ export async function updateRecipe(token, id, recipeData) {
   }
 
   const response = await fetch(API + "/recipes/" + id, {
-    method: "PUT",
+    method: "PATCH",
     headers: {
       "Content-Type": "application/json",
       Authorization: "Bearer " + token,
