@@ -42,7 +42,7 @@ function LikeButton({ recipeId, initialLiked = false }) {
 
   return (
     <button
-      className="favorite-button"
+      className="like-button"
       onClick={handleLike}
       aria-label={
         isLiked ? "Remove from liked recipes" : "Add to liked recipes"

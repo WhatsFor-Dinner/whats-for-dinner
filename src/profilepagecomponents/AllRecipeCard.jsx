@@ -5,7 +5,7 @@ import StarRating from "./StarRating.jsx";
 import LikeButton from "./Favorite.jsx";
 import "./RecipeCardDetails.css";
 
-function AllRecipeCard() {
+export default function AllRecipeCard() {
   const { id } = useParams();
   const { token } = useAuth();
   const [recipe, setRecipe] = useState(null);
@@ -190,14 +190,11 @@ function AllRecipeCard() {
         )}
 
         <div className="recipe-actions">
-          <LikeButton
-            recipeId={recipe.id}
-            initialFavorite={recipe.is_favorited}
-          />
+          <LikeButton recipeId={recipe.id} initialLiked={recipe.is_liked} />
         </div>
       </div>
     </section>
   );
 }
 
-export default AllRecipeCard;
+

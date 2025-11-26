@@ -1,18 +1,20 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../Auth/Auth.jsx";
 import { Link, NavLink } from "react-router";
-import { getMyRecipes, getLikedRecipes } from "../profileApi/recipes.js";
+import { getMyRecipes, getLikedRecipes, getRecipe } from "../profileApi/recipes.js";
 import RecipeList from "./RecipeList.jsx";
+
 
 function MyRecipes() {
   const { token, user } = useAuth();
   const [error, setError] = useState(null);
   const [myRecipes, setMyRecipes] = useState([]);
-  const [favoriteRecipes, setFavoriteRecipes] = useState([]);
+  const [likedRecipes, setLikedRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let isMounted = true;
+    
     const getUserRecipes = async () => {
       if (!token || !user) return;
 
@@ -24,17 +26,22 @@ function MyRecipes() {
 
         const myRecipesData = await getMyRecipes(token);
         const likedRecipesData = await getLikedRecipes(token);
-
+        const likedRecipesCard = await Promise.all(
+          likedRecipesData.map (async (liked) => {
+            const recipe = await getRecipe (liked.recipe_id)
+            return recipe;
+          })
+        )
         if (isMounted) {
           setMyRecipes(myRecipesData);
-          setFavoriteRecipes(likedRecipesData);
+          setLikedRecipes(likedRecipesCard.filter (recipe =>  recipe !== null));
         }
       } catch (error) {
         if (isMounted) {
           setError(error.message);
           console.error("Error fetching recipes:", error);
           setMyRecipes([]);
-          setFavoriteRecipes([]);
+          setLikedRecipes([]);
         }
       } finally {
         if (isMounted) setLoading(false);
@@ -66,7 +73,7 @@ function MyRecipes() {
           className={toggle === 2 ? "tabs active-tabs" : "tabs"}
           onClick={() => updateToggle(2)}
         >
-         Liked Recipes
+          Liked Recipes
         </button>
       </div>
 
@@ -99,20 +106,20 @@ function MyRecipes() {
             <div className="login-message">
               <p>
                 Please <Link to="/register">create an account</Link> or{" "}
-                <NavLink to="/login">log in</NavLink> to favorite recipes.
+                <NavLink to="/login">log in</NavLink> to like recipes.
               </p>
             </div>
           ) : loading ? (
-            <p>Loading your favorite recipes...</p>
+            <p>Loading your liked recipes...</p>
           ) : error ? (
             <p className="error-message">{error}</p>
-          ) : favoriteRecipes.length === 0 ? (
+          ) : likedRecipes.length === 0 ? (
             <p>
-              You haven't favorited any recipes yet. Start exploring recipes to
-              add to your favorites!
+              You haven't liked any recipes yet. Start exploring recipes to add
+              to your liked recipes!
             </p>
           ) : (
-            <RecipeList recipes={favoriteRecipes} />
+            <RecipeList recipes={likedRecipes} />
           )}
         </div>
       </div>

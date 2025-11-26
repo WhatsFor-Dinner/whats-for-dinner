@@ -28,7 +28,7 @@ export default function App() {
 
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/recipe/:id" element={<AllRecipeCard />} />
-        
+        <Route path="/recipe/:id/liked" element={<AllRecipeCard/>}/>
         <Route path="*" element={<div>404 - Page Not Found</div>} />
       </Routes>
     </>

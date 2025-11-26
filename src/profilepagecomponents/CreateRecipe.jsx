@@ -79,9 +79,11 @@ function CreateRecipeCard({ syncRecipes }) {
     const image = formData.get("image");
     const name = formData.get("name");
     const cuisine = formData.get("cuisine");
+    const description = formData.get("description");
+    const difficulty = formData.get("difficulty");
+    const servings = formData.get("servings");
     const prepTime = formData.get("prepTime");
     const cookTime = formData.get("cookTime");
-    const macros = formData.get("macros");
     const calories = formData.get("calories");
     const notes = formData.get("notes");
 
@@ -102,9 +104,12 @@ function CreateRecipeCard({ syncRecipes }) {
     try {
       await createRecipe(token, {
         recipe_name: name,
+        description: description,
+        difficulty: difficulty,
+        number_of_servings: parseInt(servings),
         cuisine_type: cuisine || null,
-        prep_time_minutes: prepTime || null,
-        cook_time_minutes: cookTime || null,
+        prep_time_minutes: prepTime ? parseInt(prepTime) : null,
+        cook_time_minutes: cookTime ? parseInt(cookTime) : null,
         calories: calories || null,
         notes: notes || null,
         instructions: instructionsText,
@@ -160,6 +165,39 @@ function CreateRecipeCard({ syncRecipes }) {
                   placeholder="e.g., Italian, Mexican"
                 />
               </label>
+
+              <label>
+                Description:
+                <textarea
+                  name="description"
+                  placeholder="Brief description of the recipe"
+                  rows="3"
+                  required
+                />
+              </label>
+
+              <div className="time-inputs-row">
+                <label>
+                  Difficulty:
+                  <select name="difficulty" required>
+                    <option value="">Select difficulty</option>
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                  </select>
+                </label>
+
+                <label>
+                  Servings:
+                  <input
+                    type="number"
+                    name="servings"
+                    min="1"
+                    placeholder="Number of servings"
+                    required
+                  />
+                </label>
+              </div>
 
               <div className="time-inputs-row">
                 <label>
