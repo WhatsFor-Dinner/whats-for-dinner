@@ -145,6 +145,7 @@ body {
 
 .create-recipe input[type="text"],
 .create-recipe input[type="number"],
+.create-recipe select,
 .create-recipe textarea {
   padding: 0.75rem;
   border: 1px solid #ccc;
@@ -154,6 +155,7 @@ body {
 }
 
 .create-recipe input:focus,
+.create-recipe select:focus,
 .create-recipe textarea:focus {
   outline: none;
   border-color: #4caf50;
@@ -325,7 +327,6 @@ body {
 }
 
 /* Submit button styling */
-
 .create-recipe-button {
   background: linear-gradient(180deg, #b98a58, #8f5e34);
   color: white;
@@ -350,20 +351,7 @@ body {
   background-color: #3d8b40;
 }
 
-/* Health Info Section */
-.health-info {
-  background-color: #f9f9f9;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin: 1.5rem 0;
-}
 
-.health-info p,
-.health-info span {
-  margin: 0.5rem 0;
-  color: #666;
-}
 
 /* Center the submit button */
 .create-recipe form > section {

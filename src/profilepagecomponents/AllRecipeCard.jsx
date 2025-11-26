@@ -1,13 +1,15 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import { useAuth } from "../Auth/Auth.jsx";
+import { deleteRecipe } from "../profileApi/recipes.js";
 import StarRating from "./StarRating.jsx";
 import LikeButton from "./Favorite.jsx";
 import "./RecipeCardDetails.css";
 
 export default function AllRecipeCard() {
   const { id } = useParams();
-  const { token } = useAuth();
+  const { token, user } = useAuth();
+  const navigate = useNavigate();
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -15,7 +17,6 @@ export default function AllRecipeCard() {
   useEffect(() => {
     let isMounted = true;
 
-    // Fetch recipe from backend
     const fetchRecipe = async () => {
       try {
         if (isMounted) setLoading(true);
@@ -53,6 +54,23 @@ export default function AllRecipeCard() {
     };
   }, [id, token]);
 
+  const handleDelete = async () => {
+    if (!window.confirm("Are you sure you want to delete this recipe?")) {
+      return;
+    }
+
+    try {
+      await deleteRecipe(token, recipe.id);
+      navigate("/profilepage");
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const handleUpdate = () => {
+    navigate(`/recipe/${id}/edit`);
+  };
+
   if (loading) {
     return (
       <div className="test-recipe-card loading">
@@ -84,28 +102,29 @@ export default function AllRecipeCard() {
       </div>
 
       <div className="recipe-card-content">
-        {/* Recipe Header Section - Image and Info Side by Side */}
         <div className="recipe-header-section">
-          {/* Recipe Image */}
           {recipe.picture_url && (
             <div className="recipe-image-container">
               <img src={recipe.picture_url} alt={recipe.recipe_name} />
             </div>
           )}
 
-          {/* Recipe Header Info and Meta Data */}
           <div className="recipe-header-info">
             <h1>{recipe.recipe_name}</h1>
             <p className="recipe-author">By: {recipe.username}</p>
             <p className="recipe-description">{recipe.description}</p>
 
-            {/* Recipe Meta Info - Now inside header section */}
             <div className="recipe-meta">
               <div className="recipe-detail-item">
                 <span className="recipe-detail-label">Cuisine:</span>
                 <span className="recipe-detail-value">
                   {recipe.cuisine_type}
                 </span>
+              </div>
+
+              <div className="recipe-detail-item">
+                <span className="recipe-detail-label">Difficulty:</span>
+                <span className="recipe-detail-value">{recipe.difficulty}</span>
               </div>
 
               <div className="recipe-detail-item">
@@ -143,7 +162,6 @@ export default function AllRecipeCard() {
           </div>
         </div>
 
-        {/* Ingredients and Instructions Side by Side */}
         <div className="recipe-content-row">
           {/* Ingredients Section */}
           <div className="recipe-section">
@@ -164,7 +182,6 @@ export default function AllRecipeCard() {
             </ul>
           </div>
 
-          {/* Instructions Section */}
           <div className="recipe-section">
             <h3>Instructions</h3>
             <ol className="instructions-list">
@@ -181,7 +198,6 @@ export default function AllRecipeCard() {
           </div>
         </div>
 
-        {/* Chef Notes */}
         {recipe.notes && (
           <div className="recipe-section">
             <h3>Chef's Notes</h3>
@@ -191,10 +207,18 @@ export default function AllRecipeCard() {
 
         <div className="recipe-actions">
           <LikeButton recipeId={recipe.id} initialLiked={recipe.is_liked} />
+          {user && recipe.user_id === user.id && (
+            <div className="owner-actions">
+              <button onClick={handleUpdate} className="update-recipe-btn">
+                 Update Recipe
+              </button>
+              <button onClick={handleDelete} className="delete-recipe-btn">
+                Delete Recipe
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </section>
   );
 }
-
-

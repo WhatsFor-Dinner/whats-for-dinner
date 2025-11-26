@@ -4,6 +4,17 @@ import { useNavigate } from "react-router";
 // Create the Auth Context
 const AuthContext = createContext();
 
+// Helper function to decode JWT token and extract user ID
+function decodeToken(token) {
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload;
+  } catch (error) {
+    console.error("Failed to decode token:", error);
+    return null;
+  }
+}
+
 // Provider component to wrap your app
 export function AuthProvider({ children }) {
   const navigate = useNavigate();
@@ -41,28 +52,12 @@ export function AuthProvider({ children }) {
       const savedUser = localStorage.getItem("user");
 
       if (savedToken && !savedUser) {
-        try {
-          const response = await fetch("/profile", {
-            headers: {
-              Authorization: `Bearer ${savedToken}`,
-            },
-          });
-
-          if (!response.ok) {
-            // Token is invalid, clear it
-            localStorage.removeItem("token");
-            if (isMounted) {
-              setToken(null);
-              setUser(null);
-            }
-          } else {
-            const userData = await response.json();
-            if (isMounted) {
-              setUser(userData);
-            }
-          }
-        } catch (err) {
-          console.error("Token validation failed:", err);
+        // Decode token to get user ID
+        const payload = decodeToken(savedToken);
+        if (payload?.id && isMounted) {
+          setUser({ id: payload.id });
+        } else {
+          // Invalid token
           localStorage.removeItem("token");
           if (isMounted) {
             setToken(null);
@@ -97,7 +92,11 @@ export function AuthProvider({ children }) {
 
       const token = await response.text();
       setToken(token);
-      setUser({ username });
+
+      // Decode token to get user ID
+      const payload = decodeToken(token);
+      setUser({ username, id: payload?.id });
+
       navigate("/profilepage");
     } catch (err) {
       setError(err.message);
@@ -128,7 +127,11 @@ export function AuthProvider({ children }) {
 
       const token = await response.text();
       setToken(token);
-      setUser({ username });
+
+      // Decode token to get user ID
+      const payload = decodeToken(token);
+      setUser({ username, id: payload?.id });
+
       navigate("/profilepage");
     } catch (err) {
       setError(err.message);

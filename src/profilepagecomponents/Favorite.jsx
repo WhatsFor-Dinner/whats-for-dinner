@@ -31,7 +31,7 @@ function LikeButton({ recipeId, initialLiked = false }) {
       }
 
       const result = await response.json();
-      // Backend returns { liked: true } or { liked: false }
+    
       setIsLiked(result.liked);
     } catch (error) {
       console.error("Error updating liked:", error);

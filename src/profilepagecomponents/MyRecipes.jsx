@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../Auth/Auth.jsx";
 import { Link, NavLink } from "react-router";
-import { getMyRecipes, getLikedRecipes, getRecipe } from "../profileApi/recipes.js";
+import {
+  getMyRecipes,
+  getLikedRecipes,
+  getRecipe,
+} from "../profileApi/recipes.js";
 import RecipeList from "./RecipeList.jsx";
-
 
 function MyRecipes() {
   const { token, user } = useAuth();
@@ -14,7 +17,7 @@ function MyRecipes() {
 
   useEffect(() => {
     let isMounted = true;
-    
+
     const getUserRecipes = async () => {
       if (!token || !user) return;
 
@@ -27,14 +30,14 @@ function MyRecipes() {
         const myRecipesData = await getMyRecipes(token);
         const likedRecipesData = await getLikedRecipes(token);
         const likedRecipesCard = await Promise.all(
-          likedRecipesData.map (async (liked) => {
-            const recipe = await getRecipe (liked.recipe_id)
+          likedRecipesData.map(async (liked) => {
+            const recipe = await getRecipe(liked.recipe_id);
             return recipe;
           })
-        )
+        );
         if (isMounted) {
           setMyRecipes(myRecipesData);
-          setLikedRecipes(likedRecipesCard.filter (recipe =>  recipe !== null));
+          setLikedRecipes(likedRecipesCard.filter((recipe) => recipe !== null));
         }
       } catch (error) {
         if (isMounted) {

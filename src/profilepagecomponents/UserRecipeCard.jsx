@@ -71,6 +71,9 @@ export default function UserRecipeCard() {
       <p>{recipe.cuisine}</p>
       <p>{recipe.preTime}</p>
       <p>{recipe.cookTime}</p>
+      <p>{recipe.description}</p>
+      <p>{recipe.difficulty}</p>
+      <p>{repipe.numberof}</p>
       <p>{recipe.ingredients}</p>
       <p>{recipe.measurements}</p>
       <p>{recipe.instructions}</p>
