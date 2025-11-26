@@ -1,50 +1,98 @@
-import { useState, useEffect } from 'react';
-import './home.css';
+import { useState, useEffect } from "react";
+import "./home.css";
 
-const Home = ({ searchTerm = '', onSearchChange = () => {} }) => {
+const Home = ({ searchTerm = "", onSearchChange = () => {} }) => {
   const [topRecipes, setTopRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filteredRecipes, setFilteredRecipes] = useState([]);
 
-  // Fetch top recipes from backend
+  // Fetch initial top recipes from backend (top 10)
   useEffect(() => {
+    let cancelled = false;
     const fetchTopRecipes = async () => {
       try {
         setLoading(true);
         setError(null);
-        const response = await fetch('/api/home');
+        const response = await fetch("/api/top-ten");
         if (!response.ok) {
-          throw new Error(`Failed to fetch recipes: ${response.statusText}`);
+          throw new Error(
+            `Failed to fetch top recipes: ${response.statusText}`
+          );
         }
         const data = await response.json();
-        setTopRecipes(Array.isArray(data) ? data : data.recipes || []);
-        setFilteredRecipes(Array.isArray(data) ? data : data.recipes || []);
+        const rows = Array.isArray(data) ? data : data.recipes || [];
+        if (!cancelled) {
+          setTopRecipes(rows);
+          setFilteredRecipes(rows);
+        }
       } catch (err) {
-        console.error('Error fetching recipes:', err);
-        setError(err.message);
-        setTopRecipes([]);
-        setFilteredRecipes([]);
+        console.error("Error fetching top recipes:", err);
+        if (!cancelled) {
+          setError(err.message);
+          setTopRecipes([]);
+          setFilteredRecipes([]);
+        }
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
 
     fetchTopRecipes();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  // Filter recipes based on search term (from navbar)
+  // Server-driven search: when searchTerm changes, request backend search endpoint (debounced)
   useEffect(() => {
-    if (searchTerm.trim() === '') {
+    let isCancelled = false;
+    // if no search term, show topRecipes (already set)
+    if (searchTerm.trim() === "") {
       setFilteredRecipes(topRecipes);
-    } else {
-      const filtered = topRecipes.filter((recipe) => {
-        const name = recipe.recipe_name || recipe.name || '';
-        return name.toLowerCase().includes(searchTerm.toLowerCase());
-      });
-      setFilteredRecipes(filtered);
+      return;
     }
-  }, [searchTerm, topRecipes]);
+
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    const t = setTimeout(async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const q = encodeURIComponent(searchTerm.trim());
+        const res = await fetch(`/api/recipes?query=${q}`, { signal });
+        if (!res.ok) {
+          throw new Error(`Search failed: ${res.statusText}`);
+        }
+        const results = await res.json();
+        if (!isCancelled) {
+          const rows = Array.isArray(results) ? results : results.recipes || [];
+          setFilteredRecipes(rows);
+        }
+      } catch (err) {
+        if (err.name === "AbortError") return;
+        console.error("Search error:", err);
+        if (!isCancelled) {
+          setError(err.message);
+          setFilteredRecipes([]);
+        }
+      } finally {
+        if (!isCancelled) setLoading(false);
+      }
+    }, 300); // 300ms debounce
+
+    return () => {
+      isCancelled = true;
+      controller.abort();
+      clearTimeout(t);
+    };
+  }, [searchTerm]);
+
+  const handleRecipeClick = () => {
+    // Clear search bar when user clicks on a recipe
+    onSearchChange("");
+  };
 
   return (
     <div className="home">
@@ -60,7 +108,7 @@ const Home = ({ searchTerm = '', onSearchChange = () => {} }) => {
 
       <div className="top-recipes-section">
         <h2>Top Recipes</h2>
-        
+
         {loading && (
           <div className="loading-state">
             <div className="spinner"></div>
@@ -71,21 +119,27 @@ const Home = ({ searchTerm = '', onSearchChange = () => {} }) => {
         {error && (
           <div className="error-state">
             <p>⚠️ {error}</p>
-            <p className="error-hint">Please make sure the backend server is running on port 3000</p>
+            <p className="error-hint">
+              Please make sure the backend server is running on port 3000
+            </p>
           </div>
         )}
 
         {!loading && !error && filteredRecipes.length > 0 ? (
           <div className="recipes-grid">
             {filteredRecipes.map((recipe, index) => (
-              <div 
-                key={recipe.id} 
+              <div
+                key={recipe.id}
                 className="recipe-card"
                 style={{ animationDelay: `${index * 0.1}s` }}
+                onClick={handleRecipeClick}
               >
                 <div className="recipe-image-placeholder">
                   {recipe.picture_url ? (
-                    <img src={recipe.picture_url} alt={recipe.recipe_name || recipe.name} />
+                    <img
+                      src={recipe.picture_url}
+                      alt={recipe.recipe_name || recipe.name}
+                    />
                   ) : (
                     <div className="image-fallback">🍽️</div>
                   )}
@@ -99,18 +153,24 @@ const Home = ({ searchTerm = '', onSearchChange = () => {} }) => {
                   )}
                   <div className="recipe-meta">
                     {recipe.type_of_cuisine && (
-                      <span className="meta-tag cuisine">🌍 {recipe.type_of_cuisine}</span>
+                      <span className="meta-tag cuisine">
+                        🌍 {recipe.type_of_cuisine}
+                      </span>
                     )}
                     {recipe.difficulty && (
-                      <span className={`meta-tag difficulty ${recipe.difficulty.toLowerCase()}`}>
+                      <span
+                        className={`meta-tag difficulty ${recipe.difficulty.toLowerCase()}`}
+                      >
                         📊 {recipe.difficulty}
                       </span>
                     )}
                   </div>
                   {recipe.chef_rating && (
                     <div className="recipe-rating">
-                      {'⭐'.repeat(Math.round(recipe.chef_rating))}
-                      <span className="rating-value">{recipe.chef_rating}/5</span>
+                      {"⭐".repeat(Math.round(recipe.chef_rating))}
+                      <span className="rating-value">
+                        {recipe.chef_rating}/5
+                      </span>
                     </div>
                   )}
                 </div>
