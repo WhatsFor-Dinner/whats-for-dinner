@@ -1,62 +1,98 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router";
 import "./home.css";
 
 const Home = ({ searchTerm = "", onSearchChange = () => {} }) => {
-  const navigate = useNavigate();
   const [topRecipes, setTopRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [filteredRecipes, setFilteredRecipes] = useState([]);
 
+  // Fetch initial top recipes from backend (top 10)
   useEffect(() => {
-    let isMounted = true;
-
+    let cancelled = false;
     const fetchTopRecipes = async () => {
       try {
-        if (isMounted) {
-          setLoading(true);
-          setError(null);
-        }
-        const response = await fetch("/top-ten");
+        setLoading(true);
+        setError(null);
+        const response = await fetch("/api/top-ten");
         if (!response.ok) {
-          throw new Error(`Failed to fetch recipes: ${response.statusText}`);
+          throw new Error(
+            `Failed to fetch top recipes: ${response.statusText}`
+          );
         }
         const data = await response.json();
-        if (isMounted) {
-          setTopRecipes(Array.isArray(data) ? data : data.recipes || []);
-          setFilteredRecipes(Array.isArray(data) ? data : data.recipes || []);
+        const rows = Array.isArray(data) ? data : data.recipes || [];
+        if (!cancelled) {
+          setTopRecipes(rows);
+          setFilteredRecipes(rows);
         }
       } catch (err) {
-        console.error("Error fetching recipes:", err);
-        if (isMounted) {
+        console.error("Error fetching top recipes:", err);
+        if (!cancelled) {
           setError(err.message);
           setTopRecipes([]);
           setFilteredRecipes([]);
         }
       } finally {
-        if (isMounted) setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
 
     fetchTopRecipes();
     return () => {
-      isMounted = false;
+      cancelled = true;
     };
   }, []);
 
-  // Filter recipes based on search term (from navbar)
+  // Server-driven search: when searchTerm changes, request backend search endpoint (debounced)
   useEffect(() => {
+    let isCancelled = false;
+    // if no search term, show topRecipes (already set)
     if (searchTerm.trim() === "") {
       setFilteredRecipes(topRecipes);
-    } else {
-      const filtered = topRecipes.filter((recipe) => {
-        const name = recipe.recipe_name || recipe.name || "";
-        return name.toLowerCase().includes(searchTerm.toLowerCase());
-      });
-      setFilteredRecipes(filtered);
+      return;
     }
-  }, [searchTerm, topRecipes]);
+
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    const t = setTimeout(async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const q = encodeURIComponent(searchTerm.trim());
+        const res = await fetch(`/api/recipes?query=${q}`, { signal });
+        if (!res.ok) {
+          throw new Error(`Search failed: ${res.statusText}`);
+        }
+        const results = await res.json();
+        if (!isCancelled) {
+          const rows = Array.isArray(results) ? results : results.recipes || [];
+          setFilteredRecipes(rows);
+        }
+      } catch (err) {
+        if (err.name === "AbortError") return;
+        console.error("Search error:", err);
+        if (!isCancelled) {
+          setError(err.message);
+          setFilteredRecipes([]);
+        }
+      } finally {
+        if (!isCancelled) setLoading(false);
+      }
+    }, 300); // 300ms debounce
+
+    return () => {
+      isCancelled = true;
+      controller.abort();
+      clearTimeout(t);
+    };
+  }, [searchTerm]);
+
+  const handleRecipeClick = () => {
+    // Clear search bar when user clicks on a recipe
+    onSearchChange("");
+  };
 
   return (
     <div className="home">
@@ -96,7 +132,7 @@ const Home = ({ searchTerm = "", onSearchChange = () => {} }) => {
                 key={recipe.id}
                 className="recipe-card"
                 style={{ animationDelay: `${index * 0.1}s` }}
-                onClick={() => navigate(`/recipe/${recipe.id}`)}
+                onClick={handleRecipeClick}
               >
                 <div className="recipe-image-placeholder">
                   {recipe.picture_url ? (
