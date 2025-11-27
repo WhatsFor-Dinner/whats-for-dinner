@@ -1,8 +1,12 @@
 import { useEffect, useId, useState } from "react";
-import { useParams, useNavigate } from "react-router";
+import { useParams, useNavigate, useLocation } from "react-router";
 import { useAuth } from "../Auth/Auth.jsx";
 import { getIngredients, getIngredient } from "../profileApi/ingredients.js";
-import { createRecipe } from "../profileApi/recipes.js";
+import {
+  createRecipe,
+  updateRecipe,
+  getRecipe,
+} from "../profileApi/recipes.js";
 import Ingredients from "./Ingredients.jsx";
 import "./CreateRecipe.css";
 
@@ -10,20 +14,49 @@ function CreateRecipeCard({ syncRecipes }) {
   const { token } = useAuth();
   const { id } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [ingredient, setIngredient] = useState(null);
   const [error, setError] = useState(null);
   const [selectedIngredients, setSelectedIngredients] = useState([]);
   const [instructions, setInstructions] = useState([]);
   const [currentInstruction, setCurrentInstruction] = useState("");
+  const [existingRecipe, setExistingRecipe] = useState(null);
 
+  // Check if we're in edit mode
+  const isEditMode = location.pathname.includes("/edit");
+
+  // Fetch existing recipe in edit mode
   useEffect(() => {
     let isMounted = true;
 
-    const syncIngredients = async () => {
+    const fetchExistingRecipe = async () => {
+      if (!isEditMode || !id) return;
+
       try {
-        const data = await getIngredient(id);
+        const data = await getRecipe(id);
         if (isMounted) {
-          setIngredient(data);
+          setExistingRecipe(data);
+
+          // Pre-populate ingredients
+          if (data.ingredients && Array.isArray(data.ingredients)) {
+            setSelectedIngredients(
+              data.ingredients.map((ing) => ({
+                id: ing.ingredientId,
+                name: ing.name,
+                amount: ing.quantity || "",
+                unit: ing.unit || "",
+              }))
+            );
+          }
+
+          // Pre-populate instructions
+          if (data.instructions) {
+            const instructionsArray =
+              typeof data.instructions === "string"
+                ? data.instructions.split("\n").filter((i) => i.trim())
+                : data.instructions;
+            setInstructions(instructionsArray);
+          }
         }
       } catch (error) {
         if (isMounted) {
@@ -31,11 +64,12 @@ function CreateRecipeCard({ syncRecipes }) {
         }
       }
     };
-    if (id) syncIngredients();
+
+    fetchExistingRecipe();
     return () => {
       isMounted = false;
     };
-  }, [id]);
+  }, [id, isEditMode]);
 
   const handleAddIngredient = (ingredient) => {
     const newIngredient = {
@@ -102,7 +136,7 @@ function CreateRecipeCard({ syncRecipes }) {
     }));
 
     try {
-      await createRecipe(token, {
+      const recipeData = {
         recipe_name: name,
         description: description,
         difficulty: difficulty,
@@ -115,12 +149,19 @@ function CreateRecipeCard({ syncRecipes }) {
         instructions: instructionsText,
         picture_url: image || null,
         ingredients: ingredientsData,
-      });
-      if (syncRecipes) syncRecipes();
-      // Reset form
-      setSelectedIngredients([]);
-      setInstructions([]);
-      setCurrentInstruction("");
+      };
+
+      if (isEditMode) {
+        await updateRecipe(token, id, recipeData);
+        navigate(`/recipe/${id}`);
+      } else {
+        await createRecipe(token, recipeData);
+        if (syncRecipes) syncRecipes();
+        // Reset form
+        setSelectedIngredients([]);
+        setInstructions([]);
+        setCurrentInstruction("");
+      }
       setError(null);
     } catch (error) {
       setError(error.message);
@@ -136,7 +177,7 @@ function CreateRecipeCard({ syncRecipes }) {
   return (
     <>
       <section className="create-recipe">
-        <h2>Create A Recipe</h2>
+        <h2>{isEditMode ? "Edit Recipe" : "Create A Recipe"}</h2>
         {error && <p className="error-message">{error}</p>}
         <form onSubmit={handleSubmit}>
           {/* Top Section: Photo + Recipe Info */}
@@ -153,6 +194,7 @@ function CreateRecipeCard({ syncRecipes }) {
                   type="text"
                   name="name"
                   placeholder="Enter recipe name"
+                  defaultValue={existingRecipe?.recipe_name || ""}
                   required
                 />
               </label>
@@ -163,6 +205,7 @@ function CreateRecipeCard({ syncRecipes }) {
                   type="text"
                   name="cuisine"
                   placeholder="e.g., Italian, Mexican"
+                  defaultValue={existingRecipe?.cuisine_type || ""}
                 />
               </label>
 
@@ -172,6 +215,7 @@ function CreateRecipeCard({ syncRecipes }) {
                   name="description"
                   placeholder="Brief description of the recipe"
                   rows="3"
+                  defaultValue={existingRecipe?.description || ""}
                   required
                 />
               </label>
@@ -179,7 +223,11 @@ function CreateRecipeCard({ syncRecipes }) {
               <div className="time-inputs-row">
                 <label>
                   Difficulty:
-                  <select name="difficulty" required>
+                  <select
+                    name="difficulty"
+                    defaultValue={existingRecipe?.difficulty || ""}
+                    required
+                  >
                     <option value="">Select difficulty</option>
                     <option value="easy">Easy</option>
                     <option value="medium">Medium</option>
@@ -194,6 +242,7 @@ function CreateRecipeCard({ syncRecipes }) {
                     name="servings"
                     min="1"
                     placeholder="Number of servings"
+                    defaultValue={existingRecipe?.number_of_servings || ""}
                     required
                   />
                 </label>
@@ -209,6 +258,7 @@ function CreateRecipeCard({ syncRecipes }) {
                       min="0"
                       placeholder=" "
                       className="time-input"
+                      defaultValue={existingRecipe?.prep_time_minutes || ""}
                     />
                     <span className="time-unit">min</span>
                   </div>
@@ -223,6 +273,7 @@ function CreateRecipeCard({ syncRecipes }) {
                       min="0"
                       placeholder=" "
                       className="time-input"
+                      defaultValue={existingRecipe?.cook_time_minutes || ""}
                     />
                     <span className="time-unit">min</span>
                   </div>
@@ -277,7 +328,6 @@ function CreateRecipeCard({ syncRecipes }) {
                     <optgroup label="Weight">
                       <option value="oz">ounce (oz)</option>
                       <option value="lb">pound (lb)</option>
-                     
                     </optgroup>
                     <optgroup label="Quantity">
                       <option value="piece">piece</option>
@@ -310,7 +360,6 @@ function CreateRecipeCard({ syncRecipes }) {
           <div className="instructions-section">
             <label>Prep Instructions:</label>
 
-          
             {instructions.length > 0 && (
               <ol className="prep-instructions-list">
                 {instructions.map((instruction, index) => (
@@ -360,12 +409,13 @@ function CreateRecipeCard({ syncRecipes }) {
               type="text"
               name="notes"
               placeholder="Add any special tips or notes..."
+              defaultValue={existingRecipe?.notes || ""}
             />
           </label>
- 
+
           <section>
             <button type="submit" className="create-recipe-button">
-              Create Recipe
+              {isEditMode ? "Update Recipe" : "Create Recipe"}
             </button>
           </section>
         </form>

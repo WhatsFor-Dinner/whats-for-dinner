@@ -17,6 +17,10 @@
     "db:schema": "psql -d whats_for_dinner -f src-backend/db/schema.sql",
     "db:seed": "node --env-file=.env src-backend/dbSeed/seed.js",
     "db:reset": "npm run db:schema && npm run db:seed"
+
+    
+    
+    
   },
   "engines": {
     "node": ">=22.0.0"
@@ -45,6 +49,7 @@
     "react-dom": "^19.2.0",
     "react-icons": "^5.5.0",
     "react-rating-stars-component": "^2.2.0",
-    "react-router": "^7.9.5"
+    "react-router": "^7.9.5",
+    "serve": "^14.2.5"
   }
 }

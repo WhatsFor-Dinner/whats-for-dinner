@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router";
+import { useParams, useNavigate, useLocation } from "react-router";
 import { useAuth } from "../Auth/Auth.jsx";
 import { deleteRecipe } from "../profileApi/recipes.js";
 import StarRating from "./StarRating.jsx";
@@ -10,13 +10,23 @@ export default function AllRecipeCard() {
   const { id } = useParams();
   const { token, user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const fromPage = location.state?.from;
   const [recipe, setRecipe] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [editMode, setEditMode] = useState(null);
+  const inEditMode = id !== undefined;
+
+
+
   useEffect(() => {
     let isMounted = true;
+    
+    if(inEditMode && id){
 
+   
     const fetchRecipe = async () => {
       try {
         if (isMounted) setLoading(true);
@@ -49,6 +59,7 @@ export default function AllRecipeCard() {
     if (id) {
       fetchRecipe();
     }
+  }
     return () => {
       isMounted = false;
     };
@@ -95,130 +106,145 @@ export default function AllRecipeCard() {
     );
   }
 
+  const handleBack = () => {
+    if (fromPage === "liked-recipes") {
+      navigate("/profilepage", { state: { activeTab: 2 } });
+    } else if (fromPage === "my-recipes") {
+      navigate("/profilepage", { state: { activeTab: 1 } });
+    } else {
+      navigate(-1);
+    }
+  };
+
   return (
-    <section className="test-recipe-card">
-      <div className="recipe-card-header">
-        <h2></h2>
-      </div>
+    <>
+      <button onClick={handleBack} className="back-button-outside">
+        ← Back
+      </button>
+      <section className="test-recipe-card">
+        <div className="recipe-card-header"></div>
 
-      <div className="recipe-card-content">
-        <div className="recipe-header-section">
-          {recipe.picture_url && (
-            <div className="recipe-image-container">
-              <img src={recipe.picture_url} alt={recipe.recipe_name} />
+        <div className="recipe-card-content">
+          <div className="recipe-header-section">
+            {recipe.picture_url && (
+              <div className="recipe-image-container">
+                <img src={recipe.picture_url} alt={recipe.recipe_name} />
+              </div>
+            )}
+
+            <div className="recipe-header-info">
+              <h1>{recipe.recipe_name}</h1>
+              <p className="recipe-author">By: {recipe.username}</p>
+              <p className="recipe-description">{recipe.description}</p>
+
+              <div className="recipe-meta">
+                <div className="recipe-detail-item">
+                  <span className="recipe-detail-label">Cuisine:</span>
+                  <span className="recipe-detail-value">
+                    {recipe.cuisine_type}
+                  </span>
+                </div>
+
+                <div className="recipe-detail-item">
+                  <span className="recipe-detail-label">Difficulty:</span>
+                  <span className="recipe-detail-value">
+                    {recipe.difficulty}
+                  </span>
+                </div>
+
+                <div className="recipe-detail-item">
+                  <span className="recipe-detail-label">Servings:</span>
+                  <span className="recipe-detail-value">
+                    {recipe.number_of_servings}
+                  </span>
+                </div>
+                <div className="recipe-detail-item">
+                  <span className="recipe-detail-label">Prep Time:</span>
+                  <span className="recipe-detail-value">
+                    {recipe.prep_time_minutes} min
+                  </span>
+                </div>
+                <div className="recipe-detail-item">
+                  <span className="recipe-detail-label">Cook Time:</span>
+                  <span className="recipe-detail-value">
+                    {recipe.cook_time_minutes} min
+                  </span>
+                </div>
+
+                <div className="recipe-detail-item">
+                  <span className="recipe-detail-label">Likes:</span>
+                  <span className="recipe-detail-value">
+                    ❤️ {recipe.like_count}
+                  </span>
+                </div>
+              </div>
+
+              {/* Rating - Moved to header section */}
+              <div className="recipe-rating-inline">
+                <span className="rating-label">Rating:</span>
+                <StarRating rating={recipe.chef_rating} />
+              </div>
+            </div>
+          </div>
+
+          <div className="recipe-content-row">
+            {/* Ingredients Section */}
+            <div className="recipe-section">
+              <h3>Ingredients</h3>
+              <ul className="ingredients-list">
+                {recipe.ingredients && Array.isArray(recipe.ingredients) ? (
+                  recipe.ingredients.map((ing, index) => (
+                    <li key={index}>
+                      <span className="ingredient-amount">
+                        {ing.quantity} {ing.unit}
+                      </span>
+                      <span className="ingredient-name">{ing.name}</span>
+                    </li>
+                  ))
+                ) : (
+                  <li>No ingredients available</li>
+                )}
+              </ul>
+            </div>
+
+            <div className="recipe-section">
+              <h3>Instructions</h3>
+              <ol className="instructions-list">
+                {recipe.instructions && Array.isArray(recipe.instructions) ? (
+                  recipe.instructions.map((step, index) => (
+                    <li key={index}>{step}</li>
+                  ))
+                ) : typeof recipe.instructions === "string" ? (
+                  <li>{recipe.instructions}</li>
+                ) : (
+                  <li>No instructions available</li>
+                )}
+              </ol>
+            </div>
+          </div>
+
+          {recipe.notes && (
+            <div className="recipe-section">
+              <h3>Chef's Notes</h3>
+              <p className="chef-notes">{recipe.notes}</p>
             </div>
           )}
 
-          <div className="recipe-header-info">
-            <h1>{recipe.recipe_name}</h1>
-            <p className="recipe-author">By: {recipe.username}</p>
-            <p className="recipe-description">{recipe.description}</p>
-
-            <div className="recipe-meta">
-              <div className="recipe-detail-item">
-                <span className="recipe-detail-label">Cuisine:</span>
-                <span className="recipe-detail-value">
-                  {recipe.cuisine_type}
-                </span>
+          <div className="recipe-actions">
+            <LikeButton recipeId={recipe.id} initialLiked={recipe.is_liked} />
+            {user && recipe.user_id === user.id && (
+              <div className="owner-actions">
+                <button onClick={handleUpdate} className="update-recipe-btn">
+                  Update Recipe
+                </button>
+                <button onClick={handleDelete} className="delete-recipe-btn">
+                  Delete Recipe
+                </button>
               </div>
-
-              <div className="recipe-detail-item">
-                <span className="recipe-detail-label">Difficulty:</span>
-                <span className="recipe-detail-value">{recipe.difficulty}</span>
-              </div>
-
-              <div className="recipe-detail-item">
-                <span className="recipe-detail-label">Servings:</span>
-                <span className="recipe-detail-value">
-                  {recipe.number_of_servings}
-                </span>
-              </div>
-              <div className="recipe-detail-item">
-                <span className="recipe-detail-label">Prep Time:</span>
-                <span className="recipe-detail-value">
-                  {recipe.prep_time_minutes} min
-                </span>
-              </div>
-              <div className="recipe-detail-item">
-                <span className="recipe-detail-label">Cook Time:</span>
-                <span className="recipe-detail-value">
-                  {recipe.cook_time_minutes} min
-                </span>
-              </div>
-
-              <div className="recipe-detail-item">
-                <span className="recipe-detail-label">Likes:</span>
-                <span className="recipe-detail-value">
-                  ❤️ {recipe.like_count}
-                </span>
-              </div>
-            </div>
-
-            {/* Rating - Moved to header section */}
-            <div className="recipe-rating-inline">
-              <span className="rating-label">Rating:</span>
-              <StarRating rating={recipe.chef_rating} />
-            </div>
+            )}
           </div>
         </div>
-
-        <div className="recipe-content-row">
-          {/* Ingredients Section */}
-          <div className="recipe-section">
-            <h3>Ingredients</h3>
-            <ul className="ingredients-list">
-              {recipe.ingredients && Array.isArray(recipe.ingredients) ? (
-                recipe.ingredients.map((ing, index) => (
-                  <li key={index}>
-                    <span className="ingredient-amount">
-                      {ing.quantity} {ing.unit}
-                    </span>
-                    <span className="ingredient-name">{ing.name}</span>
-                  </li>
-                ))
-              ) : (
-                <li>No ingredients available</li>
-              )}
-            </ul>
-          </div>
-
-          <div className="recipe-section">
-            <h3>Instructions</h3>
-            <ol className="instructions-list">
-              {recipe.instructions && Array.isArray(recipe.instructions) ? (
-                recipe.instructions.map((step, index) => (
-                  <li key={index}>{step}</li>
-                ))
-              ) : typeof recipe.instructions === "string" ? (
-                <li>{recipe.instructions}</li>
-              ) : (
-                <li>No instructions available</li>
-              )}
-            </ol>
-          </div>
-        </div>
-
-        {recipe.notes && (
-          <div className="recipe-section">
-            <h3>Chef's Notes</h3>
-            <p className="chef-notes">{recipe.notes}</p>
-          </div>
-        )}
-
-        <div className="recipe-actions">
-          <LikeButton recipeId={recipe.id} initialLiked={recipe.is_liked} />
-          {user && recipe.user_id === user.id && (
-            <div className="owner-actions">
-              <button onClick={handleUpdate} className="update-recipe-btn">
-                 Update Recipe
-              </button>
-              <button onClick={handleDelete} className="delete-recipe-btn">
-                Delete Recipe
-              </button>
-            </div>
-          )}
-        </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }
