@@ -25,9 +25,11 @@ const Home = ({ searchTerm = "", onSearchChange = () => {} }) => {
       try {
         setLoading(true);
         setTopError(null);
-        const response = await fetch("/api/top-ten");
+        const response = await fetch("/top-ten");
         if (!response.ok) {
-          throw new Error(`Failed to fetch top recipes: ${response.statusText}`);
+          throw new Error(
+            `Failed to fetch top recipes: ${response.statusText}`
+          );
         }
         const contentType = response.headers.get("content-type") || "";
         if (!contentType.includes("application/json")) {
@@ -84,7 +86,7 @@ const Home = ({ searchTerm = "", onSearchChange = () => {} }) => {
         setLoading(true);
         setSearchError(null);
         const q = encodeURIComponent(searchTerm.trim());
-        const res = await fetch(`/api/recipes?query=${q}`, { signal });
+        const res = await fetch(`/recipes?query=${q}`, { signal });
         if (!res.ok) {
           throw new Error(`Search failed: ${res.statusText}`);
         }
@@ -100,7 +102,10 @@ const Home = ({ searchTerm = "", onSearchChange = () => {} }) => {
               setRecentSearches((prev) => {
                 const deduped = [q, ...prev.filter((s) => s !== q)].slice(0, 8);
                 try {
-                  localStorage.setItem("recentSearches", JSON.stringify(deduped));
+                  localStorage.setItem(
+                    "recentSearches",
+                    JSON.stringify(deduped)
+                  );
                 } catch (e) {
                   // ignore localStorage errors
                 }
@@ -130,11 +135,9 @@ const Home = ({ searchTerm = "", onSearchChange = () => {} }) => {
     };
   }, [searchTerm]);
 
-  const handleRecipeClick = () => {
-    // Clear search bar when user clicks on a recipe
-    onSearchChange("");
-    // close drawer on mobile when a recipe is selected
-    setIsSidebarOpen(false);
+  const handleRecipeClick = (recipeId) => {
+    // Navigate to recipe detail page
+    window.location.href = `/recipe/${recipeId}`;
   };
 
   return (
@@ -175,7 +178,7 @@ const Home = ({ searchTerm = "", onSearchChange = () => {} }) => {
                   <div
                     key={`s-${r.id || i}`}
                     className="recipe-card small-card"
-                    onClick={handleRecipeClick}
+                    onClick={() => handleRecipeClick(r.id)}
                   >
                     <div className="recipe-content">
                       <h3 className="recipe-title-small">
@@ -185,7 +188,7 @@ const Home = ({ searchTerm = "", onSearchChange = () => {} }) => {
                   </div>
                 ))}
               </div>
-            ) : (searchTerm.trim() === "" && recentSearches.length > 0) ? (
+            ) : searchTerm.trim() === "" && recentSearches.length > 0 ? (
               <div className="recent-searches small">
                 <h4>Recent searches</h4>
                 <ul className="suggestion-list">
@@ -204,7 +207,9 @@ const Home = ({ searchTerm = "", onSearchChange = () => {} }) => {
               </div>
             ) : (
               <div className="search-prompt small">
-                <p className="prompt-text">Search recipes to see results here.</p>
+                <p className="prompt-text">
+                  Search recipes to see results here.
+                </p>
               </div>
             )}
           </div>
@@ -266,7 +271,7 @@ const Home = ({ searchTerm = "", onSearchChange = () => {} }) => {
                   key={`top-${recipe.id}-${index}`}
                   className="recipe-card"
                   style={{ animationDelay: `${index * 0.1}s` }}
-                  onClick={handleRecipeClick}
+                  onClick={() => handleRecipeClick(recipe.id)}
                 >
                   <div className="recipe-image-placeholder">
                     {recipe.picture_url ? (
