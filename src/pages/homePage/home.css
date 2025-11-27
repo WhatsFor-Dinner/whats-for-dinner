@@ -193,9 +193,190 @@ body {
 
 .recipes-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 1.5rem;
-  margin-top: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.25rem;
+}
+
+/* Layout with left sidebar and center content */
+.site-layout {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.left-sidebar {
+  width: 300px;
+  flex: 0 0 300px;
+  padding-top: 1rem;
+  transition: transform 0.28s cubic-bezier(0.2, 0.9, 0.2, 1),
+    box-shadow 0.28s ease;
+}
+
+.sidebar-inner {
+  position: sticky;
+  top: 96px;
+}
+
+.sidebar-search {
+  background: rgba(255, 255, 255, 0.98);
+  padding: 0.75rem;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(70, 50, 30, 0.06);
+  margin-bottom: 0.5rem;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.6rem 0.9rem;
+  border-radius: 8px;
+  border: 1px solid rgba(140, 100, 70, 0.12);
+}
+
+.sidebar-results {
+  margin-top: 0.5rem;
+}
+
+.recipe-card.small-card {
+  padding: 0.55rem 0.7rem;
+  border-radius: 10px;
+  font-size: 0.95rem;
+}
+
+/* mobile drawer overlay and toggle styles */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 220ms ease, visibility 220ms ease;
+  z-index: 80;
+}
+.sidebar-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.sidebar-toggle {
+  display: none;
+  background: transparent;
+  border: 0;
+  padding: 0.5rem;
+  cursor: pointer;
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  z-index: 100;
+}
+.hamburger {
+  display: block;
+  width: 22px;
+  height: 2px;
+  background: var(--wood-2);
+  position: relative;
+  transition: all 220ms ease;
+}
+.hamburger::before,
+.hamburger::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  width: 22px;
+  height: 2px;
+  background: var(--wood-2);
+  transition: all 220ms ease;
+}
+.hamburger::before {
+  top: -7px;
+}
+.hamburger::after {
+  top: 7px;
+}
+.hamburger.open {
+  background: transparent;
+}
+.hamburger.open::before {
+  transform: translateY(7px) rotate(45deg);
+}
+.hamburger.open::after {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+.recipe-title-small {
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.center-content {
+  flex: 1 1 auto;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.header-center {
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+@media (max-width: 900px) {
+  .site-layout {
+    display: block;
+    position: relative;
+  }
+
+  /* transform the left sidebar into a sliding drawer */
+  .left-sidebar {
+    width: 80%;
+    max-width: 360px;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    padding: 1rem;
+    transform: translateX(-110%);
+    background: transparent;
+    z-index: 90;
+    box-shadow: none;
+    will-change: transform;
+  }
+
+  .left-sidebar.open {
+    transform: translateX(0);
+    box-shadow: 8px 0 40px rgba(0, 0, 0, 0.18);
+    background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.98),
+      rgba(250, 245, 240, 0.98)
+    );
+    border-radius: 0 12px 12px 0;
+  }
+
+  .sidebar-inner {
+    position: relative;
+    top: 0;
+  }
+
+  .sidebar-overlay {
+    display: block;
+  }
+
+  .sidebar-toggle {
+    display: inline-flex;
+  }
+
+  .center-content {
+    max-width: 100%;
+    padding: 0 1rem;
+  }
+
+  /* tighten top recipes spacing for small screens */
+  .recipes-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
 }
 
 /* recipe card as wooden platter */
@@ -493,4 +674,40 @@ body {
   .recipe-image {
     height: 200px;
   }
+}
+
+/* Recent searches / suggestions in sidebar */
+.recent-searches {
+  background: rgba(255,255,255,0.98);
+  padding: 0.75rem;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(70,50,30,0.06);
+}
+.recent-searches h4 {
+  margin: 0 0 0.5rem 0;
+  color: var(--wood-2);
+  font-size: 1rem;
+}
+.suggestion-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+.suggestion-button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.5rem 0.7rem;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #fff, #fffaf5);
+  border: 1px solid rgba(140,100,70,0.06);
+  color: var(--wood-2);
+  cursor: pointer;
+}
+.suggestion-button:hover {
+  background: linear-gradient(180deg, #fffaf0, #fff2e6);
+  transform: translateY(-2px);
 }

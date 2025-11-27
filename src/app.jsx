@@ -14,7 +14,7 @@ export default function App() {
 
   return (
     <>
-      <Navbar searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+      <Navbar />
       <Routes>
         <Route
           path="/"
