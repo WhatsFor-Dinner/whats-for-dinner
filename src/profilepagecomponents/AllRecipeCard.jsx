@@ -16,9 +16,17 @@ export default function AllRecipeCard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  const [editMode, setEditMode] = useState(null);
+  const inEditMode = id !== undefined;
+
+
+
   useEffect(() => {
     let isMounted = true;
+    
+    if(inEditMode && id){
 
+   
     const fetchRecipe = async () => {
       try {
         if (isMounted) setLoading(true);
@@ -51,6 +59,7 @@ export default function AllRecipeCard() {
     if (id) {
       fetchRecipe();
     }
+  }
     return () => {
       isMounted = false;
     };

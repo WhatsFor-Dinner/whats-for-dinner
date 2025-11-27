@@ -54,7 +54,7 @@ export default function UserRecipeCard() {
   const tryUpdate = async () => {
     try {
       await updateRecipe(token, recipe.id);
-      navigate(`/profilepage/${id}/recipes`);
+      navigate(`/profilepage/${id}/recipes/${recipe.id}/`);
     } catch (e) {
       setError(e.message);
     }
