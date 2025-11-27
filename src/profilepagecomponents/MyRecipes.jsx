@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../Auth/Auth.jsx";
-import { Link, NavLink } from "react-router";
+import { Link, NavLink, useLocation } from "react-router";
 import {
   getMyRecipes,
   getLikedRecipes,
@@ -57,7 +57,12 @@ function MyRecipes() {
     };
   }, [token, user]);
 
-  const [toggle, setToggle] = useState(1);
+  const location = useLocation();
+  const [toggle, setToggle] = useState(() => {
+    // Set active tab based on incoming state
+    return location.state?.activeTab || 1;
+  });
+
   function updateToggle(id) {
     setToggle(id);
   }
@@ -100,7 +105,7 @@ function MyRecipes() {
               started!
             </p>
           ) : (
-            <RecipeList recipes={myRecipes} />
+            <RecipeList recipes={myRecipes} from="my-recipes" />
           )}
         </div>
 
@@ -122,7 +127,7 @@ function MyRecipes() {
               to your liked recipes!
             </p>
           ) : (
-            <RecipeList recipes={likedRecipes} />
+            <RecipeList recipes={likedRecipes} from="liked-recipes" />
           )}
         </div>
       </div>
