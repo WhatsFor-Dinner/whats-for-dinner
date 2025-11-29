@@ -11,7 +11,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "node --env-file=.env server.js",
+    "start": "node server.js",
     "dev:server": "node --watch --env-file=.env server.js",
     "test": "vitest",
     "db:schema": "psql -d whats_for_dinner -f src-backend/db/schema.sql",
