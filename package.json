@@ -17,7 +17,6 @@
     "db:schema": "psql -d whats_for_dinner -f src-backend/db/schema.sql",
     "db:seed": "node --env-file=.env src-backend/dbSeed/seed.js",
     "db:reset": "npm run db:schema && npm run db:seed"
-    
   },
   "engines": {
     "node": ">=22.0.0"
