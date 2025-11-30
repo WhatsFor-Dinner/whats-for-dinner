@@ -28,7 +28,7 @@ function StarRating({
 
     setRating(newRating);
 
-    // Submit the rating to the backend
+  
     if (recipeId && token) {
       await submitRating(newRating);
     }
@@ -75,7 +75,7 @@ function StarRating({
     } catch (error) {
       console.error("Error submitting rating:", error);
       alert("Failed to submit rating. Please try again.");
-      // Optionally revert the rating on error
+     
       setRating(initialRating);
     }
   };

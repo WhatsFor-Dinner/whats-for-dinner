@@ -2,7 +2,7 @@ import React from "react";
 import { NavLink } from "react-router";
 import { useAuth } from "../Auth/Auth.jsx";
 import "./navbar.css";
-import logo from "../logo/wfd-logo.png";
+import logo from "../logo/wfd-empty-plate.png";
 
 export function Navbar() {
   const { token, logout } = useAuth();

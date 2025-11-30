@@ -84,7 +84,7 @@ export async function createRecipe(userId, recipeData, ingredients) {
 }
 
 // GET: Pulls a single recipe with its ingredients
-export async function getRecipeCard(id) {
+export async function getRecipeCard(id, userId = null) {
   const sql = `
     SELECT
       recipes.id,
@@ -103,7 +103,12 @@ export async function getRecipeCard(id) {
       recipes.instructions,
       recipes.picture_url,
       COALESCE(liked_counts.like_count, 0) AS like_count,
-      COALESCE(ingredients_group.ingredients, '[]') AS ingredients
+      COALESCE(ingredients_group.ingredients, '[]') AS ingredients,
+      CASE 
+        WHEN $2::integer IS NOT NULL AND user_likes.user_id IS NOT NULL 
+        THEN true 
+        ELSE false 
+      END AS is_liked
 
     FROM recipes
 
@@ -141,12 +146,17 @@ export async function getRecipeCard(id) {
     ) AS liked_counts
       ON liked_counts.recipe_id = recipes.id
 
+    -- CHECK IF CURRENT USER LIKED THIS RECIPE
+    LEFT JOIN liked_recipes AS user_likes
+      ON user_likes.recipe_id = recipes.id 
+      AND user_likes.user_id = $2
+
     WHERE recipes.id = $1;
   `;
 
   const {
     rows: [recipe],
-  } = await db.query(sql, [id]);
+  } = await db.query(sql, [id, userId]);
 
   return recipe; // one object or undefined
 }

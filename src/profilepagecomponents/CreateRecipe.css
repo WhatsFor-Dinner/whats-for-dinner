@@ -2,7 +2,6 @@ body {
   font-family: verdana;
 }
 
-
 .create-recipe {
   max-width: 800px;
   margin: 0 auto;
@@ -19,7 +18,6 @@ body {
   flex-direction: column;
   gap: 1.5rem;
 }
-
 
 .recipe-header-section {
   display: flex;
@@ -84,7 +82,6 @@ body {
   box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
 }
 
-
 .time-inputs-row {
   display: flex;
   gap: 1rem;
@@ -95,7 +92,6 @@ body {
   flex: 1;
   font-size: 0.9rem;
 }
-
 
 .time-input-group {
   margin: 1rem 0;
@@ -122,7 +118,6 @@ body {
   font-weight: 500;
 }
 
-
 .time-input::-webkit-inner-spin-button,
 .time-input::-webkit-outer-spin-button {
   -webkit-appearance: none;
@@ -133,7 +128,6 @@ body {
   -moz-appearance: textfield;
   appearance: textfield;
 }
-
 
 .create-recipe label {
   display: flex;
@@ -162,12 +156,10 @@ body {
   box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
 }
 
-
 .recipe-photo input[type="file"] {
   font-size: 0.9rem;
   cursor: pointer;
 }
-
 
 .recipe-photo input[type="file"]::file-selector-button {
   padding: 0.5rem 1rem;
@@ -205,12 +197,10 @@ body {
   box-shadow: 0 6px 16px rgba(140, 100, 70, 0.2);
 }
 
-
 .recipe-photo input[type="file"] {
   color: transparent;
   max-width: 150px;
 }
-
 
 .instructions-section {
   margin: 1.5rem 0;
@@ -326,7 +316,6 @@ body {
   box-shadow: 0 4px 12px rgba(140, 100, 70, 0.15);
 }
 
-
 .create-recipe-button {
   background: linear-gradient(180deg, #b98a58, #8f5e34);
   color: white;
@@ -351,13 +340,11 @@ body {
   background-color: #3d8b40;
 }
 
-
 .create-recipe form > section {
   display: flex;
   justify-content: center;
   margin-top: 2rem;
 }
-
 
 @media (max-width: 768px) {
   .create-recipe {
@@ -429,7 +416,6 @@ body {
     font-size: 0.9rem;
   }
 }
-
 
 @media (max-width: 768px) {
   .create-recipe {

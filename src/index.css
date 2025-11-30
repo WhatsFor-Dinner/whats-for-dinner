@@ -543,11 +543,7 @@ Profile Navigaton  */
   border-left: 4px solid #d32f2f;
 }
 
-/* ========================================
-   MEDIA QUERIES - Mobile & Tablet
-   ======================================== */
 
-/* Tablet (768px and below) */
 @media (max-width: 768px) {
   .profile-navigation {
     flex-wrap: wrap;
@@ -570,7 +566,7 @@ Profile Navigaton  */
   }
 }
 
-/* Mobile (480px and below) */
+
 @media (max-width: 480px) {
   .profile-navigation {
     padding: 8px;
@@ -602,3 +598,5 @@ Profile Navigaton  */
     font-size: 0.9rem;
   }
 }
+
+

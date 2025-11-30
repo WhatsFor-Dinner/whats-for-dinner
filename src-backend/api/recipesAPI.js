@@ -2,7 +2,13 @@ import express from "express";
 const router = express.Router();
 export default router;
 
-import { searchRecipes, createRecipe, getRecipeCard, deleteRecipe, updateRecipeWithIngredients } from "../db/queries/recipes.js";
+import {
+  searchRecipes,
+  createRecipe,
+  getRecipeCard,
+  deleteRecipe,
+  updateRecipeWithIngredients,
+} from "../db/queries/recipes.js";
 import { toggleLiked } from "../db/queries/likedRecipies.js";
 import requireUser from "../middleware/requireUser.js";
 import requireBody from "../middleware/requireBody.js";
@@ -17,25 +23,28 @@ router.route("/").get(async (req, res, next) => {
   }
 });
 
-router.route("/:id")
-.get(async (req, res, next) => {
-  try {
-    const recipeId = req.params.id;
+router
+  .route("/:id")
+  .get(async (req, res, next) => {
+    try {
+      const recipeId = req.params.id;
 
-    if (isNaN(recipeId)) {
-      return res.status(400).send("Recipe ID must be a number.");
-    }
+      if (isNaN(recipeId)) {
+        return res.status(400).send("Recipe ID must be a number.");
+      }
 
-    const recipe = await getRecipeCard(recipeId);
-    if (!recipe) {
-      return res.status(404).send("Recipe not found.");
+      
+      const userId = req.user ? req.user.id : null;
+      const recipe = await getRecipeCard(recipeId, userId);
+      if (!recipe) {
+        return res.status(404).send("Recipe not found.");
+      }
+      res.send(recipe);
+    } catch (error) {
+      next(error);
     }
-    res.send(recipe);
-  } catch (error) {
-    next(error);
-  }
-})
-.patch(requireUser, async (req, res, next) => {
+  })
+  .patch(requireUser, async (req, res, next) => {
     try {
       const recipeId = Number(req.params.id);
       const userId = req.user.id;
@@ -44,7 +53,7 @@ router.route("/:id")
         return res.status(400).send("Recipe ID must be a number.");
       }
 
-      // Body shape: recipe fields + ingredients[]
+     
       const { ingredients = [], ...recipeData } = req.body;
 
       const updated = await updateRecipeWithIngredients(
@@ -60,33 +69,35 @@ router.route("/:id")
           .send("Recipe not found or you do not have permission to update it.");
       }
 
-      // Re-fetch full card (with aggregated ingredients JSON) to return to client
-      const fullCard = await getRecipeCard(recipeId);
+      
+      const fullCard = await getRecipeCard(recipeId, userId);
       res.send(fullCard);
     } catch (error) {
       next(error);
     }
   })
-.delete(requireUser,  async (req, res, next) => {
-  try {
-    const recipeId = Number(req.params.id);
-    const userId = req.user.id; 
+  .delete(requireUser, async (req, res, next) => {
+    try {
+      const recipeId = Number(req.params.id);
+      const userId = req.user.id;
 
-    if (Number.isNaN(recipeId)) {
-      return res.status(400).send("Recipe ID must be a number.");
+      if (Number.isNaN(recipeId)) {
+        return res.status(400).send("Recipe ID must be a number.");
+      }
+
+      const deleted = await deleteRecipe(recipeId, userId);
+      if (!deleted) {
+        return res
+          .status(404)
+          .send("Recipe not found or you do not have permission to delete it.");
+      }
+      res.status(204).send();
+    } catch (error) {
+      next(error);
     }
+  });
 
-    const deleted = await deleteRecipe(recipeId, userId);
-    if (!deleted) {
-      return res.status(404).send("Recipe not found or you do not have permission to delete it.");
-    }
-    res.status(204).send();
-  } catch (error) {
-    next(error);
-  }
-});
 
-// POST: Toggle like/unlike for a recipe but a user must be logged in
 router.route("/:id/like").post(requireUser, async (req, res, next) => {
   try {
     const recipeId = req.params.id;
@@ -114,23 +125,27 @@ router.route("/:id/like").post(requireUser, async (req, res, next) => {
 // POST: Create a new recipe with ingredients, user must be logged in
 router
   .route("/create")
-  .post(requireUser, requireBody([
-    "recipe_name",
-    "description",
-    "difficulty",
-    "number_of_servings",
-    "prep_time_minutes",
-    "cook_time_minutes",
-    "instructions",
-  ]), async (req, res, next) => {
-    try {
-      const userId = req.user.id;
-      const { ingredients = [], ...recipeData } = req.body;
+  .post(
+    requireUser,
+    requireBody([
+      "recipe_name",
+      "description",
+      "difficulty",
+      "number_of_servings",
+      "prep_time_minutes",
+      "cook_time_minutes",
+      "instructions",
+    ]),
+    async (req, res, next) => {
+      try {
+        const userId = req.user.id;
+        const { ingredients = [], ...recipeData } = req.body;
 
-      const newRecipe = await createRecipe(userId, recipeData, ingredients);
-      const fullRecipe = await getRecipeCard(newRecipe.id);
-      res.status(201).send(fullRecipe);
-    } catch (error) {
-      next(error);
+        const newRecipe = await createRecipe(userId, recipeData, ingredients);
+        const fullRecipe = await getRecipeCard(newRecipe.id, userId);
+        res.status(201).send(fullRecipe);
+      } catch (error) {
+        next(error);
+      }
     }
-  });
+  );
