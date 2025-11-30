@@ -2,7 +2,7 @@ body {
   font-family: verdana;
 }
 
-/* Create Recipe Form Styling */
+
 .create-recipe {
   max-width: 800px;
   margin: 0 auto;
@@ -20,7 +20,7 @@ body {
   gap: 1.5rem;
 }
 
-/* Recipe Header Section - Photo + Name & Cuisine side by side */
+
 .recipe-header-section {
   display: flex;
   gap: 2rem;
@@ -84,7 +84,7 @@ body {
   box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
 }
 
-/* Time inputs in header section - side by side */
+
 .time-inputs-row {
   display: flex;
   gap: 1rem;
@@ -96,7 +96,7 @@ body {
   font-size: 0.9rem;
 }
 
-/* Time Input Styling */
+
 .time-input-group {
   margin: 1rem 0;
 }
@@ -122,7 +122,7 @@ body {
   font-weight: 500;
 }
 
-/* Remove spinner arrows from number inputs (optional) */
+
 .time-input::-webkit-inner-spin-button,
 .time-input::-webkit-outer-spin-button {
   -webkit-appearance: none;
@@ -134,7 +134,7 @@ body {
   appearance: textfield;
 }
 
-/* General form label styling */
+
 .create-recipe label {
   display: flex;
   flex-direction: column;
@@ -162,13 +162,13 @@ body {
   box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
 }
 
-/* Style the file input button */
+
 .recipe-photo input[type="file"] {
   font-size: 0.9rem;
   cursor: pointer;
 }
 
-/* Hide the "No file chosen" text but keep the button */
+
 .recipe-photo input[type="file"]::file-selector-button {
   padding: 0.5rem 1rem;
   background: linear-gradient(180deg, #b98a58, #8f5e34);
@@ -205,13 +205,13 @@ body {
   box-shadow: 0 6px 16px rgba(140, 100, 70, 0.2);
 }
 
-/* Hide the text after the button */
+
 .recipe-photo input[type="file"] {
   color: transparent;
   max-width: 150px;
 }
 
-/* Instructions Section */
+
 .instructions-section {
   margin: 1.5rem 0;
 }
@@ -326,7 +326,7 @@ body {
   box-shadow: 0 4px 12px rgba(140, 100, 70, 0.15);
 }
 
-/* Submit button styling */
+
 .create-recipe-button {
   background: linear-gradient(180deg, #b98a58, #8f5e34);
   color: white;
@@ -351,18 +351,14 @@ body {
   background-color: #3d8b40;
 }
 
-/* Center the submit button */
+
 .create-recipe form > section {
   display: flex;
   justify-content: center;
   margin-top: 2rem;
 }
 
-/* ========================================
-   MEDIA QUERIES - Mobile & Tablet
-   ======================================== */
 
-/* Tablet (768px and below) */
 @media (max-width: 768px) {
   .create-recipe {
     padding: 1.5rem 1rem;
@@ -434,11 +430,7 @@ body {
   }
 }
 
-/* ========================================
-   MEDIA QUERIES - Mobile & Tablet
-   ======================================== */
 
-/* Tablet (768px and below) */
 @media (max-width: 768px) {
   .create-recipe {
     padding: 1.5rem 1rem;

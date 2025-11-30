@@ -1,31 +1,26 @@
-@media (max-width: 768px){
-  nav{
+@media (max-width: 768px) {
+  nav {
     flex-wrap: wrap;
     padding: 1rem;
     gap: 1rem;
   }
-  .search-container{
+  .search-container {
     flex: 1 1 100%;
     order: 3;
     max-width: 100%;
   }
-  .logo{
-    font-size: 1rem;
-  
-  }
-  .nav-links{
-    gap: .5rem;
+  .logo {
     font-size: 1rem;
   }
-  .nav-button{
-    padding: .5rem 1 irem;
-    font-size: .85rem;
-
+  .nav-links {
+    gap: 0.5rem;
+    font-size: 1rem;
+  }
+  .nav-button {
+    padding: 0.5rem 1 irem;
+    font-size: 0.85rem;
   }
 }
-
-
-
 
 nav {
   position: sticky;
@@ -53,6 +48,20 @@ nav a {
 
 .logo-link {
   margin-right: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo-image {
+  height: 100px;
+  width: auto;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.logo-link:hover .logo-image {
+  transform: scale(1.05);
 }
 
 .logo {
@@ -172,11 +181,15 @@ nav a {
   box-shadow: 0 4px 12px rgba(140, 100, 70, 0.15);
 }
 
-/* Responsive design */
+
 @media (max-width: 768px) {
   nav {
     gap: 1rem;
     padding: 0.75rem 1rem;
+  }
+
+  .logo-image {
+    height: 40px;
   }
 
   .logo {
@@ -209,6 +222,14 @@ nav a {
     margin-right: 0;
     width: 100%;
     order: 1;
+  }
+
+  .logo-image {
+    height: 35px;
+  }
+
+  .logo {
+    font-size: 1rem;
   }
 
   .search-container {

@@ -121,13 +121,13 @@ function CreateRecipeCard({ syncRecipes }) {
     const calories = formData.get("calories");
     const notes = formData.get("notes");
 
-    // Filter out empty instructions
+  
     const cleanedInstructions = instructions.filter(
       (inst) => inst.trim() !== ""
     );
     const instructionsText = cleanedInstructions.join("\n");
 
-    // Convert selectedIngredients array to format expected by backend
+    
     const ingredientsData = selectedIngredients.map((ing) => ({
       ingredientId: ing.id,
       name: ing.name,
