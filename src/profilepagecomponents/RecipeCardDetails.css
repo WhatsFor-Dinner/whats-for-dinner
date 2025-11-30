@@ -331,3 +331,45 @@
     width: 100%;
   }
 }
+
+
+@media (max-width: 480px) {
+  .recipe-card-content {
+    padding: 15px;
+  }
+
+  .recipe-image-container {
+    height: 220px;
+  }
+
+  .recipe-header-info h1 {
+    font-size: 20px;
+  }
+
+  .recipe-header-info p {
+    font-size: 0.9rem;
+  }
+
+  .recipe-meta-item {
+    font-size: 0.85rem;
+  }
+
+  .recipe-section h2 {
+    font-size: 1.3rem;
+  }
+
+  .recipe-ingredients li,
+  .recipe-instructions li {
+    font-size: 0.9rem;
+    padding: 8px 0;
+  }
+
+  .recipe-actions .btn {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+
+  .back-button-outside {
+    margin: 10px;
+  }
+}

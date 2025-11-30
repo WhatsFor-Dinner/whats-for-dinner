@@ -235,13 +235,51 @@
   border: 1px solid rgba(224, 91, 91, 0.06);
 }
 
-@media (max-width: 720px) {
+/* ========================================
+   MEDIA QUERIES - Mobile & Tablet
+   ======================================== */
+
+/* Tablet (768px and below) */
+@media (max-width: 768px) {
+  .register-card {
+    max-width: 500px;
+    padding: 22px;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+
   .field.two-up,
   .field.three-up {
     grid-template-columns: 1fr;
   }
+}
+
+/* Mobile (480px and below) */
+@media (max-width: 480px) {
   .register-card {
     padding: 18px;
     border-radius: 14px;
+    max-width: 100%;
+    margin: 1rem;
+  }
+
+  h1 {
+    font-size: 1.7rem;
+  }
+
+  input {
+    padding: 0.7rem;
+    font-size: 0.95rem;
+  }
+
+  .btn {
+    padding: 0.8rem;
+    font-size: 0.95rem;
+  }
+
+  .field label {
+    font-size: 0.9rem;
   }
 }
