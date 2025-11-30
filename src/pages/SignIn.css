@@ -138,9 +138,42 @@
   box-shadow: 0 8px 18px rgba(140, 100, 70, 0.1);
 }
 
+/* ========================================
+   MEDIA QUERIES - Mobile & Tablet
+   ======================================== */
+
+/* Tablet (768px and below) */
+@media (max-width: 768px) {
+  .signin-card {
+    max-width: 420px;
+    padding: 24px;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+}
+
+/* Mobile (480px and below) */
 @media (max-width: 480px) {
   .signin-card {
     padding: 20px;
     border-radius: 14px;
+    max-width: 100%;
+    margin: 1rem;
+  }
+
+  h1 {
+    font-size: 1.7rem;
+  }
+
+  input {
+    padding: 0.7rem;
+    font-size: 0.95rem;
+  }
+
+  .btn {
+    padding: 0.8rem;
+    font-size: 0.95rem;
   }
 }

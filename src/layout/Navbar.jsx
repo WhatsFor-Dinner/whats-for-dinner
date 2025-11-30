@@ -2,6 +2,7 @@ import React from "react";
 import { NavLink } from "react-router";
 import { useAuth } from "../Auth/Auth.jsx";
 import "./navbar.css";
+import logo from "../logo/wfd-empty-plate.png";
 
 export function Navbar() {
   const { token, logout } = useAuth();
@@ -9,8 +10,10 @@ export function Navbar() {
   return (
     <nav>
       <NavLink to="/" className="logo-link">
-        <div className="logo">LOGOPLACEHOLDER</div>
+        <img src={logo} alt="What's For Dinner Logo" className="logo-image" />
+      
       </NavLink>
+
       <div className="nav-links">
         <NavLink to="/">
           <button className="nav-button">Home</button>
