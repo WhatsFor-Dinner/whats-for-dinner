@@ -234,11 +234,11 @@ const Home = ({ searchTerm = "", onSearchChange = () => {} }) => {
           >
             <span className={`hamburger ${isSidebarOpen ? "open" : ""}`} />
           </button>
-          <h1 className="home-title">Welcome to What's for Dinner?</h1>
+          <h1 className="home-title">What's For Dinner?</h1>
           <div className="about-section">
             <h2>About Us</h2>
             <p>
-              Welcome to What's For Dinner, do you ever wonder what to cook?
+              Do you ever wonder what to cook?
               Look no further! This application will show you our top recipes to
               cook. You can also search for recipes based on your appetite.
             </p>

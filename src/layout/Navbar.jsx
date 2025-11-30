@@ -11,7 +11,7 @@ export function Navbar() {
     <nav>
       <NavLink to="/" className="logo-link">
         <img src={logo} alt="What's For Dinner Logo" className="logo-image" />
-        <div className="logo">What's For Dinner</div>
+      
       </NavLink>
 
       <div className="nav-links">
