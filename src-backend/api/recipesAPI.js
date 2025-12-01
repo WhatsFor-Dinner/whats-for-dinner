@@ -2,6 +2,8 @@ import express from "express";
 const router = express.Router();
 export default router;
 
+import { uploadToCloudinary } from "../config/cloudinary.js";
+
 import {
   searchRecipes,
   createRecipe,
@@ -33,7 +35,6 @@ router
         return res.status(400).send("Recipe ID must be a number.");
       }
 
-      
       const userId = req.user ? req.user.id : null;
       const recipe = await getRecipeCard(recipeId, userId);
       if (!recipe) {
@@ -53,8 +54,19 @@ router
         return res.status(400).send("Recipe ID must be a number.");
       }
 
-     
-      const { ingredients = [], ...recipeData } = req.body;
+      // Parse ingredients if it's a string (from FormData)
+      let ingredients = req.body.ingredients || [];
+      if (typeof ingredients === "string") {
+        ingredients = JSON.parse(ingredients);
+      }
+
+      const { ingredients: _, ...recipeData } = req.body;
+
+      // Add image URL if new file was uploaded
+      if (req.files && req.files.image) {
+        const result = await uploadToCloudinary(req.files.image);
+        recipeData.picture_url = result.secure_url;
+      }
 
       const updated = await updateRecipeWithIngredients(
         recipeId,
@@ -69,7 +81,6 @@ router
           .send("Recipe not found or you do not have permission to update it.");
       }
 
-      
       const fullCard = await getRecipeCard(recipeId, userId);
       res.send(fullCard);
     } catch (error) {
@@ -96,7 +107,6 @@ router
       next(error);
     }
   });
-
 
 router.route("/:id/like").post(requireUser, async (req, res, next) => {
   try {
@@ -132,14 +142,24 @@ router
       "description",
       "difficulty",
       "number_of_servings",
-      "prep_time_minutes",
-      "cook_time_minutes",
       "instructions",
     ]),
     async (req, res, next) => {
       try {
         const userId = req.user.id;
-        const { ingredients = [], ...recipeData } = req.body;
+
+        // Parse ingredients if it's a string (from FormData)
+        let ingredients = req.body.ingredients || [];
+        if (typeof ingredients === "string") {
+          ingredients = JSON.parse(ingredients);
+        }
+
+        const { ingredients: _, ...recipeData } = req.body;
+
+        if (req.files && req.files.image) {
+          const result = await uploadToCloudinary(req.files.image);
+          recipeData.picture_url = result.secure_url;
+        }
 
         const newRecipe = await createRecipe(userId, recipeData, ingredients);
         const fullRecipe = await getRecipeCard(newRecipe.id, userId);

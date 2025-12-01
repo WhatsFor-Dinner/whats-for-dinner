@@ -1,5 +1,16 @@
 const API = "";
 
+// Helper function to safely parse response
+async function parseResponse(response) {
+  const contentType = response.headers.get("content-type");
+  if (contentType && contentType.includes("application/json")) {
+    return await response.json();
+  }
+  // If not JSON, return text
+  const text = await response.text();
+  return { error: text, message: text };
+}
+
 export async function getRecipes(token, userId) {
   try {
     const url = userId ? `${API}/recipes?userId=${userId}` : `${API}/recipes`;
@@ -29,20 +40,31 @@ export async function createRecipe(token, recipe) {
   if (!token) {
     throw Error("You must be logged in to create a recipe.");
   }
+
+  // Check if recipe is FormData (for file uploads) or regular object
+  const isFormData = recipe instanceof FormData;
+
+  const headers = {
+    Authorization: "Bearer " + token,
+  };
+
+  if (!isFormData) {
+    headers["Content-Type"] = "application/json";
+  }
+
   const response = await fetch(API + "/recipes/create", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + token,
-    },
-    body: JSON.stringify(recipe),
+    headers: headers,
+    body: isFormData ? recipe : JSON.stringify(recipe),
   });
 
   if (!response.ok) {
-    const result = await response.json();
-
-    throw Error(result.message);
+    const result = await parseResponse(response);
+    throw Error(result.message || result.error || "Failed to create recipe");
   }
+
+  const result = await parseResponse(response);
+  return result;
 }
 
 export async function deleteRecipe(token, id) {
@@ -55,8 +77,8 @@ export async function deleteRecipe(token, id) {
   });
 
   if (!response.ok) {
-    const result = await response.json();
-    throw Error(result.message);
+    const result = await parseResponse(response);
+    throw Error(result.message || result.error || "Failed to delete recipe");
   }
 }
 
@@ -65,21 +87,30 @@ export async function updateRecipe(token, id, recipeData) {
     throw Error("You must be logged in to update a recipe.");
   }
 
+  // Check if recipeData is FormData (for file uploads) or regular object
+  const isFormData = recipeData instanceof FormData;
+
+  const headers = {
+    Authorization: "Bearer " + token,
+  };
+
+  // Don't set Content-Type for FormData - browser will set it with boundary
+  if (!isFormData) {
+    headers["Content-Type"] = "application/json";
+  }
+
   const response = await fetch(API + "/recipes/" + id, {
     method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + token,
-    },
-    body: JSON.stringify(recipeData),
+    headers: headers,
+    body: isFormData ? recipeData : JSON.stringify(recipeData),
   });
 
   if (!response.ok) {
-    const result = await response.json();
-    throw Error(result.message);
+    const result = await parseResponse(response);
+    throw Error(result.message || result.error || "Failed to update recipe");
   }
 
-  const result = await response.json();
+  const result = await parseResponse(response);
   return result;
 }
 

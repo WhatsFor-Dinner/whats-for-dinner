@@ -1,6 +1,7 @@
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
+import fileUpload from "express-fileupload";
 
 const app = express();
 export default app;
@@ -17,6 +18,15 @@ import usersRouter from "./src-backend/api/usersAPI.js";
 
 // Express body-parsing middleware. It tells Express to automatically read JSON data from the request body and turn it into a JavaScript object on req.body
 app.use(express.json());
+
+// File upload middleware for handling multipart/form-data
+app.use(
+  fileUpload({
+    useTempFiles: true,
+    tempFileDir: "/tmp/",
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  })
+);
 
 // Serve static files from dist folder in production
 if (process.env.NODE_ENV === "production") {

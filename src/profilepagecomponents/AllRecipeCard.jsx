@@ -19,47 +19,43 @@ export default function AllRecipeCard() {
   const [editMode, setEditMode] = useState(null);
   const inEditMode = id !== undefined;
 
-
-
   useEffect(() => {
     let isMounted = true;
-    
-    if(inEditMode && id){
 
-   
-    const fetchRecipe = async () => {
-      try {
-        if (isMounted) setLoading(true);
+    if (inEditMode && id) {
+      const fetchRecipe = async () => {
+        try {
+          if (isMounted) setLoading(true);
 
-        const response = await fetch(`/recipes/${id}`, {
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
-        });
+          const response = await fetch(`/recipes/${id}`, {
+            headers: token ? { Authorization: `Bearer ${token}` } : {},
+          });
 
-        if (!response.ok) {
-          throw new Error(`Failed to fetch recipe: ${response.statusText}`);
+          if (!response.ok) {
+            throw new Error(`Failed to fetch recipe: ${response.statusText}`);
+          }
+
+          const data = await response.json();
+
+          if (isMounted) {
+            setRecipe(data);
+            setError(null);
+          }
+        } catch (err) {
+          if (isMounted) {
+            console.warn("Recipe not found", err.message);
+            setRecipe(RecipeData);
+            setError(null);
+          }
+        } finally {
+          if (isMounted) setLoading(false);
         }
+      };
 
-        const data = await response.json();
-
-        if (isMounted) {
-          setRecipe(data);
-          setError(null);
-        }
-      } catch (err) {
-        if (isMounted) {
-          console.warn("Recipe not found", err.message);
-          setRecipe(RecipeData);
-          setError(null);
-        }
-      } finally {
-        if (isMounted) setLoading(false);
+      if (id) {
+        fetchRecipe();
       }
-    };
-
-    if (id) {
-      fetchRecipe();
     }
-  }
     return () => {
       isMounted = false;
     };
@@ -126,11 +122,13 @@ export default function AllRecipeCard() {
 
         <div className="recipe-card-content">
           <div className="recipe-header-section">
-            {recipe.picture_url && (
-              <div className="recipe-image-container">
+            <div className="recipe-image-container">
+              {recipe.picture_url ? (
                 <img src={recipe.picture_url} alt={recipe.recipe_name} />
-              </div>
-            )}
+              ) : (
+                <div className="image-fallback">🍽️</div>
+              )}
+            </div>
 
             <div className="recipe-header-info">
               <h1>{recipe.recipe_name}</h1>

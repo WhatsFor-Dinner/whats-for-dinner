@@ -22,8 +22,16 @@ function CreateRecipeCard({ syncRecipes }) {
   const [currentInstruction, setCurrentInstruction] = useState("");
   const [existingRecipe, setExistingRecipe] = useState(null);
 
+  const [imagePreview, setImagePreview] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
   // Check if we're in edit mode
   const isEditMode = location.pathname.includes("/edit");
+
+  useEffect(() => {
+    if (existingRecipe?.picture_url) {
+      setImagePreview(existingRecipe.picture_url);
+    }
+  }, [existingRecipe]);
 
   // Fetch existing recipe in edit mode
   useEffect(() => {
@@ -71,6 +79,24 @@ function CreateRecipeCard({ syncRecipes }) {
     };
   }, [id, isEditMode]);
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setImageFile(null);
+    setImagePreview(null);
+  };
+
   const handleAddIngredient = (ingredient) => {
     const newIngredient = {
       id: ingredient.id,
@@ -110,7 +136,6 @@ function CreateRecipeCard({ syncRecipes }) {
 
   const tryCreateRecipe = async (formData) => {
     setError(null);
-    const image = formData.get("image");
     const name = formData.get("name");
     const cuisine = formData.get("cuisine");
     const description = formData.get("description");
@@ -134,31 +159,38 @@ function CreateRecipeCard({ syncRecipes }) {
     }));
 
     try {
-      const recipeData = {
-        recipe_name: name,
-        description: description,
-        difficulty: difficulty,
-        number_of_servings: parseInt(servings),
-        cuisine_type: cuisine || null,
-        prep_time_minutes: prepTime ? parseInt(prepTime) : null,
-        cook_time_minutes: cookTime ? parseInt(cookTime) : null,
-        calories: calories || null,
-        notes: notes || null,
-        instructions: instructionsText,
-        picture_url: image || null,
-        ingredients: ingredientsData,
-      };
+      // Create FormData for multipart/form-data submission
+      const submitData = new FormData();
+
+      // Add the image file if selected
+      if (imageFile) {
+        submitData.append("image", imageFile);
+      }
+
+      submitData.append("recipe_name", name);
+      submitData.append("description", description);
+      submitData.append("difficulty", difficulty);
+      submitData.append("number_of_servings", servings);
+      if (cuisine) submitData.append("cuisine_type", cuisine);
+      if (prepTime) submitData.append("prep_time_minutes", prepTime);
+      if (cookTime) submitData.append("cook_time_minutes", cookTime);
+      if (calories) submitData.append("calories", calories);
+      if (notes) submitData.append("notes", notes);
+      submitData.append("instructions", instructionsText);
+      submitData.append("ingredients", JSON.stringify(ingredientsData));
 
       if (isEditMode) {
-        await updateRecipe(token, id, recipeData);
+        await updateRecipe(token, id, submitData);
         navigate(`/recipe/${id}`);
       } else {
-        await createRecipe(token, recipeData);
+        await createRecipe(token, submitData);
         if (syncRecipes) syncRecipes();
         // Reset form
         setSelectedIngredients([]);
         setInstructions([]);
         setCurrentInstruction("");
+        setImageFile(null);
+        setImagePreview(null);
       }
       setError(null);
     } catch (error) {
@@ -169,6 +201,12 @@ function CreateRecipeCard({ syncRecipes }) {
   function handleSubmit(e) {
     e.preventDefault();
     const formData = new FormData(e.target);
+
+    // Manually add the image file from state since it's in a hidden input
+    if (imageFile) {
+      formData.set("image", imageFile);
+    }
+
     tryCreateRecipe(formData);
   }
 
@@ -180,10 +218,36 @@ function CreateRecipeCard({ syncRecipes }) {
         <form onSubmit={handleSubmit}>
           {/* Top Section: Photo + Recipe Info */}
           <div className="recipe-header-section">
-            <label className="recipe-photo">
-              Add Photo of Food
-              <input type="file" name="image" />
-            </label>
+            <div className="recipe-photo">
+              {imagePreview ? (
+                <div className="image-preview-container">
+                  <img
+                    src={imagePreview}
+                    alt="Recipe preview"
+                    className="recipe-image-preview"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleRemoveImage}
+                    className="remove-image-btn"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ) : (
+                <label className="image-upload-placeholder">
+                  <span className="upload-icon">📷</span>
+                  <span>Add Photo of Food</span>
+                  <input
+                    type="file"
+                    name="image"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    style={{ display: "none" }}
+                  />
+                </label>
+              )}
+            </div>
 
             <div className="recipe-basic-info">
               <label>

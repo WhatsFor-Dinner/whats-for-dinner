@@ -327,7 +327,7 @@ Profile Navigaton  */
 .profile-sidebar {
   position: fixed;
   left: 0;
-  top: 80px;
+ 
   width: 250px;
   height: 500px;
   margin-top: 85px;

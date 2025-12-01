@@ -11,7 +11,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "start": "node server.js",
+    "start": "node --env-file=.env server.js",
     "dev:server": "node --watch --env-file=.env server.js",
     "test": "vitest",
     "db:schema": "psql -d whats_for_dinner -f src-backend/db/schema.sql",
@@ -38,7 +38,9 @@
   "dependencies": {
     "@faker-js/faker": "^10.1.0",
     "bcrypt": "^6.0.0",
+    "cloudinary": "^2.8.0",
     "express": "^4.21.2",
+    "express-fileupload": "^1.5.2",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.16.3",
     "react": "^19.2.0",
