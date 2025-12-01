@@ -12,7 +12,7 @@ function LikeButton({ recipeId, initialLiked = false }) {
 
   const handleLike = async () => {
     if (!token) {
-      setToast({ message: "Please log in to like recipes", type: "warning" });
+      setToast({ message: "Please register or log in to like recipes", type: "warning" });
       return;
     }
 
