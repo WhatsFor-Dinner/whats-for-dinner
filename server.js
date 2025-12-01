@@ -1,3 +1,11 @@
+// Load .env file only in development
+import { config } from "dotenv";
+import { existsSync } from "fs";
+
+if (existsSync(".env")) {
+  config();
+}
+
 import app from "./app.js";
 import db from "./src-backend/db/client.js";
 
