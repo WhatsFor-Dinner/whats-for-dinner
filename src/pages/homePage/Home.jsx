@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { FaTimes } from "react-icons/fa";
 import "./home.css";
 
 const Home = ({ searchTerm = "", onSearchChange = () => {} }) => {
@@ -140,6 +141,10 @@ const Home = ({ searchTerm = "", onSearchChange = () => {} }) => {
     window.location.href = `/recipe/${recipeId}`;
   };
 
+  const handleClearSearch = () => {
+    onSearchChange("");
+  };
+
   return (
     <div className="home site-layout">
       <aside className={`left-sidebar ${isSidebarOpen ? "open" : ""}`}>
@@ -148,14 +153,26 @@ const Home = ({ searchTerm = "", onSearchChange = () => {} }) => {
             <label htmlFor="sidebar-search-input" className="visually-hidden">
               Search recipes
             </label>
-            <input
-              id="sidebar-search-input"
-              className="search-input"
-              type="text"
-              placeholder="Search all recipes..."
-              value={searchTerm}
-              onChange={(e) => onSearchChange(e.target.value)}
-            />
+            <div className="search-input-wrapper">
+              <input
+                id="sidebar-search-input"
+                className="search-input"
+                type="text"
+                placeholder="Search all recipes..."
+                value={searchTerm}
+                onChange={(e) => onSearchChange(e.target.value)}
+              />
+              {searchTerm && (
+                <button
+                  type="button"
+                  className="clear-search-button"
+                  onClick={handleClearSearch}
+                  aria-label="Clear search"
+                >
+                  <FaTimes />
+                </button>
+              )}
+            </div>
           </div>
 
           <div className="sidebar-results">
@@ -234,7 +251,6 @@ const Home = ({ searchTerm = "", onSearchChange = () => {} }) => {
           >
             <span className={`hamburger ${isSidebarOpen ? "open" : ""}`} />
           </button>
-          <h1 className="home-title">What's For Dinner?</h1>
           <div className="about-section">
             <h2>About Us</h2>
             <p>
