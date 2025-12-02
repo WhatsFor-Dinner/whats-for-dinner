@@ -145,6 +145,15 @@ const Home = ({ searchTerm = "", onSearchChange = () => {} }) => {
     onSearchChange("");
   };
 
+  const handleClearRecentSearches = () => {
+    setRecentSearches([]);
+    try {
+      localStorage.removeItem("recentSearches");
+    } catch (e) {
+      // ignore localStorage errors
+    }
+  };
+
   return (
     <div className="home site-layout">
       <aside className={`left-sidebar ${isSidebarOpen ? "open" : ""}`}>
@@ -162,7 +171,7 @@ const Home = ({ searchTerm = "", onSearchChange = () => {} }) => {
                 value={searchTerm}
                 onChange={(e) => onSearchChange(e.target.value)}
               />
-              {searchTerm && (
+              {searchTerm.trim() && (
                 <button
                   type="button"
                   className="clear-search-button"
@@ -207,7 +216,18 @@ const Home = ({ searchTerm = "", onSearchChange = () => {} }) => {
               </div>
             ) : searchTerm.trim() === "" && recentSearches.length > 0 ? (
               <div className="recent-searches small">
-                <h4>Recent searches</h4>
+                <div className="recent-searches-header">
+                  <h4>Recent searches</h4>
+                  <button
+                    type="button"
+                    className="clear-recent-searches-button"
+                    onClick={handleClearRecentSearches}
+                    aria-label="Clear recent searches"
+                    title="Clear recent searches"
+                  >
+                    <FaTimes />
+                  </button>
+                </div>
                 <ul className="suggestion-list">
                   {recentSearches.map((s, idx) => (
                     <li key={`recent-${idx}`} className="suggestion-item">
