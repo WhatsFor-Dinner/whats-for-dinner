@@ -35,6 +35,7 @@ nav {
   border-bottom: 2px solid rgba(143, 94, 52, 0.1);
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 2rem;
   padding: 1rem 1.5rem;
   box-shadow: 0 2px 12px rgba(70, 50, 30, 0.08);
@@ -47,10 +48,10 @@ nav a {
 }
 
 .logo-link {
-  margin-right: auto;
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  flex-shrink: 0;
 }
 
 .logo-image {
@@ -133,10 +134,37 @@ nav a {
   color: #8f5e34;
 }
 
+.nav-title {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.nav-title h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #8f5e34;
+  letter-spacing: -1px;
+  margin: 0;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  text-align: center;
+}
+
+.nav-title:hover h1 {
+  transform: scale(1.05);
+  color: #c94f2a;
+  text-shadow: 0 2px 8px rgba(201, 79, 42, 0.2);
+}
+
 .nav-links {
   display: flex;
   gap: 0.75rem;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .nav-button {
@@ -167,7 +195,7 @@ nav a {
 }
 
 .nav-button:hover {
-  transform: translateY(-3px);
+  transform: translateY(-3px) scale(1.05);
   box-shadow: 0 8px 20px rgba(140, 100, 70, 0.25);
   background: linear-gradient(180deg, #c4985f, #9b6a3c);
 }
@@ -177,8 +205,21 @@ nav a {
 }
 
 .nav-button:active {
-  transform: translateY(-1px);
+  transform: translateY(-1px) scale(1.02);
   box-shadow: 0 4px 12px rgba(140, 100, 70, 0.15);
+}
+
+.nav-button.active {
+  background: linear-gradient(180deg, #c94f2a, #a63d1f);
+  box-shadow: 0 4px 16px rgba(201, 79, 42, 0.3),
+    inset 0 2px 4px rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.nav-button.active:hover {
+  background: linear-gradient(180deg, #d95a3a, #b54525);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 24px rgba(201, 79, 42, 0.4);
 }
 
 
@@ -186,6 +227,7 @@ nav a {
   nav {
     gap: 1rem;
     padding: 0.75rem 1rem;
+    flex-wrap: wrap;
   }
 
   .logo-image {
@@ -196,18 +238,31 @@ nav a {
     font-size: 1.1rem;
   }
 
-  .search-container {
-    flex: 0 1 350px;
-    margin: 0 auto;
+  .nav-title {
+    order: 2;
+    flex: 1 1 100%;
+    margin: 0.5rem 0;
+  }
+
+  .nav-title h1 {
+    font-size: 1.5rem;
   }
 
   .nav-links {
+    order: 3;
     gap: 0.5rem;
+    width: 100%;
+    justify-content: center;
   }
 
   .nav-button {
     padding: 0.5rem 0.8rem;
     font-size: 0.85rem;
+  }
+
+  .search-container {
+    flex: 0 1 350px;
+    margin: 0 auto;
   }
 }
 
@@ -219,9 +274,8 @@ nav a {
   }
 
   .logo-link {
-    margin-right: 0;
-    width: 100%;
     order: 1;
+    flex: 0 0 auto;
   }
 
   .logo-image {
@@ -232,20 +286,33 @@ nav a {
     font-size: 1rem;
   }
 
+  .nav-title {
+    order: 2;
+    flex: 1 1 100%;
+    margin: 0.25rem 0;
+  }
+
+  .nav-title h1 {
+    font-size: 1.25rem;
+  }
+
   .search-container {
     flex: 1 1 100%;
-    order: 2;
+    order: 3;
     max-width: none;
   }
 
   .nav-links {
     flex: 1 1 100%;
-    order: 3;
+    order: 4;
     width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
   }
 
   .nav-button {
-    flex: 1;
+    flex: 1 1 auto;
+    min-width: 80px;
     font-size: 0.8rem;
     padding: 0.5rem;
   }
