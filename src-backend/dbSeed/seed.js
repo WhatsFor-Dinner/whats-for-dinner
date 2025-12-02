@@ -28,7 +28,7 @@ async function seed() {
 
     // create a seed user
     console.log("Creating seed user...");
-    const user = await seedUser("demo_user", "password123");
+    const user = await seedUser("Peter Pan", "password123#!");
     const userId = user.id;
     console.log("Seed user created with id:", userId);
 
