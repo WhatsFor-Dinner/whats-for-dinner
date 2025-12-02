@@ -24,6 +24,7 @@ function CreateRecipeCard({ syncRecipes }) {
 
   const [imagePreview, setImagePreview] = useState(null);
   const [imageFile, setImageFile] = useState(null);
+  const [difficulty, setDifficulty] = useState("");
   // Check if we're in edit mode
   const isEditMode = location.pathname.includes("/edit");
 
@@ -65,6 +66,11 @@ function CreateRecipeCard({ syncRecipes }) {
                 : data.instructions;
             setInstructions(instructionsArray);
           }
+
+          // Pre-populate difficulty
+          if (data.difficulty) {
+            setDifficulty(data.difficulty);
+          }
         }
       } catch (error) {
         if (isMounted) {
@@ -94,7 +100,12 @@ function CreateRecipeCard({ syncRecipes }) {
 
   const handleRemoveImage = () => {
     setImageFile(null);
-    setImagePreview(null);
+    // In edit mode, restore the original picture; in create mode, clear it
+    setImagePreview(
+      isEditMode && existingRecipe?.picture_url
+        ? existingRecipe.picture_url
+        : null
+    );
   };
 
   const handleAddIngredient = (ingredient) => {
@@ -165,6 +176,9 @@ function CreateRecipeCard({ syncRecipes }) {
       // Add the image file if selected
       if (imageFile) {
         submitData.append("image", imageFile);
+      } else if (isEditMode && existingRecipe?.picture_url) {
+        // In edit mode, preserve the existing picture URL if no new image is uploaded
+        submitData.append("picture_url", existingRecipe.picture_url);
       }
 
       submitData.append("recipe_name", name);
@@ -181,11 +195,11 @@ function CreateRecipeCard({ syncRecipes }) {
 
       if (isEditMode) {
         await updateRecipe(token, id, submitData);
-        navigate(`/recipe/${id}`);
+        navigate(`/recipe/${id}`, { replace: true });
       } else {
         await createRecipe(token, submitData);
         if (syncRecipes) syncRecipes();
-        // Reset form
+     
         setSelectedIngredients([]);
         setInstructions([]);
         setCurrentInstruction("");
@@ -287,7 +301,8 @@ function CreateRecipeCard({ syncRecipes }) {
                   Difficulty:
                   <select
                     name="difficulty"
-                    defaultValue={existingRecipe?.difficulty || ""}
+                    value={difficulty}
+                    onChange={(e) => setDifficulty(e.target.value)}
                     required
                   >
                     <option value="">Select difficulty</option>
