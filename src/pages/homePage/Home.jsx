@@ -71,70 +71,71 @@ const Home = ({ searchTerm = "", onSearchChange = () => {} }) => {
 
   // Server-driven search: when searchTerm changes, request backend search endpoint (debounced)
   useEffect(() => {
-    let isCancelled = false;
-    // If no search term, do not show top recipes in the sidebar.
-    // Keep the sidebar empty until the user types a query.
-    if (searchTerm.trim() === "") {
-      setFilteredRecipes([]);
-      return;
-    }
+  let isCancelled = false;
 
-    const controller = new AbortController();
-    const signal = controller.signal;
+  if (searchTerm.trim() === "") {
+    setFilteredRecipes([]);
+    return;
+  }
 
-    const t = setTimeout(async () => {
-      try {
-        setLoading(true);
-        setSearchError(null);
-        const q = encodeURIComponent(searchTerm.trim());
-        const res = await fetch(`/recipes?query=${q}`, { signal });
-        if (!res.ok) {
-          throw new Error(`Search failed: ${res.statusText}`);
+  const controller = new AbortController();
+
+  const t = setTimeout(async () => {
+    try {
+      setLoading(true);
+      setSearchError(null);
+
+      const q = encodeURIComponent(searchTerm.trim());
+      const limit = 15;         // request 15
+      const offset = 0;
+
+      const res = await fetch(`/recipes?query=${q}&limit=${limit}&offset=${offset}`, {
+        signal: controller.signal
+      });
+
+      // handle non-OK BEFORE reading the body
+      if (!res.ok) {
+        const text = await res.text().catch(() => "");
+        throw new Error(`Search failed (${res.status}): ${text || res.statusText}`);
+      }
+
+      // read the body ONCE
+      const payload = await res.json();
+      const rows = Array.isArray(payload) ? payload : (payload.items || payload.recipes || []);
+
+      if (!isCancelled) {
+        setFilteredRecipes(rows);
+
+        // store recent searches
+        const qClean = searchTerm.trim();
+        if (qClean) {
+          setRecentSearches(prev => {
+            const deduped = [qClean, ...prev.filter(s => s !== qClean)].slice(0, 8);
+            try { localStorage.setItem("recentSearches", JSON.stringify(deduped)); } catch {}
+            return deduped;
+          });
         }
-        const results = await res.json();
-        if (!isCancelled) {
-          const rows = Array.isArray(results) ? results : results.recipes || [];
-          setFilteredRecipes(rows);
-
-          // If we successfully returned results for a query, save the query as a recent search.
-          try {
-            const q = searchTerm.trim();
-            if (q.length > 0) {
-              setRecentSearches((prev) => {
-                const deduped = [q, ...prev.filter((s) => s !== q)].slice(0, 8);
-                try {
-                  localStorage.setItem(
-                    "recentSearches",
-                    JSON.stringify(deduped)
-                  );
-                } catch (e) {
-                  // ignore localStorage errors
-                }
-                return deduped;
-              });
-            }
-          } catch (e) {
-            /* ignore */
-          }
-        }
-      } catch (err) {
-        if (err.name === "AbortError") return;
+      }
+    } catch (err) {
+      if (err.name !== "AbortError") {
         console.error("Search error:", err);
         if (!isCancelled) {
           setSearchError(err.message);
           setFilteredRecipes([]);
         }
-      } finally {
-        if (!isCancelled) setLoading(false);
       }
-    }, 300); // 300ms debounce
+    } finally {
+      if (!isCancelled) setLoading(false);
+    }
+  }, 300);
 
-    return () => {
-      isCancelled = true;
-      controller.abort();
-      clearTimeout(t);
-    };
-  }, [searchTerm]);
+  return () => {
+    isCancelled = true;
+    controller.abort();
+    clearTimeout(t);
+  };
+}, [searchTerm]);
+
 
   const handleRecipeClick = (recipeId) => {
     // Navigate to recipe detail page

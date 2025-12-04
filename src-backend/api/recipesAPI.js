@@ -18,8 +18,11 @@ import requireBody from "../middleware/requireBody.js";
 router.route("/").get(async (req, res, next) => {
   try {
     const searchTerm = (req.query.query || "").trim();
-    const results = await searchRecipes(searchTerm);
-    res.send(results);
+    const limit  = Math.min(Math.max(parseInt(req.query.limit, 10) || 50, 1), 100);
+    const offset = Math.max(parseInt(req.query.offset, 10) || 0, 0);
+
+    const results = await searchRecipes(searchTerm, { limit, offset });
+    res.send({ items: results, limit, offset }); // optional: wrap for clarity
   } catch (error) {
     next(error);
   }
