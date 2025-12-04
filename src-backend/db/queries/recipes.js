@@ -216,17 +216,24 @@ export async function getTopLikedRecipes() {
 
 // GET: Search recipes by name for the search bar
 // May need some optimization to show results more accuratly
-export async function searchRecipes(input) {
+export async function searchRecipes(input, { limit = 15, offset = 0 } = {}) {
+  const clean = (input || "").trim();
+  // guardrails
+  const lim = Math.min(Math.max(parseInt(limit, 10) || 50, 1), 15);
+  const off = Math.max(parseInt(offset, 10) || 0, 0);
+
   const sql = `
-    SELECT *
+    SELECT id, recipe_name, description, cuisine_type, picture_url
     FROM recipes
-    WHERE recipe_name ILIKE $1
-    ORDER BY recipe_name
-    LIMIT 10;
-    `;
-  // trim will remove extra spaces that may pass through from search since that can mess up the query matches
-  const cleanInput = (input || "").trim();
-  const { rows } = await db.query(sql, [`${cleanInput}%`]);
+    WHERE
+      recipe_name  ILIKE $1 OR
+      description  ILIKE $1 OR
+      cuisine_type ILIKE $1
+    ORDER BY recipe_name ASC
+    LIMIT $2 OFFSET $3;
+  `;
+  const term = `%${clean}%`; // contains match instead of prefix only
+  const { rows } = await db.query(sql, [term, lim, off]);
   return rows;
 }
 
