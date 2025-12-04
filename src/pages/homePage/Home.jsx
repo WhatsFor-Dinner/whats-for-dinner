@@ -4,6 +4,9 @@ import "./home.css";
 
 const Home = ({ searchTerm = "", onSearchChange = () => {} }) => {
   const [topRecipes, setTopRecipes] = useState([]);
+  const [exploreRecipes, setExploreRecipes] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const recipesPerPage = 12;
   const [loading, setLoading] = useState(true);
   const [topError, setTopError] = useState(null);
   const [searchError, setSearchError] = useState(null);
@@ -69,73 +72,114 @@ const Home = ({ searchTerm = "", onSearchChange = () => {} }) => {
     };
   }, []);
 
+  // Fetch all recipes for explore section
+  useEffect(() => {
+    let cancelled = false;
+    const fetchAllRecipes = async () => {
+      try {
+        // Fetch with empty query and limit set to 50 to get more recipes
+        const response = await fetch("/recipes?query=&limit=50");
+        if (!response.ok) {
+          console.error(
+            "Failed to fetch explore recipes:",
+            response.statusText
+          );
+          return;
+        }
+        const data = await response.json();
+
+        const rows =
+          data.items || (Array.isArray(data) ? data : data.recipes || []);
+        if (!cancelled) {
+          setExploreRecipes(rows);
+        }
+      } catch (err) {
+        console.error("Error fetching explore recipes:", err);
+      }
+    };
+
+    fetchAllRecipes();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   // Server-driven search: when searchTerm changes, request backend search endpoint (debounced)
   useEffect(() => {
-  let isCancelled = false;
+    let isCancelled = false;
 
-  if (searchTerm.trim() === "") {
-    setFilteredRecipes([]);
-    return;
-  }
-
-  const controller = new AbortController();
-
-  const t = setTimeout(async () => {
-    try {
-      setLoading(true);
-      setSearchError(null);
-
-      const q = encodeURIComponent(searchTerm.trim());
-      const limit = 15;         // request 15
-      const offset = 0;
-
-      const res = await fetch(`/recipes?query=${q}&limit=${limit}&offset=${offset}`, {
-        signal: controller.signal
-      });
-
-      // handle non-OK BEFORE reading the body
-      if (!res.ok) {
-        const text = await res.text().catch(() => "");
-        throw new Error(`Search failed (${res.status}): ${text || res.statusText}`);
-      }
-
-      // read the body ONCE
-      const payload = await res.json();
-      const rows = Array.isArray(payload) ? payload : (payload.items || payload.recipes || []);
-
-      if (!isCancelled) {
-        setFilteredRecipes(rows);
-
-        // store recent searches
-        const qClean = searchTerm.trim();
-        if (qClean) {
-          setRecentSearches(prev => {
-            const deduped = [qClean, ...prev.filter(s => s !== qClean)].slice(0, 8);
-            try { localStorage.setItem("recentSearches", JSON.stringify(deduped)); } catch {}
-            return deduped;
-          });
-        }
-      }
-    } catch (err) {
-      if (err.name !== "AbortError") {
-        console.error("Search error:", err);
-        if (!isCancelled) {
-          setSearchError(err.message);
-          setFilteredRecipes([]);
-        }
-      }
-    } finally {
-      if (!isCancelled) setLoading(false);
+    if (searchTerm.trim() === "") {
+      setFilteredRecipes([]);
+      return;
     }
-  }, 300);
 
-  return () => {
-    isCancelled = true;
-    controller.abort();
-    clearTimeout(t);
-  };
-}, [searchTerm]);
+    const controller = new AbortController();
 
+    const t = setTimeout(async () => {
+      try {
+        setLoading(true);
+        setSearchError(null);
+
+        const q = encodeURIComponent(searchTerm.trim());
+        const limit = 15;
+        const offset = 0;
+
+        const res = await fetch(
+          `/recipes?query=${q}&limit=${limit}&offset=${offset}`,
+          {
+            signal: controller.signal,
+          }
+        );
+
+        // handle non-OK BEFORE reading the body
+        if (!res.ok) {
+          const text = await res.text().catch(() => "");
+          throw new Error(
+            `Search failed (${res.status}): ${text || res.statusText}`
+          );
+        }
+
+        const payload = await res.json();
+        const rows = Array.isArray(payload)
+          ? payload
+          : payload.items || payload.recipes || [];
+
+        if (!isCancelled) {
+          setFilteredRecipes(rows);
+
+          const qClean = searchTerm.trim();
+          if (qClean) {
+            setRecentSearches((prev) => {
+              const deduped = [
+                qClean,
+                ...prev.filter((s) => s !== qClean),
+              ].slice(0, 8);
+              try {
+                localStorage.setItem("recentSearches", JSON.stringify(deduped));
+              } catch {}
+              return deduped;
+            });
+          }
+        }
+      } catch (err) {
+        if (err.name !== "AbortError") {
+          console.error("Search error:", err);
+          if (!isCancelled) {
+            setSearchError(err.message);
+            setFilteredRecipes([]);
+          }
+        }
+      } finally {
+        if (!isCancelled) setLoading(false);
+      }
+    }, 300);
+
+    return () => {
+      isCancelled = true;
+      controller.abort();
+      clearTimeout(t);
+    };
+  }, [searchTerm]);
 
   const handleRecipeClick = (recipeId) => {
     // Navigate to recipe detail page
@@ -150,9 +194,7 @@ const Home = ({ searchTerm = "", onSearchChange = () => {} }) => {
     setRecentSearches([]);
     try {
       localStorage.removeItem("recentSearches");
-    } catch (e) {
-      // ignore localStorage errors
-    }
+    } catch (e) {}
   };
 
   return (
@@ -275,9 +317,9 @@ const Home = ({ searchTerm = "", onSearchChange = () => {} }) => {
           <div className="about-section">
             <h2>About Us</h2>
             <p>
-              Do you ever wonder what to cook?
-              Look no further! This application will show you our top recipes to
-              cook. You can also search for recipes based on your appetite.
+              Do you ever wonder what to cook? Look no further! This application
+              will show you our top recipes to cook. You can also search for
+              recipes based on your appetite.
             </p>
           </div>
         </header>
@@ -337,6 +379,89 @@ const Home = ({ searchTerm = "", onSearchChange = () => {} }) => {
               <p>No top recipes available</p>
             </div>
           ) : null}
+        </section>
+
+        <section className="explore-section">
+          <h2>Explore Recipes</h2>
+          {exploreRecipes.length > 0 ? (
+            <>
+              <div className="explore-grid">
+                {exploreRecipes
+                  .slice(
+                    (currentPage - 1) * recipesPerPage,
+                    currentPage * recipesPerPage
+                  )
+                  .map((recipe, index) => (
+                    <div
+                      key={`explore-${recipe.id}-${index}`}
+                      className="recipe-card"
+                      onClick={() => handleRecipeClick(recipe.id)}
+                    >
+                      <div className="recipe-image-placeholder">
+                        {recipe.picture_url ? (
+                          <img
+                            src={recipe.picture_url}
+                            alt={recipe.recipe_name || recipe.name}
+                          />
+                        ) : (
+                          <div className="image-fallback">🍽️</div>
+                        )}
+                      </div>
+                      <div className="recipe-content">
+                        <h3 className="recipe-title">
+                          {recipe.recipe_name || recipe.name}
+                        </h3>
+                        {recipe.description && (
+                          <p className="recipe-description">
+                            {recipe.description}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+              </div>
+
+              {exploreRecipes.length > recipesPerPage && (
+                <div className="pagination">
+                  <button
+                    className="pagination-btn"
+                    onClick={() =>
+                      setCurrentPage((prev) => Math.max(prev - 1, 1))
+                    }
+                    disabled={currentPage === 1}
+                  >
+                    ← Previous
+                  </button>
+                  <span className="pagination-info">
+                    Page {currentPage} of{" "}
+                    {Math.ceil(exploreRecipes.length / recipesPerPage)}
+                  </span>
+                  <button
+                    className="pagination-btn"
+                    onClick={() =>
+                      setCurrentPage((prev) =>
+                        Math.min(
+                          prev + 1,
+                          Math.ceil(exploreRecipes.length / recipesPerPage)
+                        )
+                      )
+                    }
+                    disabled={
+                      currentPage ===
+                      Math.ceil(exploreRecipes.length / recipesPerPage)
+                    }
+                  >
+                    Next →
+                  </button>
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="no-results-state">
+              <p className="no-results-icon">🍽️</p>
+              <p>No recipes to explore yet</p>
+            </div>
+          )}
         </section>
       </main>
     </div>

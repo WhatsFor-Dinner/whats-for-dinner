@@ -218,8 +218,8 @@ export async function getTopLikedRecipes() {
 // May need some optimization to show results more accuratly
 export async function searchRecipes(input, { limit = 15, offset = 0 } = {}) {
   const clean = (input || "").trim();
-  // guardrails
-  const lim = Math.min(Math.max(parseInt(limit, 10) || 50, 1), 15);
+  // guardrails - allow up to 50 results
+  const lim = Math.min(Math.max(parseInt(limit, 10) || 15, 1), 50);
   const off = Math.max(parseInt(offset, 10) || 0, 0);
 
   const sql = `
@@ -236,7 +236,6 @@ export async function searchRecipes(input, { limit = 15, offset = 0 } = {}) {
   const { rows } = await db.query(sql, [term, lim, off]);
   return rows;
 }
-
 
 // Helper function to insert a new ingredient or get existing ingredient ID by name. Will be used in updateRecipeWithIngredients.
 async function insertOrGetIngredientByName(name) {
@@ -321,10 +320,9 @@ export async function updateRecipeWithIngredients(
     const updatedRecipe = updatedRows[0];
 
     // Replace ingredient links so that only provided/updated ingredients remain
-    await db.query(
-      `DELETE FROM recipe_ingredients WHERE recipe_id = $1;`,
-      [recipeId]
-    );
+    await db.query(`DELETE FROM recipe_ingredients WHERE recipe_id = $1;`, [
+      recipeId,
+    ]);
 
     if (Array.isArray(ingredients)) {
       for (const item of ingredients) {
