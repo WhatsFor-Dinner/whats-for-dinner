@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router";
 import { useAuth } from "../Auth/Auth.jsx";
 import { deleteRecipe } from "../profileApi/recipes.js";
-import StarRating from "./StarRating.jsx";
 import LikeButton from "./Favorite.jsx";
 import "./RecipeCardDetails.css";
 
@@ -175,12 +174,6 @@ export default function AllRecipeCard() {
                     ❤️ {recipe.like_count}
                   </span>
                 </div>
-              </div>
-
-              {/* Rating - Moved to header section */}
-              <div className="recipe-rating-inline">
-                <span className="rating-label">Rating:</span>
-                <StarRating rating={recipe.chef_rating} />
               </div>
             </div>
           </div>
