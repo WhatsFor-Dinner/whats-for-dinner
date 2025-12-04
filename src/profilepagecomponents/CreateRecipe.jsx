@@ -197,14 +197,10 @@ function CreateRecipeCard({ syncRecipes }) {
         await updateRecipe(token, id, submitData);
         navigate(`/recipe/${id}`, { replace: true });
       } else {
-        await createRecipe(token, submitData);
+        const newRecipe = await createRecipe(token, submitData);
         if (syncRecipes) syncRecipes();
-     
-        setSelectedIngredients([]);
-        setInstructions([]);
-        setCurrentInstruction("");
-        setImageFile(null);
-        setImagePreview(null);
+        // Navigate to the newly created recipe with state to indicate it came from my-recipes
+        navigate(`/recipe/${newRecipe.id}?from=my-recipes`);
       }
       setError(null);
     } catch (error) {
@@ -216,7 +212,6 @@ function CreateRecipeCard({ syncRecipes }) {
     e.preventDefault();
     const formData = new FormData(e.target);
 
-    // Manually add the image file from state since it's in a hidden input
     if (imageFile) {
       formData.set("image", imageFile);
     }
@@ -230,7 +225,6 @@ function CreateRecipeCard({ syncRecipes }) {
         <h2>{isEditMode ? "Edit Recipe" : "Create A Recipe"}</h2>
         {error && <p className="error-message">{error}</p>}
         <form onSubmit={handleSubmit}>
-          {/* Top Section: Photo + Recipe Info */}
           <div className="recipe-header-section">
             <div className="recipe-photo">
               {imagePreview ? (
