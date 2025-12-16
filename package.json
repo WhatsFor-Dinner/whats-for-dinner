@@ -13,6 +13,7 @@
     "preview": "vite preview",
     "start": "node server.js",
     "dev:server": "node --watch --env-file=.env server.js",
+    "dev:server:clean": "lsof -ti:3000 | xargs kill -9 2>/dev/null || true && npm run dev:server",
     "test": "vitest",
     "db:schema": "psql -d whats_for_dinner -f src-backend/db/schema.sql",
     "db:seed": "node --env-file=.env src-backend/dbSeed/seed.js",

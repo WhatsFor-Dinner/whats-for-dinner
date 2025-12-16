@@ -405,21 +405,24 @@ body {
   margin-top: 2rem;
 }
 
+/* Tablet and below (768px) */
 @media (max-width: 768px) {
   .create-recipe {
     padding: 1.5rem 1rem;
+    max-width: 100%;
   }
 
   .recipe-header-section {
     flex-direction: column;
     align-items: center;
     gap: 1.5rem;
+    padding: 1.25rem;
   }
 
   .recipe-photo {
     width: 100%;
-    max-width: 250px;
-    height: 180px;
+    max-width: 280px;
+    height: 200px;
   }
 
   .recipe-basic-info {
@@ -431,6 +434,10 @@ body {
     gap: 1rem;
   }
 
+  .time-input-wrapper {
+    justify-content: flex-start;
+  }
+
   .ingredients-container {
     grid-template-columns: 1fr;
   }
@@ -438,111 +445,163 @@ body {
   .selected-ingredients-list {
     grid-template-columns: 1fr;
   }
+
+  .instruction-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .instruction-input {
+    width: 100%;
+  }
+
+  .remove-instruction {
+    align-self: flex-end;
+  }
+
+  .add-instruction {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .add-instruction-btn {
+    width: 100%;
+    padding: 0.9rem 1.5rem;
+  }
+
+  .create-recipe-button {
+    width: 100%;
+    padding: 1rem;
+  }
 }
 
 /* Mobile (480px and below) */
 @media (max-width: 480px) {
   .create-recipe {
-    padding: 1rem 0.75rem;
+    padding: 1rem 0.5rem;
   }
 
   .create-recipe h2 {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
   }
 
   .recipe-header-section {
     padding: 1rem;
-  }
-
-  .recipe-photo {
-    height: 150px;
-  }
-
-  .create-recipe input,
-  .create-recipe select,
-  .create-recipe textarea {
-    padding: 0.6rem;
-    font-size: 0.9rem;
-  }
-
-  .create-recipe-button {
-    padding: 0.8rem;
-    font-size: 0.95rem;
-  }
-
-  .ingredient-item {
-    padding: 0.6rem;
-    font-size: 0.9rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .create-recipe {
-    padding: 1.5rem 1rem;
-  }
-
-  .recipe-header-section {
-    flex-direction: column;
-    align-items: center;
-    gap: 1.5rem;
-  }
-
-  .recipe-photo {
-    width: 100%;
-    max-width: 250px;
-    height: 180px;
-  }
-
-  .recipe-basic-info {
-    width: 100%;
-  }
-
-  .time-inputs-row {
-    flex-direction: column;
     gap: 1rem;
   }
 
-  .ingredients-container {
-    grid-template-columns: 1fr;
-  }
-
-  .selected-ingredients-list {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Mobile (480px and below) */
-@media (max-width: 480px) {
-  .create-recipe {
-    padding: 1rem 0.75rem;
-  }
-
-  .create-recipe h2 {
-    font-size: 1.5rem;
-  }
-
-  .recipe-header-section {
-    padding: 1rem;
-  }
-
   .recipe-photo {
-    height: 150px;
+    max-width: 100%;
+    height: 180px;
+    font-size: 12px;
   }
 
-  .create-recipe input,
+  .recipe-photo input[type="file"]::file-selector-button,
+  .recipe-photo input[type="file"]::-webkit-file-upload-button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+  }
+
+  .recipe-basic-info input {
+    padding: 0.6rem;
+    font-size: 0.9rem;
+  }
+
+  .time-input {
+    width: 80px;
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .time-unit {
+    font-size: 0.85rem;
+  }
+
+  .create-recipe input[type="text"],
+  .create-recipe input[type="number"],
   .create-recipe select,
   .create-recipe textarea {
     padding: 0.6rem;
     font-size: 0.9rem;
   }
 
+  .instruction-input,
+  .new-instruction-input {
+    padding: 0.65rem;
+    font-size: 0.9rem;
+    min-height: 50px;
+  }
+
+  .instructions-section > label {
+    font-size: 1rem;
+  }
+
+  .remove-instruction {
+    width: 32px;
+    height: 32px;
+    font-size: 1.1rem;
+  }
+
+  .add-instruction-btn {
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+  }
+
   .create-recipe-button {
-    padding: 0.8rem;
-    font-size: 0.95rem;
+    padding: 0.85rem;
+    font-size: 1rem;
   }
 
   .ingredient-item {
     padding: 0.6rem;
     font-size: 0.9rem;
+  }
+
+  .upload-icon {
+    font-size: 36px;
+  }
+
+  .image-preview-container {
+    padding: 5px;
+  }
+
+  .remove-image-btn {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+}
+
+/* Extra small devices (360px and below) */
+@media (max-width: 360px) {
+  .create-recipe {
+    padding: 0.75rem 0.35rem;
+  }
+
+  .create-recipe h2 {
+    font-size: 1.25rem;
+  }
+
+  .recipe-header-section {
+    padding: 0.75rem;
+  }
+
+  .recipe-photo {
+    height: 150px;
+  }
+
+  .time-input {
+    width: 70px;
+  }
+
+  .instruction-input,
+  .new-instruction-input {
+    font-size: 0.85rem;
+  }
+
+  .create-recipe-button {
+    font-size: 0.95rem;
+    padding: 0.75rem;
   }
 }
