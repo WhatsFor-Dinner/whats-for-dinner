@@ -327,7 +327,7 @@ Profile Navigaton  */
 .profile-sidebar {
   position: fixed;
   left: 0;
- 
+
   width: 250px;
   height: 500px;
   margin-top: 85px;
@@ -543,8 +543,106 @@ Profile Navigaton  */
   border-left: 4px solid #d32f2f;
 }
 
+/* Tablet and below */
+@media (max-width: 1024px) {
+  .profile-sidebar {
+    width: 220px;
+    margin-left: 1em;
+    padding: 15px;
+  }
 
+  .profile-content {
+    margin-left: 260px;
+  }
+
+  .profile-photo-upload {
+    width: 180px;
+    height: 180px;
+  }
+}
+
+/* Tablet */
 @media (max-width: 768px) {
+  .profile-sidebar {
+    position: relative;
+    width: 100%;
+    height: auto;
+    margin: 60px 0 0 0;
+    border-radius: 0;
+    border-right: none;
+    border-bottom: 2px solid #daa520;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+  }
+
+  .profile-header {
+    border-bottom: none;
+    border-right: 1px solid #ddd;
+    padding: 0 20px 0 0;
+    margin: 0;
+    flex-shrink: 0;
+  }
+
+  .profile-header h2 {
+    font-size: 18px;
+    margin: 0 0 10px 0;
+  }
+
+  .profile-photo-upload {
+    width: 120px;
+    height: 120px;
+    padding: 10px;
+  }
+
+  .sidebar-navigation {
+    flex-direction: row;
+    gap: 10px;
+    flex: 1;
+    margin-left: 20px;
+  }
+
+  .sidebar-navigation button {
+    flex: 1;
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  .profile-content {
+    margin-left: 0;
+    margin-top: 20px;
+    padding: 15px;
+  }
+
+  .my-recipes-containter {
+    max-width: 100%;
+  }
+
+  .my-recipe-tabs button {
+    padding: 12px 15px;
+    font-size: 14px;
+  }
+
+  .content-tabs {
+    padding: 15px;
+    min-height: 300px;
+  }
+
+  .content-tabs ul {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 15px;
+  }
+
+  .content-tabs li img {
+    height: 180px;
+  }
+
+  .content-tabs li span {
+    padding: 12px;
+    font-size: 15px;
+  }
+
   .profile-navigation {
     flex-wrap: wrap;
     padding: 10px 12px;
@@ -556,18 +654,92 @@ Profile Navigaton  */
     padding: 12px;
   }
 
-  .content-tabs .active {
-    font-size: 15px;
+  .login-message {
+    padding: 30px 15px;
   }
 
-  .content-tabs li span {
-    padding: 12px;
-    font-size: 15px;
+  .login-message p {
+    font-size: 16px;
   }
 }
 
-
+/* Mobile */
 @media (max-width: 480px) {
+  .profile-sidebar {
+    flex-direction: column;
+    padding: 15px;
+    margin-top: 60px;
+  }
+
+  .profile-header {
+    border-right: none;
+    border-bottom: 1px solid #ddd;
+    padding: 0 0 15px 0;
+    margin-bottom: 15px;
+    width: 100%;
+  }
+
+  .profile-header h2 {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+
+  .profile-photo-upload {
+    width: 100px;
+    height: 100px;
+    font-size: 11px;
+  }
+
+  .sidebar-navigation {
+    flex-direction: column;
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .sidebar-navigation button {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  .profile-content {
+    padding: 10px;
+    margin-top: 15px;
+  }
+
+  .my-recipe-tabs {
+    flex-direction: column;
+  }
+
+  .my-recipe-tabs button {
+    padding: 12px;
+    font-size: 14px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+
+  .my-recipe-tabs button.active-tabs::after {
+    height: 2px;
+  }
+
+  .content-tabs {
+    padding: 12px;
+    min-height: 250px;
+  }
+
+  .content-tabs ul {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .content-tabs li img {
+    height: 200px;
+  }
+
+  .content-tabs li span {
+    padding: 10px;
+    font-size: 14px;
+  }
+
   .profile-navigation {
     padding: 8px;
     gap: 8px;
@@ -583,20 +755,22 @@ Profile Navigaton  */
     padding: 10px;
   }
 
-  .content-tabs .active {
-    font-size: 14px;
-    padding: 10px;
-  }
-
-  .content-tabs li span {
-    padding: 10px;
-    font-size: 14px;
-  }
-
   .content-tabs .error-message {
     padding: 12px;
     font-size: 0.9rem;
   }
+
+  .login-message {
+    padding: 20px 10px;
+    margin: 10px 0;
+  }
+
+  .login-message p {
+    font-size: 14px;
+    margin-bottom: 15px;
+  }
+
+  .my-recipes-containter {
+    border-radius: 4px;
+  }
 }
-
-
